@@ -395,16 +395,28 @@
             font-weight: 600;
         }
 
-        .footer-col p, .footer-col a {
+        .footer-col p {
+            font-size: 0.8rem;
+            color: #cccccc;
+            line-height: 2.2;
+            display: block;
+        }
+
+        .footer-col a {
             font-size: 0.8rem;
             color: #cccccc;
             text-decoration: none;
             line-height: 2.2;
             display: block;
-            transition: color 0.3s ease;
+            width: fit-content;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
         }
 
-        .footer-col a:hover { color: var(--color-white); }
+        .footer-col a:hover {
+            color: var(--color-white);
+            border-bottom-color: var(--color-accent);
+        }
 
         .footer-bottom {
             text-align: center;
@@ -548,7 +560,7 @@
     </section>
 
     <!-- FOOTER -->
-    <footer id="footer">
+        <footer id="footer">
         <div class="footer-grid">
             <div class="footer-col">
                 <h4>ADALP</h4>
@@ -557,9 +569,11 @@
             </div>
             <div class="footer-col">
                 <h4>Contacto</h4>
-                <p>Dirección: Estadio Hernando Siles, 5to piso, puerta #1</p>
-                <p>Email: adalp2025@gmail.com</p>
-                <p>Teléfono: +591 73505230</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=Estadio+Hernando+Siles+La+Paz+Bolivia" target="_blank" rel="noopener">
+                    Estadio Hernando Siles, 5to piso, puerta #1
+                </a>
+                <a href="mailto:adalp2025@gmail.com">adalp2025@gmail.com</a>
+                <a href="https://wa.me/59173505230" target="_blank" rel="noopener">+591 73505230</a>
             </div>
             <div class="footer-col">
                 <h4>Enlaces Rápidos</h4>
@@ -569,9 +583,9 @@
             </div>
             <div class="footer-col">
                 <h4>Redes Sociales</h4>
-                <a href="#">Facebook</a>
-                <a href="#">Instagram</a>
-                <a href="#">YouTube</a>
+                <a href="https://facebook.com/" target="_blank" rel="noopener">Facebook</a>
+                <a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a>
+                <a href="https://youtube.com/" target="_blank" rel="noopener">YouTube</a>
             </div>
         </div>
         <div class="footer-bottom">
