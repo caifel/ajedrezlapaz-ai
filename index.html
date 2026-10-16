@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADALP - Asociación Departamental de Ajedrez de La Paz</title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    
+    <style>
+        :root {
+            --color-bg: #fafafa;
+            --color-white: #ffffff;
+            --color-text: #111111;
+            --color-text-light: #555555;
+            --color-accent: #c4a77d;
+            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #eaeaea;
+            z-index: 1000;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo img { height: 35px; width: auto; display: block; }
+
+        .desktop-nav ul { display: flex; list-style: none; gap: 30px; }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--color-text-light);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: color 0.3s ease;
+        }
+
+        .desktop-nav a:hover, .desktop-nav a.active { color: var(--color-text); }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: var(--color-text);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background-color: var(--color-bg);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .mobile-nav.active { transform: translateY(0); }
+        .mobile-nav ul { list-style: none; text-align: center; }
+        .mobile-nav li { margin: 30px 0; }
+        .mobile-nav a {
+            text-decoration: none;
+            color: var(--color-text);
+            font-size: 1.2rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+        }
+        .mobile-nav a.active { opacity: 0.5; }
+        .close-btn {
+            position: absolute;
+            top: 25px; right: 30px;
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--color-text);
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        /* HERO */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 80px;
+            text-align: center;
+        }
+
+        .hero-logo-container { width: 180px; margin-bottom: 25px; }
+        .hero-logo-container img { width: 100%; height: auto; display: block; }
+
+        #hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 0.35em;
+            margin-left: 0.35em;
+            margin-bottom: 10px;
+        }
+
+        #hero h2 {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.25em;
+            margin-left: 0.25em;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            max-width: 600px;
+        }
+
+        .divider {
+            width: 60px;
+            height: 2px;
+            background-color: var(--color-accent);
+            margin: 0 auto 25px auto;
+        }
+
+        .founding-date {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            margin-left: 0.2em;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .institutional-text {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--color-text-light);
+            max-width: 600px;
+            line-height: 1.8;
+            margin-bottom: 45px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px 32px;
+            font-family: var(--font-main);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid var(--color-text);
+        }
+
+        .btn-primary { background-color: var(--color-text); color: white; }
+        .btn-primary:hover { background-color: transparent; color: var(--color-text); }
+        .btn-secondary { background-color: transparent; color: var(--color-text); }
+        .btn-secondary:hover { background-color: var(--color-text); color: white; }
+        .arrow { font-size: 1.1rem; line-height: 1; }
+
+        /* INSTITUCIONAL */
+        #institucional {
+            background-color: var(--color-white);
+            padding: 100px 20px;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 60px;
+            font-weight: 600;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-image {
+            background-image: url('https://images.unsplash.com/photo-1529699211952-734e80c4d42b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 450px;
+            position: relative;
+        }
+
+        .about-image::after {
+            content: '';
+            position: absolute;
+            top: 20px; left: 20px;
+            right: -20px; bottom: -20px;
+            border: 2px solid var(--color-accent);
+            z-index: -1;
+        }
+
+        .about-text h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
+        }
+
+        .about-text p {
+            font-size: 0.95rem;
+            color: var(--color-text-light);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .highlight-box {
+            background-color: var(--color-bg);
+            border-left: 4px solid var(--color-accent);
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .highlight-box p { margin-bottom: 0; font-weight: 600; color: var(--color-text); }
+
+        /* NOTICIAS */
+        #noticias { padding: 100px 20px; }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .news-card {
+            background-color: var(--color-white);
+            border: 1px solid #eaeaea;
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+
+        .news-card:hover { transform: translateY(-5px); }
+
+        .news-date {
+            font-size: 0.75rem;
+            color: var(--color-accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .news-card h4 { font-size: 1.1rem; margin-bottom: 15px; line-height: 1.4; }
+        .news-card p { font-size: 0.85rem; color: var(--color-text-light); margin-bottom: 20px; }
+
+        .read-more {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-text);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .read-more:hover { color: var(--color-accent); }
+
+        /* FOOTER */
+        footer {
+            background-color: var(--color-text);
+            color: var(--color-white);
+            padding: 80px 20px 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 60px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 25px;
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+
+        .footer-col p, .footer-col a {
+            font-size: 0.8rem;
+            color: #cccccc;
+            text-decoration: none;
+            line-height: 2.2;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col a:hover { color: var(--color-white); }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            font-size: 0.65rem;
+            color: #888888;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* RESPONSIVIDAD */
+        @media (max-width: 900px) {
+            .about-grid { grid-template-columns: 1fr; }
+            .about-image { height: 300px; order: -1; }
+            .about-image::after { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .desktop-nav { display: none; }
+            .hamburger { display: flex; }
+        }
+
+        @media (max-width: 480px) {
+            #hero h1 { font-size: 2.5rem; }
+            #hero h2 { font-size: 0.75rem; }
+            .buttons-container { flex-direction: column; width: 100%; }
+            .btn { width: 100%; }
+            .hero-logo-container { width: 140px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-logo">
+            <a href="index.html"><img src="logo.png" alt="ADALP Logo"></a>
+        </div>
+        <nav class="desktop-nav">
+            <ul>
+                <li><a href="index.html" class="active">Inicio</a></li>
+                <li><a href="jugadores.html">Jugadores</a></li>
+                <li><a href="galeria.html">Galería</a></li>
+            </ul>
+        </nav>
+        <button class="hamburger" id="hamburgerBtn">
+            <span></span><span></span><span></span>
+        </button>
+    </header>
+
+    <div class="mobile-nav" id="mobileNav">
+        <span class="close-btn" id="closeBtn">&times;</span>
+        <ul>
+            <li><a href="index.html" class="active">Inicio</a></li>
+            <li><a href="jugadores.html">Jugadores</a></li>
+            <li><a href="galeria.html">Galería</a></li>
+        </ul>
+    </div>
+
+    <section id="hero">
+        <div class="hero-logo-container">
+            <img src="logo.png" alt="ADALP Logo">
+        </div>
+        <h1>ADALP</h1>
+        <h2>Asociación Departamental<br>de Ajedrez de La Paz</h2>
+        <div class="divider"></div>
+        <p class="founding-date">Fundada el 7 de diciembre de 1929</p>
+        <p class="institutional-text">
+            Únicos representantes oficiales avalados por la Federación Boliviana de Ajedrez (FBA), con jurisdicción exclusiva en todo el Departamento de La Paz.
+        </p>
+        <div class="buttons-container">
+            <a href="jugadores.html" class="btn btn-primary">Lista de Jugadores <span class="arrow">&rarr;</span></a>
+            <a href="galeria.html" class="btn btn-secondary">Galería de Fotos <span class="arrow">&rarr;</span></a>
+        </div>
+    </section>
+
+    <section id="institucional">
+        <div class="container">
+            <h2 class="section-title">Nuestra Institución</h2>
+            <p class="section-subtitle">Casi un siglo de pasión por el ajedrez</p>
+            
+            <div class="about-grid">
+                <div class="about-image"></div>
+                <div class="about-text">
+                    <h3>Pioneros del Ajedrez Paceño</h3>
+                    <p>Desde nuestra fundación el <strong>7 de diciembre de 1929</strong>, la Asociación Departamental de Ajedrez de La Paz (ADALP) ha sido el pilar fundamental para el desarrollo y la difusión del deporte ciencia en nuestra región.</p>
+                    <p>A lo largo de casi 100 años, hemos organizado innumerables torneos, formado a generaciones de maestros y fomentado los valores de disciplina, estrategia y comunidad entre todos nuestros afiliados.</p>
+                    
+                    <div class="highlight-box">
+                        <p>Somos los únicos representantes oficiales avalados por la Federación Boliviana de Ajedrez (FBA), con jurisdicción exclusiva en todo el Departamento de La Paz.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="noticias">
+        <div class="container">
+            <h2 class="section-title">Actualidad</h2>
+            <p class="section-subtitle">Próximos torneos y noticias</p>
+            
+            <div class="news-grid">
+                <article class="news-card">
+                    <span class="news-date">15 de Octubre, 2026</span>
+                    <h4>Torneo Departamental de Ajedrez Clásico</h4>
+                    <p>Inscripciones abiertas para el torneo oficial válido por el ranking departamental. ¡Cupos limitados!</p>
+                    <a href="#" class="read-more">Leer más &rarr;</a>
+                </article>
+                <article class="news-card">
+                    <span class="news-date">02 de Octubre, 2026</span>
+                    <h4>Clínicas de Ajedrez para Jóvenes Promesas</h4>
+                    <p>La ADALP invita a todos los menores de 18 años a participar de las clases magistrales gratuitas en nuestra sede.</p>
+                    <a href="#" class="read-more">Leer más &rarr;</a>
+                </article>
+                <article class="news-card">
+                    <span class="news-date">20 de Septiembre, 2026</span>
+                    <h4>Resultados del Campeonato Nacional</h4>
+                    <p>Nuestros representantes paceños tuvieron una destacada participación en el último certamen nacional.</p>
+                    <a href="#" class="read-more">Leer más &rarr;</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>ADALP</h4>
+                <p>Asociación Departamental de Ajedrez de La Paz.</p>
+                <p>Fundada el 7 de diciembre de 1929.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <p>Dirección: Estadio Hernando Siles, 5to piso, puerta #1</p>
+                <p>Email: adalp2025@gmail.com</p>
+                <p>Teléfono: +591 73505230</p>
+            </div>
+            <div class="footer-col">
+                <h4>Enlaces Rápidos</h4>
+                <a href="index.html">Inicio</a>
+                <a href="jugadores.html">Jugadores</a>
+                <a href="galeria.html">Galería</a>
+            </div>
+            <div class="footer-col">
+                <h4>Redes Sociales</h4>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">YouTube</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ADALP - Asociación Departamental de Ajedrez de La Paz. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeBtn = document.getElementById('closeBtn');
+
+            hamburgerBtn.addEventListener('click', () => mobileNav.classList.add('active'));
+            closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileNav.classList.remove('active'));
+            });
+        });
+    </script>
+</body>
+</html>
