@@ -233,6 +233,13 @@
             font-weight: 300;
         }
 
+        tbody tr {
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        tbody tr:hover { opacity: 0.6; }
+
         td:last-child, th:last-child { text-align: right; }
 
         .no-results, .loading {
@@ -243,6 +250,169 @@
             text-transform: uppercase;
             letter-spacing: 0.15em;
         }
+
+        /* =========================================
+           MODAL
+           ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
+            background-color: rgba(255, 255, 255, 0.98);
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 60px 20px;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            max-width: 560px;
+            width: 100%;
+            position: relative;
+            margin: auto;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 25px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--color-text);
+            cursor: pointer;
+            line-height: 1;
+            z-index: 3100;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-close:hover { opacity: 0.5; }
+
+        .modal-photo {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto 35px;
+            filter: grayscale(100%);
+        }
+
+        .modal-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.02em;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .modal-category {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--color-accent);
+            margin-bottom: 40px;
+        }
+
+        .modal-description {
+            font-size: 0.9rem;
+            font-weight: 300;
+            color: var(--color-text-light);
+            line-height: 1.9;
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .modal-divider {
+            width: 60px;
+            height: 1px;
+            background-color: var(--color-text);
+            margin: 0 auto 45px;
+        }
+
+        .certificate-section {
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .certificate-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 15px;
+        }
+
+        .certificate-hint {
+            font-size: 0.75rem;
+            color: var(--color-text-light);
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+
+        .cert-input-group {
+            display: flex;
+            gap: 15px;
+            align-items: stretch;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cert-input {
+            padding: 12px 15px;
+            border: 1px solid var(--color-border);
+            font-family: var(--font-main);
+            font-size: 0.8rem;
+            outline: none;
+            background: transparent;
+            color: var(--color-text);
+            letter-spacing: 0.05em;
+            min-width: 180px;
+            transition: border-color 0.3s ease;
+        }
+
+        .cert-input:focus { border-color: var(--color-text); }
+
+        .cert-btn {
+            padding: 12px 25px;
+            background-color: var(--color-text);
+            color: white;
+            border: 1px solid var(--color-text);
+            font-family: var(--font-main);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cert-btn:hover { background-color: transparent; color: var(--color-text); }
+
+        .cert-feedback {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            min-height: 20px;
+        }
+
+        .cert-feedback.error { color: #cc0000; }
+        .cert-feedback.success { color: #2d7a2d; font-weight: 600; }
+        .cert-feedback.info { color: var(--color-text-light); }
 
         /* FOOTER */
         footer {
@@ -298,10 +468,17 @@
             .controls-container { flex-direction: column; align-items: flex-start; gap: 20px; }
             .search-box { max-width: 100%; width: 100%; }
             .tags-container { width: 100%; justify-content: space-between; }
+            .modal-close { top: 15px; right: 20px; font-size: 1.8rem; }
+            .modal-name { font-size: 1.3rem; }
+            .modal-photo { width: 110px; height: 110px; }
+            .cert-input-group { flex-direction: column; }
+            .cert-input { width: 100%; min-width: 0; }
+            .cert-btn { width: 100%; }
         }
     </style>
 </head>
 <body>
+
     <header>
         <div class="header-logo">
             <a href="/"><img src="../assets/logo.png" alt="ADALP Logo"></a>
@@ -360,6 +537,30 @@
         </div>
     </main>
 
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <button class="modal-close" id="modalClose" aria-label="Cerrar">&times;</button>
+        <div class="modal">
+            <img class="modal-photo" id="modalPhoto" src="" alt="" style="display:none;">
+            <h2 class="modal-name" id="modalName"></h2>
+            <p class="modal-category" id="modalCategory"></p>
+            <p class="modal-description" id="modalDescription" style="display:none;"></p>
+            
+            <div class="modal-divider"></div>
+
+            <div class="certificate-section">
+                <h3 class="certificate-title">Certificado de Categoría</h3>
+                <p class="certificate-hint" id="certHint">Ingresa tu fecha de nacimiento para generar tu certificado.</p>
+                
+                <div class="cert-input-group" id="certInputGroup">
+                    <input type="date" class="cert-input" id="certBirthdate">
+                    <button class="cert-btn" id="certBtn">Generar certificado</button>
+                </div>
+                <p class="cert-feedback" id="certFeedback"></p>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
@@ -393,7 +594,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Menú móvil
+            // ===== Menú móvil =====
             const hamburgerBtn = document.getElementById('hamburgerBtn');
             const mobileNav = document.getElementById('mobileNav');
             const closeBtn = document.getElementById('closeBtn');
@@ -404,16 +605,30 @@
                 link.addEventListener('click', () => mobileNav.classList.remove('active'));
             });
 
-            // Variables
+            // ===== Variables =====
             let allPlayers = [];
             let currentCategory = 'todos';
             let currentSearch = '';
+            let currentPlayer = null;
 
             const tableBody = document.getElementById('playersTable');
             const tags = document.querySelectorAll('.tag:not(.disabled)');
             const searchInput = document.getElementById('searchInput');
 
-            // Render
+            // Modal elements
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalClose = document.getElementById('modalClose');
+            const modalPhoto = document.getElementById('modalPhoto');
+            const modalName = document.getElementById('modalName');
+            const modalCategory = document.getElementById('modalCategory');
+            const modalDescription = document.getElementById('modalDescription');
+            const certHint = document.getElementById('certHint');
+            const certInputGroup = document.getElementById('certInputGroup');
+            const certBirthdate = document.getElementById('certBirthdate');
+            const certBtn = document.getElementById('certBtn');
+            const certFeedback = document.getElementById('certFeedback');
+
+            // ===== Render tabla =====
             function renderTable() {
                 const filtered = allPlayers.filter(player => {
                     const matchesCategory = currentCategory === 'todos' || player.categoria === currentCategory;
@@ -434,14 +649,177 @@
                         <td>${player.nombre}</td>
                         <td>${player.categoria} Categoría</td>
                     `;
+                    tr.addEventListener('click', () => openModal(player));
                     tableBody.appendChild(tr);
                 });
             }
 
-            // Fetch
+            // ===== Abrir modal =====
+            function openModal(player) {
+                currentPlayer = player;
+
+                // Foto
+                if (player.foto) {
+                    modalPhoto.src = player.foto;
+                    modalPhoto.alt = player.nombre;
+                    modalPhoto.style.display = 'block';
+                } else {
+                    modalPhoto.style.display = 'none';
+                    modalPhoto.src = '';
+                }
+
+                // Nombre y categoría
+                modalName.textContent = player.nombre;
+                modalCategory.textContent = player.categoria + ' Categoría';
+
+                // Descripción
+                if (player.descripcion) {
+                    modalDescription.textContent = player.descripcion;
+                    modalDescription.style.display = 'block';
+                } else {
+                    modalDescription.style.display = 'none';
+                    modalDescription.textContent = '';
+                }
+
+                // Resetear el campo de certificado
+                certBirthdate.value = '';
+                certFeedback.textContent = '';
+                certFeedback.className = 'cert-feedback';
+
+                // Si el jugador no tiene fecha de nacimiento registrada, deshabilitar el certificado
+                if (!player.fecha_nacimiento) {
+                    certHint.textContent = 'El certificado aún no está disponible para este jugador. Contacta a la asociación.';
+                    certInputGroup.style.display = 'none';
+                } else {
+                    certHint.textContent = 'Ingresa tu fecha de nacimiento para generar tu certificado.';
+                    certInputGroup.style.display = 'flex';
+                }
+
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // ===== Cerrar modal =====
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+                currentPlayer = null;
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
+            });
+
+            // ===== Validar certificado =====
+            certBtn.addEventListener('click', () => {
+                if (!currentPlayer) return;
+
+                const inputDate = certBirthdate.value;
+                certFeedback.className = 'cert-feedback';
+                certFeedback.textContent = '';
+
+                if (!inputDate) {
+                    certFeedback.classList.add('error');
+                    certFeedback.textContent = 'Por favor, ingresa tu fecha de nacimiento.';
+                    return;
+                }
+
+                if (inputDate !== currentPlayer.fecha_nacimiento) {
+                    certFeedback.classList.add('error');
+                    certFeedback.textContent = 'La fecha no coincide con nuestros registros.';
+                    return;
+                }
+
+                // Éxito
+                certFeedback.classList.add('success');
+                certFeedback.textContent = 'Verificado. Generando certificado...';
+
+                setTimeout(() => {
+                    generarCertificado(currentPlayer);
+                    certFeedback.textContent = 'Certificado generado en una nueva pestaña.';
+                }, 400);
+            });
+
+            // ===== Generar certificado (HTML imprimible) =====
+            function generarCertificado(player) {
+                const fecha = new Date().toLocaleDateString('es-BO', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+
+                const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Certificado - ${player.nombre}</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: Georgia, 'Times New Roman', serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #f5f5f5;
+        padding: 40px;
+        color: #111;
+    }
+    .cert {
+        background: #fff;
+        padding: 70px 50px;
+        max-width: 780px;
+        width: 100%;
+        border: 2px solid #111;
+        text-align: center;
+    }
+    .cert-logo { font-size: 2.5rem; font-weight: 700; letter-spacing: 0.35em; margin-bottom: 8px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .cert-sub { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: #666; margin-bottom: 55px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .cert-title { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 50px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .cert-text { font-size: 0.95rem; line-height: 2; margin-bottom: 15px; font-style: italic; color: #444; }
+    .cert-name { font-size: 1.8rem; font-weight: 700; margin: 25px 0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.02em; }
+    .cert-cat { font-size: 1.1rem; margin: 20px 0 40px; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.15em; }
+    .cert-id { font-size: 0.7rem; color: #888; margin-top: 50px; font-family: monospace; letter-spacing: 0.1em; }
+    .cert-date { font-size: 0.85rem; margin-top: 20px; color: #666; }
+    .cert-sign { margin-top: 70px; padding-top: 15px; border-top: 1px solid #999; display: inline-block; min-width: 260px; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #666; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    @media print {
+        body { background: #fff; padding: 0; }
+        .cert { border: 2px solid #111; }
+    }
+</style>
+</head>
+<body>
+    <div class="cert">
+        <div class="cert-logo">ADALP</div>
+        <div class="cert-sub">Asociación Departamental de Ajedrez de La Paz</div>
+        
+        <div class="cert-title">Certificado de Categoría</div>
+        
+        <p class="cert-text">Se certifica que el/la ajedrecista</p>
+        <div class="cert-name">${player.nombre}</div>
+        <p class="cert-text">pertenece oficialmente a la</p>
+        <div class="cert-cat"><strong>${player.categoria.toUpperCase()} CATEGORÍA</strong></div>
+        
+        <div class="cert-id">ID: ${player.id}</div>
+        <div class="cert-date">La Paz, ${fecha}</div>
+        
+        <div class="cert-sign">Firma y Sello Autorizado</div>
+    </div>
+    <script>window.onload = () => setTimeout(() => window.print(), 400);<\/script>
+</body>
+</html>`;
+
+                const win = window.open('', '_blank');
+                win.document.write(html);
+                win.document.close();
+            }
+
+            // ===== Fetch =====
             fetch('data.json')
                 .then(response => {
-                    if (!response.ok) throw new Error('Error al cargar jugadores.json');
+                    if (!response.ok) throw new Error('Error al cargar data.json');
                     return response.json();
                 })
                 .then(data => {
@@ -453,7 +831,7 @@
                     tableBody.innerHTML = `<tr><td colspan="2" class="no-results">Error al cargar la lista</td></tr>`;
                 });
 
-            // Filtros
+            // ===== Filtros =====
             tags.forEach(tag => {
                 tag.addEventListener('click', () => {
                     tags.forEach(t => t.classList.remove('active'));
@@ -463,7 +841,7 @@
                 });
             });
 
-            // Búsqueda
+            // ===== Búsqueda =====
             searchInput.addEventListener('input', (e) => {
                 currentSearch = e.target.value.toLowerCase().trim();
                 renderTable();
