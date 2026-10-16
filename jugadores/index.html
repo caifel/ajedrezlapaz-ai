@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jugadores - ADALP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #ffffff;
+            --color-text: #000000;
+            --color-text-light: #888888;
+            --color-border: #eeeeee;
+            --color-accent: #c4a77d;
+            --font-main: 'Montserrat', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: var(--font-main);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* =========================================
+           HEADER Y NAVEGACIÓN
+           ========================================= */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo img {
+            height: 30px;
+            width: auto;
+            display: block;
+        }
+
+        /* Navegación Desktop */
+        .desktop-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--color-text-light);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            transition: color 0.3s ease;
+        }
+
+        .desktop-nav a:hover, .desktop-nav a.active {
+            color: var(--color-text);
+        }
+
+        /* Menú Hamburguesa (Solo visible en móvil) */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+            padding: 5px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 2px;
+            background-color: var(--color-text);
+            transition: all 0.3s ease;
+        }
+
+        /* Menú Móvil Desplegable */
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--color-bg);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-100%);
+            transition: transform 0.4s ease;
+        }
+
+        .mobile-nav.active {
+            transform: translateY(0);
+        }
+
+        .mobile-nav ul {
+            list-style: none;
+            text-align: center;
+        }
+
+        .mobile-nav li {
+            margin: 30px 0;
+        }
+
+        .mobile-nav a {
+            text-decoration: none;
+            color: var(--color-text);
+            font-size: 1.2rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-nav a:hover, .mobile-nav a.active {
+            opacity: 0.5;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            font-size: 2rem;
+            font-weight: 300;
+            color: var(--color-text);
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        /* =========================================
+           CONTENIDO PRINCIPAL
+           ========================================= */
+        main {
+            flex: 1;
+            padding: 160px 20px 100px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+        }
+
+        .controls-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .tags-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            cursor: pointer;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .tag:hover { color: var(--color-text); }
+        .tag.active { color: var(--color-text); font-weight: 700; }
+        .tag.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 1px;
+            background-color: var(--color-text);
+        }
+
+        .search-box {
+            flex-grow: 1;
+            max-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 5px 0;
+            border: none;
+            border-bottom: 1px solid var(--color-border);
+            font-family: var(--font-main);
+            font-size: 0.75rem;
+            outline: none;
+            background: transparent;
+            color: var(--color-text);
+            transition: border-color 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .search-box input::placeholder { color: #cccccc; }
+        .search-box input:focus { border-bottom-color: var(--color-text); }
+
+        .table-container { width: 100%; overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 400px;
+        }
+
+        th {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            padding: 0 0 15px 0;
+            text-align: left;
+            color: var(--color-text-light);
+            border-bottom: 1px solid var(--color-text);
+        }
+
+        td {
+            padding: 25px 0;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 0.85rem;
+            color: var(--color-text);
+            font-weight: 300;
+        }
+
+        td:last-child, th:last-child { text-align: right; }
+
+        /* =========================================
+           FOOTER INSTITUCIONAL
+           ========================================= */
+        footer {
+            background-color: var(--color-text);
+            color: var(--color-bg);
+            padding: 80px 20px 30px;
+            margin-top: auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 60px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 25px;
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+
+        .footer-col p, .footer-col a {
+            font-size: 0.8rem;
+            color: #cccccc;
+            text-decoration: none;
+            line-height: 2.2;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col a:hover { color: var(--color-bg); }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
+            font-size: 0.65rem;
+            color: #888888;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* =========================================
+           RESPONSIVIDAD (Aquí está la magia)
+           ========================================= */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            
+            /* Ocultamos el menú de escritorio */
+            .desktop-nav { display: none; }
+            
+            /* Mostramos el botón hamburguesa */
+            .hamburger { display: flex; }
+            
+            .controls-container { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .search-box { max-width: 100%; width: 100%; }
+            .tags-container { width: 100%; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-logo">
+            <a href="index.html">
+                <img src="../assets/logo.png" alt="ADALP Logo">
+            </a>
+        </div>
+        
+        <!-- Navegación Desktop -->
+        <nav class="desktop-nav">
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#institucional">Historia</a></li>
+                <li><a href="jugadores.html" class="active">Jugadores</a></li>
+                <li><a href="galeria.html">Galería</a></li>
+            </ul>
+        </nav>
+
+        <!-- Botón Hamburguesa (Móvil) -->
+        <button class="hamburger" id="hamburgerBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- MENÚ MÓVIL DESPLEGABLE -->
+    <div class="mobile-nav" id="mobileNav">
+        <span class="close-btn" id="closeBtn">&times;</span>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="index.html#institucional">Historia</a></li>
+            <li><a href="jugadores.html" class="active">Jugadores</a></li>
+            <li><a href="galeria.html">Galería</a></li>
+        </ul>
+    </div>
+
+    <!-- CONTENIDO -->
+    <main>
+        <h1 class="page-title">Jugadores</h1>
+
+        <div class="controls-container">
+            <div class="tags-container">
+                <span class="tag active" data-filter="todos">Todos</span>
+                <span class="tag" data-filter="1ra">1ra</span>
+                <span class="tag" data-filter="2da">2da</span>
+                <span class="tag" data-filter="3ra">3ra</span>
+                <span class="tag" data-filter="4ta">4ta</span>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar...">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                    </tr>
+                </thead>
+                <tbody id="playersTable">
+                    <tr data-category="1ra"><td>Juan Pérez Mamani</td><td>1ra Categoría</td></tr>
+                    <tr data-category="2da"><td>María Gómez Quispe</td><td>2da Categoría</td></tr>
+                    <tr data-category="3ra"><td>Carlos Mamani Rojas</td><td>3ra Categoría</td></tr>
+                    <tr data-category="4ta"><td>Ana Quispe Fernández</td><td>4ta Categoría</td></tr>
+                    <tr data-category="1ra"><td>Luis Rojas Condori</td><td>1ra Categoría</td></tr>
+                    <tr data-category="2da"><td>Elena Vásquez Pinto</td><td>2da Categoría</td></tr>
+                    <tr data-category="3ra"><td>Pedro Choque Apaza</td><td>3ra Categoría</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>ADALP</h4>
+                <p>Asociación Departamental de Ajedrez de La Paz.</p>
+                <p>Fundada el 7 de diciembre de 1929.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Contacto</h4>
+                <p>Dirección: Av. Principal #123, La Paz, Bolivia</p>
+                <p>Email: contacto@adalp.org.bo</p>
+                <p>Teléfono: +591 2 1234567</p>
+            </div>
+            <div class="footer-col">
+                <h4>Enlaces Rápidos</h4>
+                <a href="index.html">Inicio</a>
+                <a href="index.html#institucional">Historia</a>
+                <a href="jugadores.html">Jugadores</a>
+                <a href="galeria.html">Galería</a>
+            </div>
+            <div class="footer-col">
+                <h4>Redes Sociales</h4>
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">YouTube</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ADALP - Asociación Departamental de Ajedrez de La Paz. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Lógica del Menú Móvil ---
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeBtn = document.getElementById('closeBtn');
+
+            hamburgerBtn.addEventListener('click', () => {
+                mobileNav.classList.add('active');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                mobileNav.classList.remove('active');
+            });
+
+            // Cerrar menú al hacer clic en un enlace
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNav.classList.remove('active');
+                });
+            });
+
+            // --- Lógica de Filtros y Búsqueda ---
+            const tags = document.querySelectorAll('.tag');
+            const tableRows = document.querySelectorAll('#playersTable tr');
+            const searchInput = document.getElementById('searchInput');
+
+            let currentCategory = 'todos';
+            let currentSearch = '';
+
+            function filterTable() {
+                tableRows.forEach(row => {
+                    const rowCategory = row.getAttribute('data-category');
+                    const playerName = row.querySelector('td:first-child').textContent.toLowerCase();
+                    
+                    const matchesCategory = currentCategory === 'todos' || rowCategory === currentCategory;
+                    const matchesSearch = playerName.includes(currentSearch);
+
+                    row.style.display = (matchesCategory && matchesSearch) ? '' : 'none';
+                });
+            }
+
+            tags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    tags.forEach(t => t.classList.remove('active'));
+                    tag.classList.add('active');
+                    currentCategory = tag.getAttribute('data-filter');
+                    filterTable();
+                });
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase();
+                filterTable();
+            });
+        });
+    </script>
+</body>
+</html>
