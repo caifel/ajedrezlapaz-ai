@@ -817,7 +817,7 @@
             }
 
             // ===== Fetch =====
-            fetch('data.json')
+            fetch('../data/jugadores.json')
                 .then(response => {
                     if (!response.ok) throw new Error('Error al cargar data.json');
                     return response.json();

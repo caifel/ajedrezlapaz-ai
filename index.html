@@ -6,8 +6,8 @@
     <title>ADALP - Asociación Departamental de Ajedrez de La Paz</title>
     
     <!-- FAVICON -->
-    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
-    <link rel="shortcut icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/favicon.ico">
     
     <style>
         :root {
@@ -283,8 +283,51 @@
 
         .highlight-box p { margin-bottom: 0; font-weight: 600; color: var(--color-text); }
 
+        /* DIRECTIVA */
+        #directiva {
+            background-color: var(--color-bg);
+            padding: 100px 20px;
+        }
+
+        .board-list {
+            max-width: 720px;
+            margin: 0 auto;
+            border-top: 1px solid var(--color-text);
+        }
+
+        .board-member {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 30px;
+            padding: 28px 0;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .board-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--color-text);
+            line-height: 1.4;
+        }
+
+        .board-role {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--color-accent);
+            text-align: right;
+            flex-shrink: 0;
+        }
+
         /* NOTICIAS */
-        #noticias { padding: 100px 20px; }
+        #noticias {
+            background-color: var(--color-white);
+            padding: 100px 20px;
+            border-top: 1px solid #eaeaea;
+        }
 
         .news-grid {
             display: grid;
@@ -293,7 +336,7 @@
         }
 
         .news-card {
-            background-color: var(--color-white);
+            background-color: var(--color-bg);
             border: 1px solid #eaeaea;
             padding: 30px;
             transition: transform 0.3s ease;
@@ -392,6 +435,8 @@
             .buttons-container { flex-direction: column; width: 100%; }
             .btn { width: 100%; }
             .hero-logo-container { width: 140px; }
+            .board-member { flex-direction: column; align-items: flex-start; gap: 6px; padding: 22px 0; }
+            .board-role { text-align: left; }
         }
     </style>
 </head>
@@ -399,7 +444,7 @@
 
     <header>
         <div class="header-logo">
-            <a href="/"><img src="./assets/logo.png" alt="ADALP Logo"></a>
+            <a href="/"><img src="assets/logo.png" alt="ADALP Logo"></a>
         </div>
         <nav class="desktop-nav">
             <ul>
@@ -422,9 +467,10 @@
         </ul>
     </div>
 
+    <!-- HERO -->
     <section id="hero">
         <div class="hero-logo-container">
-            <img src="./assets/logo.png" alt="ADALP Logo">
+            <img src="assets/logo.png" alt="ADALP Logo">
         </div>
         <h1>ADALP</h1>
         <h2>Asociación Departamental<br>de Ajedrez de La Paz</h2>
@@ -439,6 +485,7 @@
         </div>
     </section>
 
+    <!-- INSTITUCIONAL -->
     <section id="institucional">
         <div class="container">
             <h2 class="section-title">Nuestra Institución</h2>
@@ -459,6 +506,19 @@
         </div>
     </section>
 
+    <!-- DIRECTIVA -->
+    <section id="directiva">
+        <div class="container">
+            <h2 class="section-title">Directiva</h2>
+            <p class="section-subtitle">Autoridades en ejercicio</p>
+            
+            <div class="board-list" id="boardList">
+                <div style="padding: 40px 0; text-align: center; color: #888; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase;">Cargando directiva...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NOTICIAS -->
     <section id="noticias">
         <div class="container">
             <h2 class="section-title">Actualidad</h2>
@@ -487,7 +547,8 @@
         </div>
     </section>
 
-    <footer>
+    <!-- FOOTER -->
+    <footer id="footer">
         <div class="footer-grid">
             <div class="footer-col">
                 <h4>ADALP</h4>
@@ -520,6 +581,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // ===== Menú móvil =====
             const hamburgerBtn = document.getElementById('hamburgerBtn');
             const mobileNav = document.getElementById('mobileNav');
             const closeBtn = document.getElementById('closeBtn');
@@ -529,6 +591,32 @@
             mobileNav.querySelectorAll('a').forEach(link => {
                 link.addEventListener('click', () => mobileNav.classList.remove('active'));
             });
+
+            // ===== Cargar directiva =====
+            const boardList = document.getElementById('boardList');
+
+            fetch('data/directiva.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Error al cargar directiva.json');
+                    return response.json();
+                })
+                .then(members => {
+                    boardList.innerHTML = '';
+
+                    members.forEach(member => {
+                        const item = document.createElement('div');
+                        item.className = 'board-member';
+                        item.innerHTML = `
+                            <span class="board-name">${member.nombre}</span>
+                            <span class="board-role">${member.cargo}</span>
+                        `;
+                        boardList.appendChild(item);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    boardList.innerHTML = `<div style="padding: 40px 0; text-align: center; color: #888; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase;">No se pudo cargar la directiva</div>`;
+                });
         });
     </script>
 </body>

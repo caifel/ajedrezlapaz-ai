@@ -1,0 +1,9 @@
+[
+  { "nombre": "Mario Medrano", "cargo": "Presidente", "foto": null },
+  { "nombre": "Gaya Enriquez", "cargo": "Vicepresidente", "foto": null },
+  { "nombre": "Rita Maldonado", "cargo": "Tesorera", "foto": null },
+  { "nombre": "Daniel Carlo", "cargo": "Directo de Torneos", "foto": null },
+  { "nombre": "Wara Cruz", "cargo": "Directora de Escuela", "foto": null },
+  { "nombre": "Fidel Aguilar", "cargo": "Secretario de Actas", "foto": null },
+  { "nombre": "Francisco Enriquez", "cargo": "Secretario de Marketing", "foto": null }
+]
