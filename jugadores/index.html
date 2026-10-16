@@ -33,9 +33,7 @@
             min-height: 100vh;
         }
 
-        /* =========================================
-           HEADER Y NAVEGACIÓN
-           ========================================= */
+        /* HEADER */
         header {
             position: fixed;
             top: 0;
@@ -49,18 +47,9 @@
             align-items: center;
         }
 
-        .header-logo img {
-            height: 30px;
-            width: auto;
-            display: block;
-        }
+        .header-logo img { height: 30px; width: auto; display: block; }
 
-        /* Navegación Desktop */
-        .desktop-nav ul {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
+        .desktop-nav ul { display: flex; list-style: none; gap: 30px; }
 
         .desktop-nav a {
             text-decoration: none;
@@ -72,11 +61,8 @@
             transition: color 0.3s ease;
         }
 
-        .desktop-nav a:hover, .desktop-nav a.active {
-            color: var(--color-text);
-        }
+        .desktop-nav a:hover, .desktop-nav a.active { color: var(--color-text); }
 
-        /* Menú Hamburguesa (Solo visible en móvil) */
         .hamburger {
             display: none;
             background: none;
@@ -95,13 +81,10 @@
             transition: all 0.3s ease;
         }
 
-        /* Menú Móvil Desplegable */
         .mobile-nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
+            top: 0; left: 0;
+            width: 100%; height: 100vh;
             background-color: var(--color-bg);
             z-index: 2000;
             display: flex;
@@ -112,19 +95,9 @@
             transition: transform 0.4s ease;
         }
 
-        .mobile-nav.active {
-            transform: translateY(0);
-        }
-
-        .mobile-nav ul {
-            list-style: none;
-            text-align: center;
-        }
-
-        .mobile-nav li {
-            margin: 30px 0;
-        }
-
+        .mobile-nav.active { transform: translateY(0); }
+        .mobile-nav ul { list-style: none; text-align: center; }
+        .mobile-nav li { margin: 30px 0; }
         .mobile-nav a {
             text-decoration: none;
             color: var(--color-text);
@@ -132,17 +105,11 @@
             font-weight: 300;
             text-transform: uppercase;
             letter-spacing: 0.3em;
-            transition: opacity 0.3s ease;
         }
-
-        .mobile-nav a:hover, .mobile-nav a.active {
-            opacity: 0.5;
-        }
-
+        .mobile-nav a.active { opacity: 0.5; }
         .close-btn {
             position: absolute;
-            top: 25px;
-            right: 30px;
+            top: 25px; right: 30px;
             font-size: 2rem;
             font-weight: 300;
             color: var(--color-text);
@@ -150,9 +117,7 @@
             line-height: 1;
         }
 
-        /* =========================================
-           CONTENIDO PRINCIPAL
-           ========================================= */
+        /* CONTENIDO */
         main {
             flex: 1;
             padding: 160px 20px 100px;
@@ -167,6 +132,15 @@
             font-weight: 300;
             letter-spacing: 0.3em;
             text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
             margin-bottom: 60px;
         }
 
@@ -179,11 +153,7 @@
             margin-bottom: 50px;
         }
 
-        .tags-container {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+        .tags-container { display: flex; gap: 20px; flex-wrap: wrap; }
 
         .tag {
             font-size: 0.75rem;
@@ -207,10 +177,16 @@
             background-color: var(--color-text);
         }
 
-        .search-box {
-            flex-grow: 1;
-            max-width: 250px;
+        /* Tag Deshabilitado */
+        .tag.disabled {
+            color: #cccccc;
+            cursor: not-allowed;
+            text-decoration: line-through;
+            pointer-events: none;
         }
+        .tag.disabled::after { display: none; }
+
+        .search-box { flex-grow: 1; max-width: 250px; }
 
         .search-box input {
             width: 100%;
@@ -230,13 +206,10 @@
         .search-box input::placeholder { color: #cccccc; }
         .search-box input:focus { border-bottom-color: var(--color-text); }
 
+        /* TABLA */
         .table-container { width: 100%; overflow-x: auto; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 400px;
-        }
+        table { width: 100%; border-collapse: collapse; min-width: 400px; }
 
         th {
             font-size: 0.65rem;
@@ -259,9 +232,16 @@
 
         td:last-child, th:last-child { text-align: right; }
 
-        /* =========================================
-           FOOTER INSTITUCIONAL
-           ========================================= */
+        .no-results, .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--color-text-light);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        /* FOOTER */
         footer {
             background-color: var(--color-text);
             color: var(--color-bg);
@@ -307,18 +287,11 @@
             letter-spacing: 0.1em;
         }
 
-        /* =========================================
-           RESPONSIVIDAD (Aquí está la magia)
-           ========================================= */
+        /* RESPONSIVIDAD */
         @media (max-width: 768px) {
             header { padding: 15px 20px; }
-            
-            /* Ocultamos el menú de escritorio */
             .desktop-nav { display: none; }
-            
-            /* Mostramos el botón hamburguesa */
             .hamburger { display: flex; }
-            
             .controls-container { flex-direction: column; align-items: flex-start; gap: 20px; }
             .search-box { max-width: 100%; width: 100%; }
             .tags-container { width: 100%; justify-content: space-between; }
@@ -327,15 +300,11 @@
 </head>
 <body>
 
-    <!-- HEADER -->
     <header>
         <div class="header-logo">
-            <a href="index.html">
-                <img src="../assets/logo.png" alt="ADALP Logo">
-            </a>
+            <a href="index.html"><img src="../assets/logo.png" alt="ADALP Logo"></a>
         </div>
         
-        <!-- Navegación Desktop -->
         <nav class="desktop-nav">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
@@ -345,15 +314,11 @@
             </ul>
         </nav>
 
-        <!-- Botón Hamburguesa (Móvil) -->
         <button class="hamburger" id="hamburgerBtn">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
         </button>
     </header>
 
-    <!-- MENÚ MÓVIL DESPLEGABLE -->
     <div class="mobile-nav" id="mobileNav">
         <span class="close-btn" id="closeBtn">&times;</span>
         <ul>
@@ -364,21 +329,21 @@
         </ul>
     </div>
 
-    <!-- CONTENIDO -->
     <main>
         <h1 class="page-title">Jugadores</h1>
+        <p class="page-subtitle">Registro oficial de ajedrecistas</p>
 
         <div class="controls-container">
             <div class="tags-container">
                 <span class="tag active" data-filter="todos">Todos</span>
                 <span class="tag" data-filter="1ra">1ra</span>
-                <span class="tag" data-filter="2da">2da</span>
+                <span class="tag disabled" data-filter="2da">2da</span>
                 <span class="tag" data-filter="3ra">3ra</span>
                 <span class="tag" data-filter="4ta">4ta</span>
             </div>
             
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Buscar...">
+                <input type="text" id="searchInput" placeholder="Buscar por nombre...">
             </div>
         </div>
 
@@ -391,19 +356,12 @@
                     </tr>
                 </thead>
                 <tbody id="playersTable">
-                    <tr data-category="1ra"><td>Juan Pérez Mamani</td><td>1ra Categoría</td></tr>
-                    <tr data-category="2da"><td>María Gómez Quispe</td><td>2da Categoría</td></tr>
-                    <tr data-category="3ra"><td>Carlos Mamani Rojas</td><td>3ra Categoría</td></tr>
-                    <tr data-category="4ta"><td>Ana Quispe Fernández</td><td>4ta Categoría</td></tr>
-                    <tr data-category="1ra"><td>Luis Rojas Condori</td><td>1ra Categoría</td></tr>
-                    <tr data-category="2da"><td>Elena Vásquez Pinto</td><td>2da Categoría</td></tr>
-                    <tr data-category="3ra"><td>Pedro Choque Apaza</td><td>3ra Categoría</td></tr>
+                    <tr><td colspan="2" class="loading">Cargando jugadores...</td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
-    <!-- FOOTER -->
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
@@ -436,61 +394,82 @@
         </div>
     </footer>
 
-    <!-- SCRIPTS -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Lógica del Menú Móvil ---
+            // Menú móvil
             const hamburgerBtn = document.getElementById('hamburgerBtn');
             const mobileNav = document.getElementById('mobileNav');
             const closeBtn = document.getElementById('closeBtn');
 
-            hamburgerBtn.addEventListener('click', () => {
-                mobileNav.classList.add('active');
-            });
-
-            closeBtn.addEventListener('click', () => {
-                mobileNav.classList.remove('active');
-            });
-
-            // Cerrar menú al hacer clic en un enlace
+            hamburgerBtn.addEventListener('click', () => mobileNav.classList.add('active'));
+            closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
             mobileNav.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileNav.classList.remove('active');
-                });
+                link.addEventListener('click', () => mobileNav.classList.remove('active'));
             });
 
-            // --- Lógica de Filtros y Búsqueda ---
-            const tags = document.querySelectorAll('.tag');
-            const tableRows = document.querySelectorAll('#playersTable tr');
-            const searchInput = document.getElementById('searchInput');
-
+            // Variables
+            let allPlayers = [];
             let currentCategory = 'todos';
             let currentSearch = '';
 
-            function filterTable() {
-                tableRows.forEach(row => {
-                    const rowCategory = row.getAttribute('data-category');
-                    const playerName = row.querySelector('td:first-child').textContent.toLowerCase();
-                    
-                    const matchesCategory = currentCategory === 'todos' || rowCategory === currentCategory;
-                    const matchesSearch = playerName.includes(currentSearch);
+            const tableBody = document.getElementById('playersTable');
+            const tags = document.querySelectorAll('.tag:not(.disabled)');
+            const searchInput = document.getElementById('searchInput');
 
-                    row.style.display = (matchesCategory && matchesSearch) ? '' : 'none';
+            // Render
+            function renderTable() {
+                const filtered = allPlayers.filter(player => {
+                    const matchesCategory = currentCategory === 'todos' || player.categoria === currentCategory;
+                    const matchesSearch = player.nombre.toLowerCase().includes(currentSearch);
+                    return matchesCategory && matchesSearch;
+                });
+
+                tableBody.innerHTML = '';
+
+                if (filtered.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="2" class="no-results">No se encontraron jugadores</td></tr>`;
+                    return;
+                }
+
+                filtered.forEach(player => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${player.nombre}</td>
+                        <td>${player.categoria} Categoría</td>
+                    `;
+                    tableBody.appendChild(tr);
                 });
             }
 
+            // Fetch
+            fetch('data.json')
+                .then(response => {
+                    if (!response.ok) throw new Error('Error al cargar jugadores.json');
+                    return response.json();
+                })
+                .then(data => {
+                    allPlayers = data;
+                    renderTable();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    tableBody.innerHTML = `<tr><td colspan="2" class="no-results">Error al cargar la lista</td></tr>`;
+                });
+
+            // Filtros
             tags.forEach(tag => {
                 tag.addEventListener('click', () => {
                     tags.forEach(t => t.classList.remove('active'));
                     tag.classList.add('active');
                     currentCategory = tag.getAttribute('data-filter');
-                    filterTable();
+                    renderTable();
                 });
             });
 
+            // Búsqueda
             searchInput.addEventListener('input', (e) => {
-                currentSearch = e.target.value.toLowerCase();
-                filterTable();
+                currentSearch = e.target.value.toLowerCase().trim();
+                renderTable();
             });
         });
     </script>
