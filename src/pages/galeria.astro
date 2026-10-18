@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import photos from '../data/galeria.json';
 
 const albums = [...new Set(photos.map((photo) => photo.album))];
+const miniatura = (url) => url.replace('w=1200&q=80', 'w=600&h=600&fit=crop&q=70');
 ---
 
 <Layout title="Galería - ADALP">
@@ -271,7 +272,7 @@ const albums = [...new Set(photos.map((photo) => photo.album))];
         <div class="gallery-grid" id="galleryGrid">
             {photos.map((photo, index) => (
                 <div class="gallery-item" data-index={index}>
-                    <img src={photo.foto} alt={photo.descripcion || photo.album} loading="lazy">
+                    <img src={miniatura(photo.foto)} alt={photo.descripcion || photo.album} loading="lazy" decoding="async">
                     <div class="gallery-item-info">
                         <h4>{photo.album}</h4>
                         <p>{photo.fecha}</p>
@@ -289,7 +290,7 @@ const albums = [...new Set(photos.map((photo) => photo.album))];
         <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Siguiente">&rsaquo;</button>
 
         <div class="lightbox-content">
-            <img class="lightbox-image" id="lightboxImage" src="" alt="">
+            <img class="lightbox-image" id="lightboxImage" src="" alt="" decoding="async">
             <div class="lightbox-info">
                 <p class="lightbox-album" id="lightboxAlbum"></p>
                 <p class="lightbox-description" id="lightboxDescription"></p>

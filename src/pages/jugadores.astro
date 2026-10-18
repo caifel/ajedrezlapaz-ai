@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import players from '../data/jugadores.json';
 
+const verifierUrl = import.meta.env.PUBLIC_VERIFIER_URL || '';
+
 const categories = [
     { value: 'todos', label: 'Todos', active: true },
     { value: '1ra', label: '1ra' },
@@ -301,6 +303,7 @@ const categories = [
         }
 
         .cert-btn:hover { background-color: transparent; color: var(--color-text); }
+        .cert-btn:disabled { opacity: 0.6; cursor: wait; }
 
         .cert-feedback {
             margin-top: 20px;
@@ -393,7 +396,7 @@ const categories = [
         </div>
     </div>
 
-    <script define:vars={{ players }}>
+    <script define:vars={{ players, verifierUrl }}>
         document.addEventListener('DOMContentLoaded', () => {
             // ===== Variables =====
             let currentCategory = 'todos';
@@ -468,8 +471,8 @@ const categories = [
                 certFeedback.textContent = '';
                 certFeedback.className = 'cert-feedback';
 
-                // Si el jugador no tiene fecha de nacimiento registrada, deshabilitar el certificado
-                if (!player.fecha_nacimiento) {
+                // Si el jugador no tiene certificado habilitado, ocultar el formulario
+                if (!player.certificado) {
                     certHint.textContent = 'El certificado aún no está disponible para este jugador. Contacta a la asociación.';
                     certInputGroup.style.display = 'none';
                 } else {
@@ -497,10 +500,12 @@ const categories = [
             });
 
             // ===== Validar certificado =====
-            certBtn.addEventListener('click', () => {
+            certBtn.addEventListener('click', async () => {
                 if (!currentPlayer) return;
 
+                const player = currentPlayer;
                 const inputDate = certBirthdate.value;
+                const originalText = certBtn.textContent;
                 certFeedback.className = 'cert-feedback';
                 certFeedback.textContent = '';
 
@@ -510,20 +515,59 @@ const categories = [
                     return;
                 }
 
-                if (inputDate !== currentPlayer.fecha_nacimiento) {
+                if (!verifierUrl) {
                     certFeedback.classList.add('error');
-                    certFeedback.textContent = 'La fecha no coincide con nuestros registros.';
+                    certFeedback.textContent = 'El verificador no está configurado. Contacta a la asociación.';
                     return;
                 }
 
-                // Éxito
-                certFeedback.classList.add('success');
-                certFeedback.textContent = 'Verificado. Generando certificado...';
+                certBtn.disabled = true;
+                certBtn.textContent = 'Verificando...';
 
-                setTimeout(() => {
-                    generarCertificado(currentPlayer);
-                    certFeedback.textContent = 'Certificado generado en una nueva pestaña.';
-                }, 400);
+                try {
+                    const response = await fetch(verifierUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: player.id, fecha: inputDate }),
+                    });
+
+                    let result = {};
+                    try {
+                        result = await response.json();
+                    } catch {
+                        // Respuesta no JSON: se trata como error.
+                    }
+
+                    if (currentPlayer !== player) return;
+
+                    if (!response.ok) {
+                        certFeedback.classList.add('error');
+                        certFeedback.textContent = 'El verificador no está disponible. Intenta nuevamente.';
+                        return;
+                    }
+
+                    if (!result.ok) {
+                        certFeedback.classList.add('error');
+                        certFeedback.textContent = 'La fecha no coincide con nuestros registros.';
+                        return;
+                    }
+
+                    certFeedback.classList.add('success');
+                    certFeedback.textContent = 'Verificado. Generando certificado...';
+
+                    setTimeout(() => {
+                        generarCertificado(player);
+                        certFeedback.textContent = 'Certificado generado en una nueva pestaña.';
+                    }, 400);
+                } catch {
+                    if (currentPlayer === player) {
+                        certFeedback.classList.add('error');
+                        certFeedback.textContent = 'No se pudo conectar con el verificador. Intenta nuevamente.';
+                    }
+                } finally {
+                    certBtn.disabled = false;
+                    certBtn.textContent = originalText;
+                }
             });
 
             // ===== Generar certificado (HTML imprimible) =====
