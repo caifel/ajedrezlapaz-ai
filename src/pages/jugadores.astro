@@ -1,124 +1,23 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jugadores - ADALP</title>
-    
-    <!-- FAVICON -->
-    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
-    <link rel="shortcut icon" type="image/x-icon" href="../assets/favicon.ico">
-    
-    <style>
-        :root {
+---
+import Layout from '../layouts/Layout.astro';
+import players from '../data/jugadores.json';
+
+const categories = [
+    { value: 'todos', label: 'Todos', active: true },
+    { value: '1ra', label: '1ra' },
+    { value: '2da', label: '2da', disabled: true },
+    { value: '3ra', label: '3ra' },
+    { value: '4ta', label: '4ta' },
+];
+---
+
+<Layout title="Jugadores - ADALP">
+    <style is:global>
+        body {
             --color-bg: #ffffff;
             --color-text: #000000;
             --color-text-light: #888888;
             --color-border: #eeeeee;
-            --color-accent: #c4a77d;
-            --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            border-radius: 0 !important;
-        }
-
-        body {
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            font-family: var(--font-main);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* HEADER */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.98);
-            border-bottom: 1px solid var(--color-border);
-            z-index: 1000;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-logo img { height: 30px; width: auto; display: block; }
-
-        .desktop-nav ul { display: flex; list-style: none; gap: 30px; }
-
-        .desktop-nav a {
-            text-decoration: none;
-            color: var(--color-text-light);
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            transition: color 0.3s ease;
-        }
-
-        .desktop-nav a:hover, .desktop-nav a.active { color: var(--color-text); }
-
-        .hamburger {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 5px;
-            padding: 5px;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 25px;
-            height: 2px;
-            background-color: var(--color-text);
-            transition: all 0.3s ease;
-        }
-
-        .mobile-nav {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100vh;
-            background-color: var(--color-bg);
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transform: translateY(-100%);
-            transition: transform 0.4s ease;
-        }
-
-        .mobile-nav.active { transform: translateY(0); }
-        .mobile-nav ul { list-style: none; text-align: center; }
-        .mobile-nav li { margin: 30px 0; }
-        .mobile-nav a {
-            text-decoration: none;
-            color: var(--color-text);
-            font-size: 1.2rem;
-            font-weight: 300;
-            text-transform: uppercase;
-            letter-spacing: 0.3em;
-        }
-        .mobile-nav a.active { opacity: 0.5; }
-        .close-btn {
-            position: absolute;
-            top: 25px; right: 30px;
-            font-size: 2rem;
-            font-weight: 300;
-            color: var(--color-text);
-            cursor: pointer;
-            line-height: 1;
         }
 
         /* CONTENIDO */
@@ -414,57 +313,8 @@
         .cert-feedback.success { color: #2d7a2d; font-weight: 600; }
         .cert-feedback.info { color: var(--color-text-light); }
 
-        /* FOOTER */
-        footer {
-            background-color: var(--color-text);
-            color: var(--color-bg);
-            padding: 80px 20px 30px;
-            margin-top: auto;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto 60px;
-        }
-
-        .footer-col h4 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin-bottom: 25px;
-            color: var(--color-accent);
-            font-weight: 600;
-        }
-
-        .footer-col p, .footer-col a {
-            font-size: 0.8rem;
-            color: #cccccc;
-            text-decoration: none;
-            line-height: 2.2;
-            display: block;
-            transition: color 0.3s ease;
-        }
-
-        .footer-col a:hover { color: var(--color-bg); }
-
-        .footer-bottom {
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 30px;
-            font-size: 0.65rem;
-            color: #888888;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
         /* RESPONSIVIDAD */
         @media (max-width: 768px) {
-            header { padding: 15px 20px; }
-            .desktop-nav { display: none; }
-            .hamburger { display: flex; }
             .controls-container { flex-direction: column; align-items: flex-start; gap: 20px; }
             .search-box { max-width: 100%; width: 100%; }
             .tags-container { width: 100%; justify-content: space-between; }
@@ -476,33 +326,6 @@
             .cert-btn { width: 100%; }
         }
     </style>
-</head>
-<body>
-
-    <header>
-        <div class="header-logo">
-            <a href="/"><img src="../assets/logo.png" alt="ADALP Logo"></a>
-        </div>
-        <nav class="desktop-nav">
-            <ul>
-                <li><a href="/">Inicio</a></li>
-                <li><a href="/jugadores" class="active">Jugadores</a></li>
-                <li><a href="/galeria">Galería</a></li>
-            </ul>
-        </nav>
-        <button class="hamburger" id="hamburgerBtn">
-            <span></span><span></span><span></span>
-        </button>
-    </header>
-
-    <div class="mobile-nav" id="mobileNav">
-        <span class="close-btn" id="closeBtn">&times;</span>
-        <ul>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/jugadores" class="active">Jugadores</a></li>
-            <li><a href="/galeria">Galería</a></li>
-        </ul>
-    </div>
 
     <main>
         <h1 class="page-title">Jugadores</h1>
@@ -510,13 +333,14 @@
 
         <div class="controls-container">
             <div class="tags-container">
-                <span class="tag active" data-filter="todos">Todos</span>
-                <span class="tag" data-filter="1ra">1ra</span>
-                <span class="tag disabled" data-filter="2da">2da</span>
-                <span class="tag" data-filter="3ra">3ra</span>
-                <span class="tag" data-filter="4ta">4ta</span>
+                {categories.map((category) => (
+                    <span
+                        class={`tag${category.active ? ' active' : ''}${category.disabled ? ' disabled' : ''}`}
+                        data-filter={category.value}
+                    >{category.label}</span>
+                ))}
             </div>
-            
+
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Buscar por nombre...">
             </div>
@@ -531,7 +355,15 @@
                     </tr>
                 </thead>
                 <tbody id="playersTable">
-                    <tr><td colspan="2" class="loading">Cargando jugadores...</td></tr>
+                    {players.map((player, index) => (
+                        <tr data-index={index}>
+                            <td>{player.nombre}</td>
+                            <td>{player.categoria} Categoría</td>
+                        </tr>
+                    ))}
+                    <tr id="noResultsRow" hidden>
+                        <td colspan="2" class="no-results">No se encontraron jugadores</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -545,13 +377,13 @@
             <h2 class="modal-name" id="modalName"></h2>
             <p class="modal-category" id="modalCategory"></p>
             <p class="modal-description" id="modalDescription" style="display:none;"></p>
-            
+
             <div class="modal-divider"></div>
 
             <div class="certificate-section">
                 <h3 class="certificate-title">Certificado de Categoría</h3>
                 <p class="certificate-hint" id="certHint">Ingresa tu fecha de nacimiento para generar tu certificado.</p>
-                
+
                 <div class="cert-input-group" id="certInputGroup">
                     <input type="date" class="cert-input" id="certBirthdate">
                     <button class="cert-btn" id="certBtn">Generar certificado</button>
@@ -561,57 +393,16 @@
         </div>
     </div>
 
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>ADALP</h4>
-                <p>Asociación Departamental de Ajedrez de La Paz.</p>
-                <p>Fundada el 7 de diciembre de 1929.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Contacto</h4>
-                <p>Dirección: Estadio Hernando Siles, 5to piso, puerta #1</p>
-                <p>Email: adalp2025@gmail.com</p>
-                <p>Teléfono: +591 73505230</p>
-            </div>
-            <div class="footer-col">
-                <h4>Enlaces Rápidos</h4>
-                <a href="/">Inicio</a>
-                <a href="/jugadores">Jugadores</a>
-                <a href="/galeria">Galería</a>
-            </div>
-            <div class="footer-col">
-                <h4>Redes Sociales</h4>
-                <a href="#">Facebook</a>
-                <a href="#">Instagram</a>
-                <a href="#">YouTube</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 ADALP - Asociación Departamental de Ajedrez de La Paz. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <script>
+    <script define:vars={{ players }}>
         document.addEventListener('DOMContentLoaded', () => {
-            // ===== Menú móvil =====
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const mobileNav = document.getElementById('mobileNav');
-            const closeBtn = document.getElementById('closeBtn');
-
-            hamburgerBtn.addEventListener('click', () => mobileNav.classList.add('active'));
-            closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
-            mobileNav.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => mobileNav.classList.remove('active'));
-            });
-
             // ===== Variables =====
-            let allPlayers = [];
             let currentCategory = 'todos';
             let currentSearch = '';
             let currentPlayer = null;
 
             const tableBody = document.getElementById('playersTable');
+            const rows = Array.from(tableBody.querySelectorAll('tr[data-index]'));
+            const noResultsRow = document.getElementById('noResultsRow');
             const tags = document.querySelectorAll('.tag:not(.disabled)');
             const searchInput = document.getElementById('searchInput');
 
@@ -628,30 +419,21 @@
             const certBtn = document.getElementById('certBtn');
             const certFeedback = document.getElementById('certFeedback');
 
-            // ===== Render tabla =====
+            // ===== Filtrar tabla =====
             function renderTable() {
-                const filtered = allPlayers.filter(player => {
+                let visibleCount = 0;
+
+                rows.forEach(row => {
+                    const player = players[Number(row.dataset.index)];
                     const matchesCategory = currentCategory === 'todos' || player.categoria === currentCategory;
                     const matchesSearch = player.nombre.toLowerCase().includes(currentSearch);
-                    return matchesCategory && matchesSearch;
+                    const visible = matchesCategory && matchesSearch;
+
+                    row.hidden = !visible;
+                    if (visible) visibleCount++;
                 });
 
-                tableBody.innerHTML = '';
-
-                if (filtered.length === 0) {
-                    tableBody.innerHTML = `<tr><td colspan="2" class="no-results">No se encontraron jugadores</td></tr>`;
-                    return;
-                }
-
-                filtered.forEach(player => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${player.nombre}</td>
-                        <td>${player.categoria} Categoría</td>
-                    `;
-                    tr.addEventListener('click', () => openModal(player));
-                    tableBody.appendChild(tr);
-                });
+                noResultsRow.hidden = visibleCount > 0;
             }
 
             // ===== Abrir modal =====
@@ -794,17 +576,17 @@
     <div class="cert">
         <div class="cert-logo">ADALP</div>
         <div class="cert-sub">Asociación Departamental de Ajedrez de La Paz</div>
-        
+
         <div class="cert-title">Certificado de Categoría</div>
-        
+
         <p class="cert-text">Se certifica que el/la ajedrecista</p>
         <div class="cert-name">${player.nombre}</div>
         <p class="cert-text">pertenece oficialmente a la</p>
         <div class="cert-cat"><strong>${player.categoria.toUpperCase()} CATEGORÍA</strong></div>
-        
+
         <div class="cert-id">ID: ${player.id}</div>
         <div class="cert-date">La Paz, ${fecha}</div>
-        
+
         <div class="cert-sign">Firma y Sello Autorizado</div>
     </div>
     <script>window.onload = () => setTimeout(() => window.print(), 400);<\/script>
@@ -816,20 +598,12 @@
                 win.document.close();
             }
 
-            // ===== Fetch =====
-            fetch('../data/jugadores.json')
-                .then(response => {
-                    if (!response.ok) throw new Error('Error al cargar data.json');
-                    return response.json();
-                })
-                .then(data => {
-                    allPlayers = data;
-                    renderTable();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    tableBody.innerHTML = `<tr><td colspan="2" class="no-results">Error al cargar la lista</td></tr>`;
+            // ===== Eventos de fila =====
+            rows.forEach(row => {
+                row.addEventListener('click', () => {
+                    openModal(players[Number(row.dataset.index)]);
                 });
+            });
 
             // ===== Filtros =====
             tags.forEach(tag => {
@@ -848,5 +622,4 @@
             });
         });
     </script>
-</body>
-</html>
+</Layout>

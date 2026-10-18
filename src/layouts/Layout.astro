@@ -1,0 +1,43 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+</head>
+<body>
+
+    <Header />
+
+    <slot />
+
+    <Footer />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ===== Menú móvil =====
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            const closeBtn = document.getElementById('closeBtn');
+
+            hamburgerBtn.addEventListener('click', () => mobileNav.classList.add('active'));
+            closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => mobileNav.classList.remove('active'));
+            });
+        });
+    </script>
+</body>
+</html>

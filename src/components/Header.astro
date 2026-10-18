@@ -1,0 +1,29 @@
+---
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header>
+    <div class="header-logo">
+        <a href="/"><img src="/assets/logo.png" alt="ADALP Logo"></a>
+    </div>
+    <nav class="desktop-nav">
+        <ul>
+            <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
+            <li><a href="/jugadores" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
+            <li><a href="/galeria" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
+        </ul>
+    </nav>
+    <button class="hamburger" id="hamburgerBtn">
+        <span></span><span></span><span></span>
+    </button>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+    <span class="close-btn" id="closeBtn">&times;</span>
+    <ul>
+        <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
+        <li><a href="/jugadores" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
+        <li><a href="/galeria" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
+    </ul>
+</div>
