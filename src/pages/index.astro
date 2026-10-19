@@ -3,7 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import directiva from '../data/directiva.json';
 ---
 
-<Layout title="ADALP - Asociación Departamental de Ajedrez de La Paz">
+<Layout
+    title="ADALP | Asociación Departamental de Ajedrez de La Paz"
+    description="Sitio oficial de la Asociación Departamental de Ajedrez de La Paz (ADALP). Jugadores, categorías, certificados, torneos y galería desde 1929."
+>
     <style is:global>
         header .header-logo img { height: 35px; }
 
@@ -289,8 +292,8 @@ import directiva from '../data/directiva.json';
             Únicos representantes oficiales avalados por la Federación Boliviana de Ajedrez (FBA), con jurisdicción exclusiva en todo el Departamento de La Paz.
         </p>
         <div class="buttons-container">
-            <a href="/jugadores" class="btn btn-primary">Lista de Jugadores <span class="arrow">&rarr;</span></a>
-            <a href="/galeria" class="btn btn-secondary">Galería de Fotos <span class="arrow">&rarr;</span></a>
+            <a href="/jugadores/" class="btn btn-primary">Lista de Jugadores <span class="arrow">&rarr;</span></a>
+            <a href="/galeria/" class="btn btn-secondary">Galería de Fotos <span class="arrow">&rarr;</span></a>
         </div>
     </section>
 

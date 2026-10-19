@@ -11,9 +11,32 @@ const categories = [
     { value: '3ra', label: '3ra' },
     { value: '4ta', label: '4ta' },
 ];
+
+const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
+const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
+const pageDescription = 'Registro oficial de jugadores de la Asociación Departamental de Ajedrez de La Paz (ADALP). Consulta nombres, categorías y certificados.';
+
+const pageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Jugadores y Categorías | ADALP',
+    description: pageDescription,
+    url: pageUrl,
+    inLanguage: 'es-BO',
+    isPartOf: { '@id': new URL('/#website', siteUrl).href },
+    about: { '@id': new URL('/#organization', siteUrl).href },
+};
 ---
 
-<Layout title="Jugadores - ADALP">
+<Layout
+    title="Jugadores y Categorías | ADALP La Paz"
+    description={pageDescription}
+    breadcrumbs={[
+        { name: 'Inicio', path: '/' },
+        { name: 'Jugadores', path: '/jugadores/' },
+    ]}
+    schema={[pageSchema]}
+>
     <style is:global>
         body {
             --color-bg: #ffffff;

@@ -4,9 +4,32 @@ import photos from '../data/galeria.json';
 
 const albums = [...new Set(photos.map((photo) => photo.album))];
 const miniatura = (url) => url.replace('w=1200&q=80', 'w=600&h=600&fit=crop&q=70');
+
+const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
+const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
+const pageDescription = 'Galería de fotos de torneos, campeonatos y actividades de la Asociación Departamental de Ajedrez de La Paz (ADALP).';
+
+const pageSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ImageGallery',
+    name: 'Galería de Fotos | ADALP',
+    description: pageDescription,
+    url: pageUrl,
+    inLanguage: 'es-BO',
+    isPartOf: { '@id': new URL('/#website', siteUrl).href },
+    about: { '@id': new URL('/#organization', siteUrl).href },
+};
 ---
 
-<Layout title="Galería - ADALP">
+<Layout
+    title="Galería de Fotos | ADALP La Paz"
+    description={pageDescription}
+    breadcrumbs={[
+        { name: 'Inicio', path: '/' },
+        { name: 'Galería', path: '/galeria/' },
+    ]}
+    schema={[pageSchema]}
+>
     <style is:global>
         body {
             --color-bg: #ffffff;

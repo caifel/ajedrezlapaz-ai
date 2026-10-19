@@ -10,8 +10,8 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <nav class="desktop-nav">
         <ul>
             <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
-            <li><a href="/jugadores" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
-            <li><a href="/galeria" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
+            <li><a href="/jugadores/" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
+            <li><a href="/galeria/" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
         </ul>
     </nav>
     <button class="hamburger" id="hamburgerBtn">
@@ -23,7 +23,7 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <span class="close-btn" id="closeBtn">&times;</span>
     <ul>
         <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
-        <li><a href="/jugadores" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
-        <li><a href="/galeria" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
+        <li><a href="/jugadores/" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
+        <li><a href="/galeria/" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
     </ul>
 </div>
