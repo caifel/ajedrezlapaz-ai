@@ -1,0 +1,21 @@
+{
+  "name": "ADALP - Asociación Departamental de Ajedrez de La Paz",
+  "short_name": "ADALP",
+  "description": "Sitio oficial de la Asociación Departamental de Ajedrez de La Paz.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#fafafa",
+  "theme_color": "#fafafa",
+  "icons": [
+    {
+      "src": "/assets/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
