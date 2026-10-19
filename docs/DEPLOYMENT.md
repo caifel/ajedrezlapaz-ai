@@ -198,7 +198,7 @@ Respuesta esperada:
 - `404`: la ruta debe ser `/verify`.
 - `405`: debe ser `POST`.
 - Sin `access-control-allow-origin`: el origen no está en `ALLOWED_ORIGINS`.
-- El sitio muestra "El verificador no está configurado": `PUBLIC_VERIFIER_URL` no llegó al build. Debe estar en Variables del repositorio.
+- El sitio muestra "El verificador no está configurado": `PUBLIC_VERIFIER_URL` no llegó al build. Debe estar en Variables del repositorio, no solo en el environment `github-pages`.
 - El workflow del Worker falla con "not authenticated": los secrets del environment no están disponibles. Revisar `environment: github-pages` y los nombres de los secrets.
 - El workflow del Worker falla con "You are not authenticated" pero el secreto existe: confirmar que el job declara `environment: github-pages`.
 
