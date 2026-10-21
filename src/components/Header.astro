@@ -14,16 +14,23 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
             <li><a href="/galeria/" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
         </ul>
     </nav>
-    <button class="hamburger" id="hamburgerBtn">
-        <span></span><span></span><span></span>
+    <button
+        class="hamburger"
+        id="hamburgerBtn"
+        type="button"
+        aria-label="Abrir menú de navegación"
+        aria-expanded="false"
+        aria-controls="mobileNav"
+    >
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
     </button>
 </header>
 
-<div class="mobile-nav" id="mobileNav">
-    <span class="close-btn" id="closeBtn">&times;</span>
+<nav class="mobile-nav" id="mobileNav" aria-label="Navegación móvil" aria-hidden="true" inert>
+    <button class="close-btn" id="closeBtn" type="button" aria-label="Cerrar menú">&times;</button>
     <ul>
         <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
         <li><a href="/jugadores/" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
         <li><a href="/galeria/" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
     </ul>
-</div>
+</nav>

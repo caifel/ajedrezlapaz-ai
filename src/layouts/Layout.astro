@@ -157,10 +157,31 @@ const schemas = [organizationSchema, websiteSchema, breadcrumbSchema, ...schema]
             const mobileNav = document.getElementById('mobileNav');
             const closeBtn = document.getElementById('closeBtn');
 
-            hamburgerBtn.addEventListener('click', () => mobileNav.classList.add('active'));
-            closeBtn.addEventListener('click', () => mobileNav.classList.remove('active'));
+            function openMenu() {
+                mobileNav.inert = false;
+                mobileNav.classList.add('active');
+                mobileNav.setAttribute('aria-hidden', 'false');
+                hamburgerBtn.setAttribute('aria-expanded', 'true');
+                closeBtn.focus();
+            }
+
+            function closeMenu() {
+                mobileNav.classList.remove('active');
+                mobileNav.setAttribute('aria-hidden', 'true');
+                mobileNav.inert = true;
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
+            }
+
+            hamburgerBtn.addEventListener('click', openMenu);
+            closeBtn.addEventListener('click', closeMenu);
             mobileNav.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => mobileNav.classList.remove('active'));
+                link.addEventListener('click', closeMenu);
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && mobileNav.classList.contains('active')) {
+                    closeMenu();
+                    hamburgerBtn.focus();
+                }
             });
         });
     </script>

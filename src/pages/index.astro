@@ -119,7 +119,7 @@ import directiva from '../data/directiva.json';
         .section-subtitle {
             text-align: center;
             font-size: 0.85rem;
-            color: var(--color-accent);
+            color: var(--color-accent-text);
             text-transform: uppercase;
             letter-spacing: 0.2em;
             margin-bottom: 60px;
@@ -207,7 +207,7 @@ import directiva from '../data/directiva.json';
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.2em;
-            color: var(--color-accent);
+            color: var(--color-accent-text);
             text-align: right;
             flex-shrink: 0;
         }
@@ -236,7 +236,7 @@ import directiva from '../data/directiva.json';
 
         .news-date {
             font-size: 0.75rem;
-            color: var(--color-accent);
+            color: var(--color-accent-text);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -244,7 +244,7 @@ import directiva from '../data/directiva.json';
             display: block;
         }
 
-        .news-card h4 { font-size: 1.1rem; margin-bottom: 15px; line-height: 1.4; }
+        .news-card h3 { font-size: 1.1rem; margin-bottom: 15px; line-height: 1.4; }
         .news-card p { font-size: 0.85rem; color: var(--color-text-light); margin-bottom: 20px; }
 
         .read-more {
@@ -259,7 +259,7 @@ import directiva from '../data/directiva.json';
             gap: 5px;
         }
 
-        .read-more:hover { color: var(--color-accent); }
+        .read-more:hover { color: var(--color-accent-text); }
 
         /* RESPONSIVIDAD */
         @media (max-width: 900px) {
@@ -279,6 +279,7 @@ import directiva from '../data/directiva.json';
         }
     </style>
 
+    <main>
     <!-- HERO -->
     <section id="hero">
         <div class="hero-logo-container">
@@ -344,23 +345,24 @@ import directiva from '../data/directiva.json';
             <div class="news-grid">
                 <article class="news-card">
                     <span class="news-date">15 de Octubre, 2026</span>
-                    <h4>Torneo Departamental de Ajedrez Clásico</h4>
+                    <h3>Torneo Departamental de Ajedrez Clásico</h3>
                     <p>Inscripciones abiertas para el torneo oficial válido por el ranking departamental. ¡Cupos limitados!</p>
                     <a href="#" class="read-more">Leer más &rarr;</a>
                 </article>
                 <article class="news-card">
                     <span class="news-date">02 de Octubre, 2026</span>
-                    <h4>Clínicas de Ajedrez para Jóvenes Promesas</h4>
+                    <h3>Clínicas de Ajedrez para Jóvenes Promesas</h3>
                     <p>La ADALP invita a todos los menores de 18 años a participar de las clases magistrales gratuitas en nuestra sede.</p>
                     <a href="#" class="read-more">Leer más &rarr;</a>
                 </article>
                 <article class="news-card">
                     <span class="news-date">20 de Septiembre, 2026</span>
-                    <h4>Resultados del Campeonato Nacional</h4>
+                    <h3>Resultados del Campeonato Nacional</h3>
                     <p>Nuestros representantes paceños tuvieron una destacada participación en el último certamen nacional.</p>
                     <a href="#" class="read-more">Leer más &rarr;</a>
                 </article>
             </div>
         </div>
     </section>
+    </main>
 </Layout>

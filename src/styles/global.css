@@ -5,6 +5,7 @@
     --color-text-light: #555555;
     --color-border: #eaeaea;
     --color-accent: #c4a77d;
+    --color-accent-text: #8a6a3d;
     --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
@@ -110,6 +111,9 @@ header {
     color: var(--color-text);
     cursor: pointer;
     line-height: 1;
+    background: none;
+    border: none;
+    font-family: inherit;
 }
 
 /* FOOTER */
@@ -128,7 +132,7 @@ footer {
     margin: 0 auto 60px;
 }
 
-.footer-col h4 {
+.footer-col h2 {
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;

@@ -34,7 +34,7 @@ const pageSchema = {
         body {
             --color-bg: #ffffff;
             --color-text: #000000;
-            --color-text-light: #888888;
+            --color-text-light: #666666;
             --color-border: #eeeeee;
         }
 
@@ -140,7 +140,7 @@ const pageSchema = {
 
         .gallery-item:hover .gallery-item-info { opacity: 1; }
 
-        .gallery-item-info h4 {
+        .gallery-item-info h2 {
             font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
@@ -297,7 +297,7 @@ const pageSchema = {
                 <div class="gallery-item" data-index={index}>
                     <img src={miniatura(photo.foto)} alt={photo.descripcion || photo.album} loading="lazy" decoding="async">
                     <div class="gallery-item-info">
-                        <h4>{photo.album}</h4>
+                        <h2>{photo.album}</h2>
                         <p>{photo.fecha}</p>
                     </div>
                 </div>
