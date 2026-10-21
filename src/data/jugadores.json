@@ -3,7 +3,7 @@
   { "id": "ADALP-0002", "nombre": "Saavedra, Carlos", "categoria": "1ra" },
   { "id": "ADALP-0003", "nombre": "Sustach, Marco", "categoria": "1ra" },
   { "id": "ADALP-0004", "nombre": "Vila, Johnny", "categoria": "1ra" },
-  { "id": "ADALP-0005", "nombre": "Parraga, Alejandro", "categoria": "1ra" },
+  { "id": "ADALP-0005", "nombre": "Parraga, Alejandro", "categoria": "1ra", "certificado": true },
   { "id": "ADALP-0006", "nombre": "Aramayo, Gabriel", "categoria": "1ra", "certificado": true },
   { "id": "ADALP-0007", "nombre": "Delgadillo, Adonay", "categoria": "1ra" },
   { "id": "ADALP-0008", "nombre": "Medrano, Mario", "categoria": "1ra", "certificado": true },

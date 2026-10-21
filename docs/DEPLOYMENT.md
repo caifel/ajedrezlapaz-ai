@@ -6,9 +6,10 @@ Este documento explica qué se despliega automáticamente y qué requiere una ac
 
 - Repositorio: `caifel/ajedrezlapaz-ai`
 - Sitio: `https://ajedrezlapaz.com`
-- Worker: `https://adalp-verifier.mariomedranomaldonado.workers.dev`
-- Endpoint de verificación: `https://adalp-verifier.mariomedranomaldonado.workers.dev/verify`
-- Endpoint de descarga: `https://adalp-verifier.mariomedranomaldonado.workers.dev/certificado`
+- Worker: `https://verifier.ajedrezlapaz.com`
+- Endpoint de verificación: `https://verifier.ajedrezlapaz.com/verify`
+- Endpoint de descarga: `https://verifier.ajedrezlapaz.com/certificado`
+- URL alterna: `https://adalp-verifier.mariomedranomaldonado.workers.dev`
 
 ## Arquitectura
 
@@ -66,7 +67,7 @@ Debe estar en:
 **Settings > Secrets and variables > Actions > Variables** (nivel repositorio)
 
 ```text
-PUBLIC_VERIFIER_URL = https://adalp-verifier.mariomedranomaldonado.workers.dev/verify
+PUBLIC_VERIFIER_URL = https://verifier.ajedrezlapaz.com/verify
 ```
 
 El frontend usa esta URL para `/verify` y deriva `/certificado` cambiando solo la ruta.
@@ -163,13 +164,41 @@ npx wrangler r2 object put "adalp/cc-2026/ADALP-0001-CC-2026.png" \
   --content-type "image/png"
 ```
 
-Para comprobar las claves existentes:
+Para comprobar una clave concreta:
 
 ```bash
-npx wrangler r2 object list adalp --prefix "cc-2026/"
+npx wrangler r2 object get "adalp/cc-2026/ADALP-0001-CC-2026.png" \
+  --file "/tmp/certificado.png"
 ```
 
+Wrangler no tiene un comando `r2 object list`. Para ver todas las claves, usa el dashboard de Cloudflare:
+
+**R2 > adalp > Objects > prefijo `cc-2026/`**
+
+También se puede listar con la API S3 de R2 usando `aws s3 ls` y credenciales S3, pero no es necesario para operar el sitio.
+
 El bucket no debe tener acceso público. La única forma de descargar un certificado es pasar por el Worker, que valida `id` + `fecha` antes de leer el objeto.
+
+### Rate limiting
+
+Configurar en el dashboard de Cloudflare, seleccionando la zona `ajedrezlapaz.com`:
+
+**Security > WAF > Rate limiting rules > Create rule**
+
+Regla sugerida:
+
+- Nombre: `ADALP certificados`
+- Expresión:
+
+  ```txt
+  (http.request.uri.path eq "/certificado") or (http.request.uri.path eq "/verify")
+  ```
+
+- Límite: `10` solicitudes por `1 minuto`
+- Contador: por IP
+- Acción: `Block` durante `10 minutos` o `Managed Challenge`
+
+El rate limiting solo aplica si `verifier.ajedrezlapaz.com` está proxied por Cloudflare; los dominios `workers.dev` no pasan por las reglas WAF de la zona.
 
 ## Checklist: agregar o actualizar un jugador con certificado
 
@@ -219,7 +248,7 @@ npx wrangler tail adalp-verifier
 Prueba del endpoint:
 
 ```bash
-curl -i -X POST "https://adalp-verifier.mariomedranomaldonado.workers.dev/verify" \
+curl -i -X POST "https://verifier.ajedrezlapaz.com/verify" \
   -H "Content-Type: application/json" \
   -H "Origin: https://ajedrezlapaz.com" \
   -d '{"id":"ADALP-0001","fecha":"1946-01-01"}'
@@ -234,7 +263,7 @@ Respuesta esperada:
 Descarga del certificado:
 
 ```bash
-curl -X POST "https://adalp-verifier.mariomedranomaldonado.workers.dev/certificado" \
+curl -X POST "https://verifier.ajedrezlapaz.com/certificado" \
   -H "Content-Type: application/json" \
   -H "Origin: https://ajedrezlapaz.com" \
   -d '{"id":"ADALP-0001","fecha":"1946-01-01"}' \
@@ -258,6 +287,49 @@ El archivo debe ser `PNG image data`.
 - El sitio muestra "El servicio de certificados no está configurado": `PUBLIC_VERIFIER_URL` no llegó al build o no es una URL absoluta.
 - El workflow del Worker falla con "not authenticated": los secrets del environment no están disponibles. Revisar `environment: github-pages` y los nombres de los secrets.
 - El workflow del Worker falla con "You are not authenticated" pero el secreto existe: confirmar que el job declara `environment: github-pages`.
+
+### Error 1006: Could not resolve the host name
+
+El error 1006 es de DNS, no del código del Worker. Suele ocurrir cuando se abre una URL de `workers.dev` que no existe o que la red no puede resolver.
+
+Revisar en este orden:
+
+1. Confirmar que el Worker está desplegado:
+
+   ```bash
+   npx wrangler deployments list
+   ```
+
+2. Confirmar el nombre real del Worker y el subdominio de la cuenta. La URL debe tener el formato:
+
+   ```text
+   https://<nombre-del-worker>.<subdominio-de-la-cuenta>.workers.dev
+   ```
+
+3. En el dashboard de Cloudflare, revisar **Workers & Pages > adalp-verifier > Settings > Domains & Routes**. El subdominio `workers.dev` debe estar habilitado.
+
+4. Probar el DNS desde otra red o con datos móviles:
+
+   ```bash
+   nslookup adalp-verifier.mariomedranomaldonado.workers.dev
+   curl -i https://adalp-verifier.mariomedranomaldonado.workers.dev/verify
+   ```
+
+   Un `GET` al endpoint debe responder `405`, no un error de DNS.
+
+5. Si `workers.dev` está bloqueado por la red o el ISP, usar un dominio propio para el Worker. Por ejemplo:
+
+   ```text
+   verifier.ajedrezlapaz.com
+   ```
+
+   Se configura en **Workers & Pages > adalp-verifier > Settings > Domains & Routes > Add custom domain**. Luego se actualiza `PUBLIC_VERIFIER_URL` a:
+
+   ```text
+   https://verifier.ajedrezlapaz.com/verify
+   ```
+
+   y se vuelve a ejecutar el deploy de GitHub Pages.
 
 ## Seguridad
 
