@@ -4,6 +4,13 @@ import players from '../data/jugadores.json';
 
 const verifierUrl = import.meta.env.PUBLIC_VERIFIER_URL || '';
 
+let certificateUrl = '';
+try {
+    certificateUrl = verifierUrl ? new URL('/certificado', verifierUrl).href : '';
+} catch {
+    certificateUrl = '';
+}
+
 const categories = [
     { value: 'todos', label: 'Todos', active: true },
     { value: '1ra', label: '1ra' },
@@ -415,18 +422,18 @@ const pageSchema = {
 
             <div class="certificate-section">
                 <h3 class="certificate-title">Certificado de Categoría</h3>
-                <p class="certificate-hint" id="certHint">Ingresa tu fecha de nacimiento para generar tu certificado.</p>
+                <p class="certificate-hint" id="certHint">Ingresa tu fecha de nacimiento para descargar tu certificado.</p>
 
                 <div class="cert-input-group" id="certInputGroup">
                     <input type="date" class="cert-input" id="certBirthdate">
-                    <button class="cert-btn" id="certBtn">Generar certificado</button>
+                    <button class="cert-btn" id="certBtn">Descargar certificado</button>
                 </div>
                 <p class="cert-feedback" id="certFeedback"></p>
             </div>
         </div>
     </div>
 
-    <script define:vars={{ players, verifierUrl }}>
+    <script define:vars={{ players, certificateUrl }}>
         document.addEventListener('DOMContentLoaded', () => {
             // ===== Variables =====
             let currentCategory = 'todos';
@@ -506,7 +513,7 @@ const pageSchema = {
                     certHint.textContent = 'El certificado aún no está disponible para este jugador. Contacta a la asociación.';
                     certInputGroup.style.display = 'none';
                 } else {
-                    certHint.textContent = 'Ingresa tu fecha de nacimiento para generar tu certificado.';
+                    certHint.textContent = 'Ingresa tu fecha de nacimiento para descargar tu certificado.';
                     certInputGroup.style.display = 'flex';
                 }
 
@@ -529,7 +536,7 @@ const pageSchema = {
                 if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
             });
 
-            // ===== Validar certificado =====
+            // ===== Verificar y descargar certificado =====
             certBtn.addEventListener('click', async () => {
                 if (!currentPlayer) return;
 
@@ -545,9 +552,9 @@ const pageSchema = {
                     return;
                 }
 
-                if (!verifierUrl) {
+                if (!certificateUrl) {
                     certFeedback.classList.add('error');
-                    certFeedback.textContent = 'El verificador no está configurado. Contacta a la asociación.';
+                    certFeedback.textContent = 'El servicio de certificados no está configurado. Contacta a la asociación.';
                     return;
                 }
 
@@ -555,122 +562,54 @@ const pageSchema = {
                 certBtn.textContent = 'Verificando...';
 
                 try {
-                    const response = await fetch(verifierUrl, {
+                    const response = await fetch(certificateUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id: player.id, fecha: inputDate }),
                     });
 
-                    let result = {};
-                    try {
-                        result = await response.json();
-                    } catch {
-                        // Respuesta no JSON: se trata como error.
-                    }
-
                     if (currentPlayer !== player) return;
 
                     if (!response.ok) {
                         certFeedback.classList.add('error');
-                        certFeedback.textContent = 'El verificador no está disponible. Intenta nuevamente.';
+                        if (response.status === 403) {
+                            certFeedback.textContent = 'La fecha no coincide con nuestros registros.';
+                        } else if (response.status === 404) {
+                            certFeedback.textContent = 'El certificado aún no está disponible. Contacta a la asociación.';
+                        } else {
+                            certFeedback.textContent = 'No se pudo descargar el certificado. Intenta nuevamente.';
+                        }
                         return;
                     }
 
-                    if (!result.ok) {
-                        certFeedback.classList.add('error');
-                        certFeedback.textContent = 'La fecha no coincide con nuestros registros.';
-                        return;
-                    }
+                    const blob = await response.blob();
+                    if (currentPlayer !== player) return;
+
+                    const disposition = response.headers.get('Content-Disposition') || '';
+                    const filenameMatch = disposition.match(/filename="?([^";]+)"?/i);
+                    const filename = filenameMatch ? filenameMatch[1] : `${player.id}-CC-2026.png`;
+
+                    const objectUrl = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = objectUrl;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
 
                     certFeedback.classList.add('success');
-                    certFeedback.textContent = 'Verificado. Generando certificado...';
-
-                    setTimeout(() => {
-                        generarCertificado(player);
-                        certFeedback.textContent = 'Certificado generado en una nueva pestaña.';
-                    }, 400);
+                    certFeedback.textContent = 'Certificado descargado.';
                 } catch {
                     if (currentPlayer === player) {
                         certFeedback.classList.add('error');
-                        certFeedback.textContent = 'No se pudo conectar con el verificador. Intenta nuevamente.';
+                        certFeedback.textContent = 'No se pudo conectar con el servidor. Intenta nuevamente.';
                     }
                 } finally {
                     certBtn.disabled = false;
                     certBtn.textContent = originalText;
                 }
             });
-
-            // ===== Generar certificado (HTML imprimible) =====
-            function generarCertificado(player) {
-                const fecha = new Date().toLocaleDateString('es-BO', {
-                    year: 'numeric', month: 'long', day: 'numeric'
-                });
-
-                const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Certificado - ${player.nombre}</title>
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        font-family: Georgia, 'Times New Roman', serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        background: #f5f5f5;
-        padding: 40px;
-        color: #111;
-    }
-    .cert {
-        background: #fff;
-        padding: 70px 50px;
-        max-width: 780px;
-        width: 100%;
-        border: 2px solid #111;
-        text-align: center;
-    }
-    .cert-logo { font-size: 2.5rem; font-weight: 700; letter-spacing: 0.35em; margin-bottom: 8px; font-family: 'Helvetica Neue', Arial, sans-serif; }
-    .cert-sub { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: #666; margin-bottom: 55px; font-family: 'Helvetica Neue', Arial, sans-serif; }
-    .cert-title { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 50px; font-family: 'Helvetica Neue', Arial, sans-serif; }
-    .cert-text { font-size: 0.95rem; line-height: 2; margin-bottom: 15px; font-style: italic; color: #444; }
-    .cert-name { font-size: 1.8rem; font-weight: 700; margin: 25px 0; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.02em; }
-    .cert-cat { font-size: 1.1rem; margin: 20px 0 40px; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.15em; }
-    .cert-id { font-size: 0.7rem; color: #888; margin-top: 50px; font-family: monospace; letter-spacing: 0.1em; }
-    .cert-date { font-size: 0.85rem; margin-top: 20px; color: #666; }
-    .cert-sign { margin-top: 70px; padding-top: 15px; border-top: 1px solid #999; display: inline-block; min-width: 260px; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #666; font-family: 'Helvetica Neue', Arial, sans-serif; }
-    @media print {
-        body { background: #fff; padding: 0; }
-        .cert { border: 2px solid #111; }
-    }
-</style>
-</head>
-<body>
-    <div class="cert">
-        <div class="cert-logo">ADALP</div>
-        <div class="cert-sub">Asociación Departamental de Ajedrez de La Paz</div>
-
-        <div class="cert-title">Certificado de Categoría</div>
-
-        <p class="cert-text">Se certifica que el/la ajedrecista</p>
-        <div class="cert-name">${player.nombre}</div>
-        <p class="cert-text">pertenece oficialmente a la</p>
-        <div class="cert-cat"><strong>${player.categoria.toUpperCase()} CATEGORÍA</strong></div>
-
-        <div class="cert-id">ID: ${player.id}</div>
-        <div class="cert-date">La Paz, ${fecha}</div>
-
-        <div class="cert-sign">Firma y Sello Autorizado</div>
-    </div>
-    <script>window.onload = () => setTimeout(() => window.print(), 400);<\/script>
-</body>
-</html>`;
-
-                const win = window.open('', '_blank');
-                win.document.write(html);
-                win.document.close();
-            }
 
             // ===== Eventos de fila =====
             rows.forEach(row => {

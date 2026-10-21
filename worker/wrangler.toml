@@ -5,3 +5,7 @@ workers_dev = true
 
 [vars]
 ALLOWED_ORIGINS = "https://ajedrezlapaz.com,https://www.ajedrezlapaz.com,http://localhost:4321,http://localhost:8791"
+
+[[r2_buckets]]
+binding = "CERTIFICADOS"
+bucket_name = "adalp"

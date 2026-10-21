@@ -8,6 +8,7 @@ Este documento explica qué se despliega automáticamente y qué requiere una ac
 - Sitio: `https://ajedrezlapaz.com`
 - Worker: `https://adalp-verifier.mariomedranomaldonado.workers.dev`
 - Endpoint de verificación: `https://adalp-verifier.mariomedranomaldonado.workers.dev/verify`
+- Endpoint de descarga: `https://adalp-verifier.mariomedranomaldonado.workers.dev/certificado`
 
 ## Arquitectura
 
@@ -16,6 +17,8 @@ Este documento explica qué se despliega automáticamente y qué requiere una ac
 - Cloudflare Workers ejecuta el verificador de certificados.
 - Las fechas de nacimiento y los celulares viven únicamente en el secreto `DATOS` del Worker.
 - `src/data/jugadores.json` es público y no contiene fechas ni celulares.
+- Los certificados PNG viven en el bucket R2 privado `adalp`, dentro de `cc-2026/`.
+- El Worker valida la fecha y entrega el PNG mediante el binding `CERTIFICADOS`; el bucket no es público.
 - GitHub Actions tiene dos workflows:
   - `Deploy to GitHub Pages`: compila y publica el sitio.
   - `Deploy Worker`: despliega el código del Worker.
@@ -66,7 +69,9 @@ Debe estar en:
 PUBLIC_VERIFIER_URL = https://adalp-verifier.mariomedranomaldonado.workers.dev/verify
 ```
 
-Importante: si aparece con la etiqueta `github-pages`, está en el environment, no en las variables del repositorio. El job `build` de Pages no declara `environment`, así que no verá esa variable y el sitio se construirá con la URL vacía. En ese caso el modal mostrará "El verificador no está configurado".
+El frontend usa esta URL para `/verify` y deriva `/certificado` cambiando solo la ruta.
+
+Importante: si aparece con la etiqueta `github-pages`, está en el environment, no en las variables del repositorio. El job `build` de Pages no declara `environment`, así que no verá esa variable y el sitio se construirá con la URL vacía. En ese caso el modal mostrará "El servicio de certificados no está configurado".
 
 No pongas `PUBLIC_VERIFIER_URL` en Secrets. Es una URL pública y el workflow la lee con `vars`, no con `secrets`.
 
@@ -127,36 +132,71 @@ npx wrangler secret list
 | Cambiar el código del Worker | Sí | Push a `main` |
 | Cambiar `wrangler.toml` | Sí | Push a `main` |
 | Cambiar fechas o celulares | **No** | `jq -c . datos.json \| npx wrangler secret put DATOS` |
+| Subir o reemplazar certificados PNG | **No** | Dashboard de R2 o `npx wrangler r2 object put` |
 | Cambiar `PUBLIC_VERIFIER_URL` | **No** | GitHub Variables + re-ejecutar Pages |
 | Cambiar el token o Account ID | **No** | GitHub Environment secrets |
 | Dominio del Worker, DNS, rate limiting | **No** | Dashboard de Cloudflare |
 | Aprobaciones del environment | **No** | GitHub Environments |
 | Respaldar `worker/datos.json` y el CSV | **No** | Copia privada local |
 
+### Bucket R2 `adalp`
+
+El Worker tiene este binding en `worker/wrangler.toml`:
+
+```toml
+[[r2_buckets]]
+binding = "CERTIFICADOS"
+bucket_name = "adalp"
+```
+
+Los certificados deben estar en el bucket privado `adalp` con este formato de clave:
+
+```text
+cc-2026/ADALP-0001-CC-2026.png
+```
+
+Para subir o reemplazar uno:
+
+```bash
+npx wrangler r2 object put "adalp/cc-2026/ADALP-0001-CC-2026.png" \
+  --file "ruta/al/certificado.png" \
+  --content-type "image/png"
+```
+
+Para comprobar las claves existentes:
+
+```bash
+npx wrangler r2 object list adalp --prefix "cc-2026/"
+```
+
+El bucket no debe tener acceso público. La única forma de descargar un certificado es pasar por el Worker, que valida `id` + `fecha` antes de leer el objeto.
+
 ## Checklist: agregar o actualizar un jugador con certificado
 
 1. Agregar o editar el jugador en `src/data/jugadores.json` con `"certificado": true`.
 2. Agregar o editar su fecha y celular en `worker/datos.json`.
-3. Actualizar el secreto:
+3. Subir el PNG a R2 como `cc-2026/ADALP-XXXX-CC-2026.png`.
+4. Actualizar el secreto:
 
    ```bash
    cd worker
    jq -c . datos.json | npx wrangler secret put DATOS
    ```
 
-4. Hacer commit y push de los cambios públicos.
-5. Verificar el endpoint con la fecha correcta.
-6. Probar el modal en el sitio.
+5. Hacer commit y push de los cambios públicos.
+6. Verificar `/verify` con la fecha correcta.
+7. Probar la descarga desde el modal del sitio.
 
 No agregues fechas ni celulares a `src/data/jugadores.json`. Ese archivo se publica en el HTML.
 
 ## Checklist: cambiar el token de Cloudflare
 
 1. Crear el token en Cloudflare con la plantilla **Edit Cloudflare Workers**.
-2. Actualizar el secret `CLOUDFLARE_API_TOKEN` en el environment `github-pages`.
-3. Verificar que `CLOUDFLARE_ACCOUNT_ID` sea el ID correcto.
-4. Ejecutar `Deploy Worker` manualmente.
-5. Revisar el paso `Check Cloudflare secrets`; debe mostrar `PRESENTE`.
+2. Agregar el permiso de cuenta **Workers R2 Storage: Edit**, necesario para desplegar el binding `CERTIFICADOS`.
+3. Actualizar el secret `CLOUDFLARE_API_TOKEN` en el environment `github-pages`.
+4. Verificar que `CLOUDFLARE_ACCOUNT_ID` sea el ID correcto.
+5. Ejecutar `Deploy Worker` manualmente.
+6. Revisar el paso `Check Cloudflare secrets`; debe mostrar `PRESENTE`.
 
 ## Comandos útiles
 
@@ -191,55 +231,62 @@ Respuesta esperada:
 {"ok":true}
 ```
 
+Descarga del certificado:
+
+```bash
+curl -X POST "https://adalp-verifier.mariomedranomaldonado.workers.dev/certificado" \
+  -H "Content-Type: application/json" \
+  -H "Origin: https://ajedrezlapaz.com" \
+  -d '{"id":"ADALP-0001","fecha":"1946-01-01"}' \
+  -o certificado.png
+
+file certificado.png
+```
+
+El archivo debe ser `PNG image data`.
+
 ## Diagnóstico
 
-- `{"ok":false}`: el ID no está en `DATOS`, la fecha no coincide, o el jugador no tiene certificado.
-- `500`: falta el secreto `DATOS` o no es JSON válido.
-- `404`: la ruta debe ser `/verify`.
+- `/verify` responde `{"ok":false}`: el ID no está en `DATOS` o la fecha no coincide.
+- `/certificado` responde `403`: la fecha no coincide con `DATOS`.
+- `/certificado` responde `404` con `certificate_not_found`: no existe el PNG en R2 para ese ID.
+- `/certificado` responde `500` con `certificates_not_configured`: falta el binding `CERTIFICADOS` o el bucket no está configurado.
+- `500` con `server_config`: falta el secreto `DATOS` o no es JSON válido.
+- `404` con `not_found`: la ruta debe ser `/verify` o `/certificado`.
 - `405`: debe ser `POST`.
 - Sin `access-control-allow-origin`: el origen no está en `ALLOWED_ORIGINS`.
-- El sitio muestra "El verificador no está configurado": `PUBLIC_VERIFIER_URL` no llegó al build. Debe estar en Variables del repositorio, no solo en el environment `github-pages`.
+- El sitio muestra "El servicio de certificados no está configurado": `PUBLIC_VERIFIER_URL` no llegó al build o no es una URL absoluta.
 - El workflow del Worker falla con "not authenticated": los secrets del environment no están disponibles. Revisar `environment: github-pages` y los nombres de los secrets.
 - El workflow del Worker falla con "You are not authenticated" pero el secreto existe: confirmar que el job declara `environment: github-pages`.
 
 ## Seguridad
 
 - Las fechas y celulares viven solo en el secreto `DATOS` de Cloudflare.
-- El Worker responde únicamente `{"ok": true}` o `{"ok": false}`; no devuelve datos privados.
-- La generación del certificado es del lado del cliente. El Worker es una compuerta de verificación, no una firma criptográfica.
-- Si se colocan imágenes de certificados en `public/`, son públicamente accesibles sin verificar. Para protección real, servirlas desde el Worker o usar enlaces firmados.
+- El bucket R2 `adalp` debe ser privado. No debe tener dominio público ni acceso directo.
+- La única vía de descarga es `/certificado`, que valida `id` + `fecha` antes de leer R2.
+- El Worker no devuelve fechas ni celulares; solo entrega el PNG cuando la fecha coincide.
 - Mantener un respaldo privado de `worker/datos.json` y del CSV. El secreto `DATOS` no se puede leer de vuelta desde Cloudflare.
 - Si el token se expone, eliminarlo en Cloudflare y crear otro.
+- Se recomienda configurar rate limiting en Cloudflare para `/certificado` y `/verify`, porque la fecha de nacimiento tiene poca entropía.
 
 ## Certificados
 
-Actualmente el certificado se genera como HTML y se abre el diálogo de impresión (`window.print()`). No se descarga un PNG/JPG.
-
-Si se agregan imágenes, la carpeta prevista es:
+Los certificados son PNG generados previamente y almacenados en R2:
 
 ```text
-public/certificados/
+Bucket: adalp
+Clave: cc-2026/ADALP-XXXX-CC-2026.png
 ```
 
-Por ejemplo:
+El flujo actual es:
 
-```text
-public/certificados/ADALP-0001.png
-```
+1. El jugador abre su perfil y escribe su fecha de nacimiento.
+2. El sitio hace `POST /certificado` al Worker.
+3. El Worker verifica la fecha contra el secreto `DATOS`.
+4. Si coincide, busca el PNG en R2 y lo devuelve con `Content-Disposition: attachment`.
+5. El navegador descarga el archivo.
 
-Astro copia `public/` a `dist/`, por lo que la imagen quedaría disponible en:
-
-```text
-/certificados/ADALP-0001.png
-```
-
-La implementación de descarga de imágenes está pendiente de definir. Las opciones son:
-
-1. Imágenes ya hechas, una por jugador, enlazadas desde el modal.
-2. Generar un PNG en el navegador después de verificar la fecha.
-3. Mantener el certificado actual y guardarlo como PDF desde el diálogo de impresión.
-
-Ten en cuenta que las imágenes en `public/` son públicas y se pueden descargar sin pasar por el verificador.
+El bucket no debe ser público. Las imágenes no se guardan en `public/` ni en GitHub Pages.
 
 ## Estructura relevante
 
