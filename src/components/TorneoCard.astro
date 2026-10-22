@@ -192,12 +192,21 @@ const torneoUrl = `/torneos/${torneo.id}/`;
     color: #ffffff;
   }
 
+  .news-card:hover .card-cta-inscribirme .arrow,
+  .news-card:focus-within .card-cta-inscribirme .arrow,
+  .card-cta-inscribirme:hover .arrow,
+  .card-cta-inscribirme:focus-visible .arrow {
+    color: #ffffff;
+  }
+
   .card-cta[hidden] {
     display: none;
   }
 
   .arrow {
+    color: var(--color-accent-text);
     font-size: 1.1rem;
     line-height: 1;
+    transition: color 0.25s ease;
   }
 </style>
