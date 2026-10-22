@@ -6,6 +6,7 @@ dist/
 .env.*
 !.env.example
 Formulario*.csv
+exports/jugadores-*.csv
 worker/datos.json
 worker/sexo.json
 worker/.dev.vars

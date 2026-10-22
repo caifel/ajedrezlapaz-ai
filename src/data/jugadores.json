@@ -60,7 +60,7 @@
   { "id": "ADALP-0059", "nombre": "Sarmiento Escobar, Mariana Isabel", "categoria": "4ta", "certificado": true },
   { "id": "ADALP-0060", "nombre": "Inquillo Alcon, Clarice Isabel", "categoria": "4ta", "certificado": true },
   { "id": "ADALP-0061", "nombre": "Coaquira Santos, David Alejandro", "categoria": "4ta", "certificado": true },
-  { "id": "ADALP-0062", "nombre": "Colque Machicado, Ruddy Miguel", "categoria": "4ta" },
+  { "id": "ADALP-0062", "nombre": "Colque Machicado, Ruddy Miguel", "categoria": "4ta", "certificado": true },
   { "id": "ADALP-0063", "nombre": "Cruz Delgado, Hector Manuel", "categoria": "4ta", "certificado": true },
   { "id": "ADALP-0064", "nombre": "Jaimes Jaimes, Jose Alonso", "categoria": "4ta", "certificado": true },
   { "id": "ADALP-0065", "nombre": "Marañon Zenteno, Isai Ezequiel", "categoria": "4ta", "certificado": true },

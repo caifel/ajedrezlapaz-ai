@@ -8,6 +8,10 @@
  *   npm run reporte:jugadores -- --sexo=F
  *   npm run reporte:jugadores -- --sub=14
  *   npm run reporte:jugadores -- --sub=14 --elegibles
+ *   npm run reporte:jugadores -- --excluir=senior
+ *   npm run reporte:jugadores -- --excluir=senior,sin
+ *   npm run reporte:jugadores -- --categoria=3ra
+ *   npm run reporte:jugadores -- --categoria=3ra --max-edad=19
  *   npm run reporte:jugadores -- --json
  *   npm run reporte:jugadores -- --plantilla > worker/sexo.json
  *
@@ -138,6 +142,26 @@ function esElegibleParaSub(row, subKey) {
   return row.age <= Number(match[1]);
 }
 
+function normalizeCategoria(value) {
+  const normalized = String(value).trim().toLowerCase();
+  const aliases = {
+    1: '1ra',
+    '1ra': '1ra',
+    primera: '1ra',
+    2: '2da',
+    '2da': '2da',
+    segunda: '2da',
+    3: '3ra',
+    '3ra': '3ra',
+    tercera: '3ra',
+    4: '4ta',
+    '4ta': '4ta',
+    cuarta: '4ta'
+  };
+
+  return aliases[normalized] ?? normalized;
+}
+
 const players = readJson(PUBLIC_PATH, 'padrón público');
 
 if (!Array.isArray(players)) {
@@ -199,8 +223,41 @@ const rows = players.map((player) => {
 const sexoFilter = args.has('sexo') ? String(args.get('sexo')).toUpperCase() : null;
 const subFilter = args.has('sub') ? normalizeSubFilter(args.get('sub')) : null;
 const soloElegibles = args.has('elegibles') && subFilter?.startsWith('sub-');
+const excluded = new Set(
+  args.has('excluir')
+    ? String(args.get('excluir'))
+        .split(',')
+        .map((value) => normalizeSubFilter(value.trim()))
+        .filter(Boolean)
+    : []
+);
+const categoriaFilter = new Set(
+  args.has('categoria')
+    ? String(args.get('categoria'))
+        .split(',')
+        .map((value) => normalizeCategoria(value))
+        .filter(Boolean)
+    : []
+);
+const maxAge = args.has('max-edad') ? Number(args.get('max-edad')) : null;
+
+if (args.has('max-edad') && (!Number.isInteger(maxAge) || maxAge < 0)) {
+  fail('Edad máxima inválida. Usa por ejemplo --max-edad=19.');
+}
 
 const filteredRows = rows.filter((row) => {
+  const key = row.bracket?.key ?? 'sin';
+
+  if (excluded.has(key)) return false;
+
+  if (categoriaFilter.size > 0 && !categoriaFilter.has(normalizeCategoria(row.categoria))) {
+    return false;
+  }
+
+  if (Number.isInteger(maxAge) && (row.age === null || row.age > maxAge)) {
+    return false;
+  }
+
   if (sexoFilter === '?' || sexoFilter === 'SIN') {
     if (row.sexo !== '') return false;
   } else if (sexoFilter && row.sexo !== sexoFilter) {
@@ -208,7 +265,6 @@ const filteredRows = rows.filter((row) => {
   }
 
   if (subFilter) {
-    const key = row.bracket?.key ?? 'sin';
     if (soloElegibles) {
       if (!esElegibleParaSub(row, subFilter)) return false;
     } else if (key !== subFilter) {
@@ -255,6 +311,9 @@ if (args.has('json')) {
     referenceYear,
     seniorMinAge,
     elegibles: soloElegibles,
+    excluidos: [...excluded],
+    categorias: [...categoriaFilter],
+    edadMaxima: maxAge,
     total: totals.total,
     sexo: { M: totals.M, F: totals.F, sinDato: totals[''] },
     groups: Object.fromEntries(
@@ -294,6 +353,18 @@ if (soloElegibles) {
   output.push(
     `Modo elegibilidad: Sub-${subAge} incluye brackets menores (no cumple ${Number(subAge) + 1} en ${referenceYear})`
   );
+}
+
+if (excluded.size > 0) {
+  output.push(`Excluidos: ${[...excluded].join(', ')}`);
+}
+
+if (categoriaFilter.size > 0) {
+  output.push(`Categorías: ${[...categoriaFilter].join(', ')}`);
+}
+
+if (Number.isInteger(maxAge)) {
+  output.push(`Edad máxima: ${maxAge}`);
 }
 
 if (sexoFilter || subFilter) {
