@@ -1,5 +1,37 @@
 [
   {
+    "id": "960-25-oct-2026",
+    "fecha": "2026-10-25",
+    "fecha_texto": "25 de Octubre, 2026",
+    "titulo": "960 Online",
+    "online": true,
+    "detalles": [
+      "🗓️ Domingo 25",
+      "🕘 22:00 hrs",
+      "🕰️ 90 segundos a finish (bullet)",
+      "⌛ Modalidad Arena a 35 mins",
+      "📍 Lichess"
+    ],
+    "whatsapp": "+591 62696414 ",
+    "enlace": ""
+  },
+  {
+    "id": "bullet-22-oct-2026",
+    "fecha": "2026-10-22",
+    "fecha_texto": "22 de Octubre, 2026",
+    "titulo": "Bullet Online",
+    "online": true,
+    "detalles": [
+      "🗓️ Jueves 22",
+      "🕘 22:00 hrs",
+      "🕰️ 1+1 (bullet)",
+      "⌛ Modalidad Arena a 25 mins",
+      "📍 Lichess"
+    ],
+    "whatsapp": "+591 62696414 ",
+    "enlace": ""
+  },
+  {
     "id": "inter-universitario-2026",
     "fecha": "2026-10-24",
     "fecha_texto": "24 y 25 de Octubre, 2026",

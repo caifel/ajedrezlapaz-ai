@@ -1,11 +1,13 @@
 import torneos from '../data/torneos.json';
+import {
+  TOURNAMENT_STATUS,
+  getBoliviaDateKey,
+  getDiasHasta,
+  getTournamentEndDate,
+  resolveStatusKey
+} from './torneoStatus.js';
 
-export const TOURNAMENT_STATUS = {
-  abierto: { label: 'Inscripciones abiertas', className: 'status-abierto' },
-  lleno: { label: 'Cupo lleno', className: 'status-lleno' },
-  finalizado: { label: 'Finalizado', className: 'status-finalizado' },
-  cancelado: { label: 'Cancelado', className: 'status-cancelado' }
-};
+export { TOURNAMENT_STATUS, formatDiasHasta } from './torneoStatus.js';
 
 const EVENT_LOCATION = {
   '@type': 'Place',
@@ -34,23 +36,19 @@ export function getWhatsappUrl(whatsapp, message = '') {
 }
 
 export function getTorneos(now = new Date()) {
+  const todayKey = getBoliviaDateKey(now);
+
   return torneos.map((torneo) => {
-    const explicit = typeof torneo.estado === 'string' ? torneo.estado : '';
-    const dateEnd = new Date(`${torneo.fecha}T23:59:59-04:00`);
-    let key = 'abierto';
-
-    if (explicit === 'cancelado') {
-      key = 'cancelado';
-    } else if (explicit === 'finalizado' || dateEnd < now) {
-      key = 'finalizado';
-    } else if (explicit === 'lleno') {
-      key = 'lleno';
-    }
-
+    const dateEnd = getTournamentEndDate(torneo.fecha);
+    const diasHasta = getDiasHasta(torneo.fecha, todayKey);
+    const key = resolveStatusKey(torneo, now);
     const status = TOURNAMENT_STATUS[key];
     return {
       ...torneo,
       esPasado: dateEnd < now,
+      esHoy: diasHasta === 0,
+      diasHasta,
+      esOnline: Boolean(torneo.online),
       estado: key,
       estadoLabel: status.label,
       estadoClass: status.className,
@@ -70,9 +68,16 @@ export function getEventSchema(torneo, siteUrl = 'https://ajedrezlapaz.com') {
       torneo.estado === 'cancelado'
         ? 'https://schema.org/EventCancelled'
         : 'https://schema.org/EventScheduled',
-    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventAttendanceMode: torneo.esOnline
+      ? 'https://schema.org/OnlineEventAttendanceMode'
+      : 'https://schema.org/OfflineEventAttendanceMode',
     inLanguage: 'es-BO',
-    location: EVENT_LOCATION,
+    location: torneo.esOnline
+      ? {
+          '@type': 'VirtualLocation',
+          url: 'https://lichess.org'
+        }
+      : EVENT_LOCATION,
     organizer: {
       '@type': 'SportsOrganization',
       name: 'Asociación Departamental de Ajedrez de La Paz',

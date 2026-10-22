@@ -1,46 +1,42 @@
 <script>
+  import {
+    TOURNAMENT_STATUS_CLASSES,
+    formatDiasHasta,
+    getBoliviaDateKey,
+    getDiasHasta,
+    resolveStatus
+  } from '../lib/torneoStatus.js';
+
   document.addEventListener('DOMContentLoaded', () => {
-    const STATUS = {
-      abierto: { label: 'Inscripciones abiertas', className: 'status-abierto' },
-      lleno: { label: 'Cupo lleno', className: 'status-lleno' },
-      finalizado: { label: 'Finalizado', className: 'status-finalizado' },
-      cancelado: { label: 'Cancelado', className: 'status-cancelado' }
-    };
-
-    function getStatus(torneo) {
-      if (torneo.estado === 'cancelado') {
-        return { key: 'cancelado', ...STATUS.cancelado };
-      }
-
-      const end = new Date(`${torneo.fecha}T23:59:59-04:00`);
-      if (torneo.estado === 'finalizado' || end < new Date()) {
-        return { key: 'finalizado', ...STATUS.finalizado };
-      }
-
-      if (torneo.estado === 'lleno') {
-        return { key: 'lleno', ...STATUS.lleno };
-      }
-
-      return { key: 'abierto', ...STATUS.abierto };
-    }
-
-    function applyStatus(element, status) {
-      element.textContent = status.label;
-      element.className = `news-status ${status.className}`;
-    }
+    const todayKey = getBoliviaDateKey();
 
     document.querySelectorAll('.news-card[data-fecha]').forEach((card) => {
       const torneo = {
         fecha: card.dataset.fecha,
         estado: card.dataset.estado
       };
-      const status = getStatus(torneo);
+      const status = resolveStatus(torneo);
+      const diasHasta = getDiasHasta(card.dataset.fecha, todayKey);
 
-      card.classList.remove('status-abierto', 'status-lleno', 'status-finalizado', 'status-cancelado');
+      card.classList.remove(...TOURNAMENT_STATUS_CLASSES);
       card.classList.add(status.className);
 
-      const badge = card.querySelector('.news-status');
-      if (badge) applyStatus(badge, status);
+      const badge = card.querySelector('[data-status-badge]');
+      if (badge) {
+        badge.classList.remove(...TOURNAMENT_STATUS_CLASSES);
+        badge.classList.add(status.className);
+        badge.textContent = status.label;
+      }
+
+      const todayBadge = card.querySelector('[data-today]');
+      if (todayBadge) todayBadge.hidden = diasHasta !== 0;
+
+      const daysLabel = card.querySelector('[data-days]');
+      if (daysLabel) {
+        const showDays = Number.isFinite(diasHasta) && diasHasta > 0;
+        daysLabel.hidden = !showDays;
+        daysLabel.textContent = showDays ? formatDiasHasta(diasHasta) : '';
+      }
 
       const ctaInscribirme = card.querySelector('[data-cta="inscribirme"]');
       if (ctaInscribirme) ctaInscribirme.hidden = status.key !== 'abierto';

@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
 import { getTorneos, getEventSchema, getWhatsappUrl } from '../../lib/torneos';
+import { formatDiasHasta } from '../../lib/torneoStatus.js';
 
 export function getStaticPaths() {
   return getTorneos().map((torneo) => ({
@@ -94,32 +96,6 @@ const consultaUrl = getWhatsappUrl(
       text-transform: uppercase;
     }
 
-    .status-badge {
-      display: inline-block;
-      padding: 4px 9px;
-      border: 1px solid currentColor;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      line-height: 1.2;
-      text-transform: uppercase;
-    }
-
-    .status-abierto {
-      color: #1b5e20;
-      background-color: #e8f5e9;
-    }
-
-    .status-lleno,
-    .status-cancelado {
-      color: #8a1c1c;
-      background-color: #fdecea;
-    }
-
-    .status-finalizado {
-      color: #3d3d3d;
-      background-color: #eeeeee;
-    }
 
     .section-label {
       margin-bottom: 18px;
@@ -230,7 +206,12 @@ const consultaUrl = getWhatsappUrl(
       <h1 class="tournament-title">{torneo.titulo}</h1>
       <div class="tournament-meta">
         <span class="tournament-date">{torneo.fecha_texto}</span>
-        <span class={`status-badge ${torneo.estadoClass}`}>{torneo.estadoLabel}</span>
+        {torneo.diasHasta > 0 && (
+          <StatusBadge tone="days" size="md" label={formatDiasHasta(torneo.diasHasta)} />
+        )}
+        {torneo.esHoy && <StatusBadge tone="hoy" size="md" label="HOY" />}
+        {torneo.esOnline && <StatusBadge tone="online" size="md" dot label="Online" />}
+        <StatusBadge tone={torneo.estado} size="md" label={torneo.estadoLabel} />
       </div>
     </div>
 

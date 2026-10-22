@@ -1,5 +1,7 @@
 ---
+import StatusBadge from './StatusBadge.astro';
 import { getWhatsappUrl } from '../lib/torneos';
+import { formatDiasHasta } from '../lib/torneoStatus.js';
 
 const { torneo } = Astro.props;
 
@@ -17,9 +19,19 @@ const torneoUrl = `/torneos/${torneo.id}/`;
   data-estado={torneo.estado}
 >
   <div class="news-meta">
-    <span class="news-date">{torneo.fecha_texto}</span>
+    <div class="news-date-row">
+      <span class="news-date">{torneo.fecha_texto}</span>
+      <StatusBadge tone="hoy" size="sm" label="HOY" data-today hidden={!torneo.esHoy} />
+    </div>
+    <span class="news-days" data-days hidden={!(torneo.diasHasta > 0)}>{formatDiasHasta(torneo.diasHasta)}</span>
     <div class="news-status-row">
-      <span class={`news-status ${torneo.estadoClass}`}>{torneo.estadoLabel}</span>
+      {torneo.esOnline && <StatusBadge tone="online" size="sm" dot label="Online" />}
+      <StatusBadge
+        tone={torneo.estado}
+        size="sm"
+        label={torneo.estadoLabel}
+        data-status-badge
+      />
       {torneo.enlace && (
         <a class="news-event-link" href={torneo.enlace} target="_blank" rel="noopener">
           {torneo.enlaceLabel}
@@ -68,6 +80,27 @@ const torneoUrl = `/torneos/${torneo.id}/`;
     text-transform: uppercase;
   }
 
+  .news-date-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .news-days {
+    display: block;
+    color: var(--color-text-light);
+    font-size: 0.63rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .news-days[hidden] {
+    display: none;
+  }
+
   .news-meta {
     display: flex;
     flex-direction: column;
@@ -95,33 +128,6 @@ const torneoUrl = `/torneos/${torneo.id}/`;
 
   .news-event-link:hover {
     color: var(--color-accent-text);
-  }
-
-  .news-status {
-    display: inline-block;
-    padding: 3px 8px;
-    border: 1px solid currentColor;
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    line-height: 1.2;
-    text-transform: uppercase;
-  }
-
-  .news-status.status-abierto {
-    color: #1b5e20;
-    background-color: #e8f5e9;
-  }
-
-  .news-status.status-lleno,
-  .news-status.status-cancelado {
-    color: #8a1c1c;
-    background-color: #fdecea;
-  }
-
-  .news-status.status-finalizado {
-    color: #3d3d3d;
-    background-color: #eeeeee;
   }
 
   .news-card.status-abierto {
