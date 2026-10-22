@@ -39,7 +39,7 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
 
     .hero-logo-container {
       width: 180px;
-      margin-bottom: 25px;
+      margin-bottom: 38px;
     }
     .hero-logo-container img {
       width: 100%;
@@ -52,7 +52,8 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
       font-weight: 700;
       letter-spacing: 0.35em;
       margin-left: 0.35em;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
+      color: #1a1a1a;
     }
 
     #hero h2 {
@@ -60,7 +61,8 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
       font-weight: 400;
       letter-spacing: 0.25em;
       margin-left: 0.25em;
-      margin-bottom: 25px;
+      margin-bottom: 30px;
+      color: #333333;
       text-transform: uppercase;
       max-width: 600px;
     }
@@ -69,26 +71,26 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
       width: 60px;
       height: 2px;
       background-color: var(--color-accent);
-      margin: 0 auto 25px auto;
+      margin: 0 auto 30px auto;
     }
 
     .founding-date {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      margin-left: 0.2em;
-      color: var(--color-text-light);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      margin-left: 1.5px;
+      color: #6b6b6b;
       text-transform: uppercase;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .institutional-text {
       font-size: 0.9rem;
       font-weight: 300;
-      color: var(--color-text-light);
+      color: #4a4a4a;
       max-width: 600px;
       line-height: 1.8;
-      margin-bottom: 45px;
+      margin-bottom: 48px;
     }
 
     .buttons-container {
@@ -112,28 +114,57 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
       text-decoration: none;
       transition: all 0.3s ease;
       cursor: pointer;
-      border: 2px solid var(--color-text);
+      border: 2px solid #1f1f1f;
     }
 
     .btn-primary {
-      background-color: var(--color-text);
+      background-color: #1f1f1f;
       color: white;
     }
     .btn-primary:hover {
       background-color: transparent;
-      color: var(--color-text);
+      border-color: var(--color-accent);
+      color: #1a1a1a;
     }
     .btn-secondary {
       background-color: transparent;
-      color: var(--color-text);
+      color: #1f1f1f;
     }
     .btn-secondary:hover {
-      background-color: var(--color-text);
-      color: white;
+      background-color: var(--color-accent);
+      border-color: var(--color-accent);
+      color: #1a1a1a;
     }
     .arrow {
+      color: var(--color-accent-text);
       font-size: 1.1rem;
       line-height: 1;
+    }
+    .btn-primary .arrow {
+      color: var(--color-accent);
+    }
+    .btn-primary:hover .arrow {
+      color: var(--color-accent-text);
+    }
+    .btn-secondary:hover .arrow {
+      color: #1a1a1a;
+    }
+    .hero-contact {
+      margin-top: 26px;
+      color: #6b6b6b;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-align: center;
+    }
+    .hero-contact a {
+      color: var(--color-accent-text);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 2px;
+    }
+    .hero-contact a:hover {
+      color: #1a1a1a;
     }
 
     /* INSTITUCIONAL */
@@ -337,21 +368,15 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
       <h2>Asociación Departamental<br />de Ajedrez de La Paz</h2>
       <div class="divider"></div>
       <p class="founding-date">Fundada el 7 de diciembre de 1929</p>
-      <p class="institutional-text">
-        Únicos representantes oficiales avalados por la Federación Boliviana de Ajedrez (FBA), con jurisdicción
-        exclusiva en todo el Departamento de La Paz.
-      </p>
+      <p class="institutional-text">Únicos representantes oficiales del ajedrez en el departamento de La Paz.</p>
       <div class="buttons-container">
-        <a href="/jugadores/" class="btn btn-primary">Lista de Jugadores <span class="arrow">&rarr;</span></a>
-        <a
-          href="https://wa.me/59173505230"
-          class="btn btn-secondary"
-          target="_blank"
-          rel="noopener"
-        >
-          WhatsApp <span class="arrow">&rarr;</span>
-        </a>
+        <a href="/torneos/" class="btn btn-primary">Ver torneos <span class="arrow">&rarr;</span></a>
+        <a href="/jugadores/" class="btn btn-secondary">Lista de Jugadores <span class="arrow">&rarr;</span></a>
       </div>
+      <p class="hero-contact">
+        ¿Consultas?
+        <a href="https://wa.me/59173505230" target="_blank" rel="noopener">Escríbenos por WhatsApp &rarr;</a>
+      </p>
     </section>
 
     <!-- INSTITUCIONAL -->
@@ -412,13 +437,17 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
 
         <div class="news-group">
           <h3 class="news-group-title">Próximos</h3>
-          {torneosDestacados.length > 0 ? (
-            <div class="news-grid">
-              {torneosDestacados.map((torneo) => <TorneoCard torneo={torneo} />)}
-            </div>
-          ) : (
-            <p class="news-empty">No hay torneos programados por el momento.</p>
-          )}
+          {
+            torneosDestacados.length > 0 ? (
+              <div class="news-grid">
+                {torneosDestacados.map((torneo) => (
+                  <TorneoCard torneo={torneo} />
+                ))}
+              </div>
+            ) : (
+              <p class="news-empty">No hay torneos programados por el momento.</p>
+            )
+          }
           <div class="news-more">
             <a class="news-more-link" href="/torneos/">Ver calendario completo &rarr;</a>
           </div>
@@ -429,4 +458,3 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
 
   <TorneoStatusRefresh />
 </Layout>
-
