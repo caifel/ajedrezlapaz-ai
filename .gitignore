@@ -7,5 +7,6 @@ dist/
 !.env.example
 Formulario*.csv
 worker/datos.json
+worker/sexo.json
 worker/.dev.vars
 worker/.wrangler/

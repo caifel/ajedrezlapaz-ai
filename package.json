@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "reporte:jugadores": "node scripts/reporte-jugadores-privado.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
