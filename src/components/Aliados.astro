@@ -1,0 +1,254 @@
+---
+// Logos de instituciones y clubes aliados.
+const aliados = [
+  {
+    nombre: 'Servicio Departamental de Deportes',
+    tipo: 'SEDEDE',
+    logo: '/assets/aliados/sedede.webp',
+    url: 'https://www.sededelapaz.gob.bo/',
+    width: 280,
+    height: 150
+  },
+  {
+    nombre: 'Gobierno Autónomo Municipal de La Paz',
+    tipo: 'GAMLP',
+    logo: '/assets/aliados/gamlp.webp',
+    url: 'https://lapaz.bo/',
+    width: 248,
+    height: 176
+  },
+  {
+    nombre: 'Enda El Alto',
+    tipo: 'El Alto',
+    logo: '/assets/aliados/enda.webp',
+    url: 'https://www.endaelalto.org/',
+    width: 176,
+    height: 176
+  },
+  {
+    nombre: 'Escuela Superior de Ajedrez Jaque Mate',
+    tipo: 'Escuela',
+    logo: '/assets/aliados/jaque-mate.webp',
+    url: 'https://www.facebook.com/p/Escuela-de-Ajedrez-Jaque-Mate-100077771761008/',
+    width: 168,
+    height: 176
+  },
+  {
+    nombre: 'Peón Veloz',
+    tipo: 'Ajedrez Online',
+    logo: '/assets/aliados/peon-veloz.webp',
+    url: 'https://www.facebook.com/profile.php?id=61587626468936',
+    width: 181,
+    height: 176
+  }
+];
+---
+
+<section id="aliados" class="aliados" aria-labelledby="aliados-title">
+  <div class="aliados-container">
+    <p class="aliados-eyebrow">Comunidad</p>
+    <h2 class="aliados-title" id="aliados-title">Instituciones y clubes</h2>
+    <p class="aliados-subtitle">Organizaciones con las que trabajamos</p>
+
+    <ul class="aliados-grid">
+      {
+        aliados.map((aliado) => (
+          <li class="aliado-item">
+            <a
+              class="aliado-card"
+              href={aliado.url}
+              target="_blank"
+              rel="noopener"
+              aria-label={`Visitar el sitio de ${aliado.nombre}`}
+            >
+              <div class="aliado-logo">
+                <img
+                  src={aliado.logo}
+                  alt=""
+                  width={aliado.width}
+                  height={aliado.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <span class="aliado-name">{aliado.nombre}</span>
+              <span class="aliado-type">{aliado.tipo}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="aliados-cta">
+      ¿Representas un club o institución?
+      <a href="https://wa.me/59173505230" target="_blank" rel="noopener">Escríbenos &rarr;</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .aliados {
+    padding: 80px 20px;
+    border-top: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #f7f5f0;
+    scroll-margin-top: 90px;
+  }
+
+  .aliados-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .aliados-eyebrow {
+    margin-bottom: 12px;
+    text-align: center;
+    color: var(--color-accent-text);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+
+  .aliados-title {
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .aliados-subtitle {
+    margin-bottom: 42px;
+    text-align: center;
+    color: var(--color-text-light);
+    font-size: 0.8rem;
+  }
+
+  .aliados-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .aliado-item {
+    display: flex;
+    min-width: 0;
+  }
+
+  .aliado-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+    width: 100%;
+    height: 100%;
+    padding: 26px 14px 22px;
+    border: 1px solid #eaeaea;
+    background-color: #ffffff;
+    color: inherit;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      transform 0.25s ease,
+      border-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .aliado-card:hover,
+  .aliado-card:focus-visible {
+    transform: translateY(-3px);
+    border-color: var(--color-accent);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .aliado-card:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .aliado-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 96px;
+  }
+
+  .aliado-logo img {
+    width: auto;
+    max-width: 140px;
+    height: auto;
+    max-height: 88px;
+    filter: grayscale(1);
+    opacity: 0.68;
+    transition:
+      filter 0.25s ease,
+      opacity 0.25s ease;
+  }
+
+  .aliado-card:hover .aliado-logo img,
+  .aliado-card:focus-visible .aliado-logo img {
+    filter: none;
+    opacity: 1;
+  }
+
+  .aliado-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.7em;
+    color: var(--color-text);
+    font-size: 0.74rem;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: 0.03em;
+  }
+
+  .aliado-type {
+    color: var(--color-accent-text);
+    font-size: 0.56rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .aliados-cta {
+    margin-top: 32px;
+    text-align: center;
+    color: var(--color-text-light);
+    font-size: 0.7rem;
+  }
+
+  .aliados-cta a {
+    padding-bottom: 2px;
+    border-bottom: 1px solid currentColor;
+    color: var(--color-accent-text);
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .aliados-cta a:hover {
+    color: #1a1a1a;
+  }
+
+  @media (max-width: 1000px) {
+    .aliados-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 600px) {
+    .aliados {
+      padding: 64px 20px;
+    }
+
+    .aliados-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

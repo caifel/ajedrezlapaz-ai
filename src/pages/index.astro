@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import TorneoCard from '../components/TorneoCard.astro';
 import TorneoStatusRefresh from '../components/TorneoStatusRefresh.astro';
+import Aliados from '../components/Aliados.astro';
 import directiva from '../data/directiva.json';
 import { getTorneos, getEventSchema } from '../lib/torneos';
 
@@ -411,6 +412,9 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
         </div>
       </div>
     </section>
+
+    <!-- ALIADOS -->
+    <Aliados />
 
     <!-- DIRECTIVA -->
     <section id="directiva">
