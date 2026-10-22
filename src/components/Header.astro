@@ -11,7 +11,6 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
         <ul>
             <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
             <li><a href="/jugadores/" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
-            <li><a href="/galeria/" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
         </ul>
     </nav>
     <button
@@ -31,6 +30,5 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <ul>
         <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
         <li><a href="/jugadores/" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
-        <li><a href="/galeria/" class={isActive('/galeria') ? 'active' : undefined}>Galería</a></li>
     </ul>
 </nav>
