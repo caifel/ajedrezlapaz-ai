@@ -1,0 +1,92 @@
+[
+  {
+    "id": "inter-universitario-2026",
+    "fecha": "2026-10-24",
+    "fecha_texto": "24 y 25 de Octubre, 2026",
+    "titulo": "Torneo Inter Universitario",
+    "detalles": [
+      "🗓️ Sábado 24 y domingo 25",
+      "🕘 9:00 am",
+      "⏱️ 15 + 10 (Sistema rápido)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": ""
+  },
+  {
+    "id": "tercera-categoria-2026",
+    "fecha": "2026-11-21",
+    "fecha_texto": "21 y 22 de Noviembre, 2026",
+    "titulo": "Torneo de Tercera Categoría IRT",
+    "detalles": [
+      "🗓️ Sábado 21 y domingo 22",
+      "🕘 9:00 am",
+      "⏱️ 15 + 10 (Sistema rápido)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": ""
+  },
+  {
+    "id": "memorial-cidar-humerez-2026",
+    "fecha": "2026-12-10",
+    "fecha_texto": "Del 10 al 13 de Diciembre, 2026",
+    "titulo": "Memorial Cidar Húmerez IRT",
+    "detalles": [
+      "🗓️ Del jueves 10 al domingo 13",
+      "🕘 2:00 pm",
+      "⏱️ 60 + 30 (Sistema standard)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": ""
+  },
+  {
+    "id": "cuarta-categoria-2026",
+    "fecha": "2026-10-10",
+    "fecha_texto": "10 y 11 de Octubre, 2026",
+    "titulo": "Torneo de Cuarta Categoría",
+    "detalles": [
+      "🗓️ Sábado 10 y domingo 11",
+      "🕘 9:00 am",
+      "⏱️ 15 + 10 (Sistema rápido)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s3.chess-results.com/tnr1514897.aspx?lan=1"
+  },
+  {
+    "id": "rapid-dia-amistad-2026",
+    "fecha": "2026-09-26",
+    "fecha_texto": "26 de Septiembre, 2026",
+    "titulo": "Torneo Rapid por el día de la amistad",
+    "detalles": [
+      "🗓️ Sábado 26",
+      "🕘 9:00 am",
+      "⏱️ 10 + 5 (Sistema rápido)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s3.chess-results.com/tnr1505420.aspx?lan=1"
+  },
+  {
+    "id": "4ta-olimpiada-nacional-escolar-secundaria",
+    "fecha": "2026-09-19",
+    "fecha_texto": "19 y 20 de Septiembre, 2026",
+    "titulo": "4ta Olimpiada Nacional Escolar Secundaria",
+    "detalles": [
+      "🗓️ Sábado 19 y domingo 20",
+      "🕘 2:00 pm",
+      "⏱️ 15 + 5 (Sistema rápido)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s2.chess-results.com/tnr1500932.aspx?lan=1&art=1&turdet=YES&SNode=S0"
+  }
+]

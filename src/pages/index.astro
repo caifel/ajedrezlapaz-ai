@@ -1,368 +1,959 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import TorneoCard from '../components/TorneoCard.astro';
 import directiva from '../data/directiva.json';
+import torneos from '../data/torneos.json';
+
+const TOURNAMENT_STATUS = {
+  abierto: { label: 'Inscripciones abiertas', className: 'status-abierto' },
+  lleno: { label: 'Cupo lleno', className: 'status-lleno' },
+  finalizado: { label: 'Finalizado', className: 'status-finalizado' },
+  cancelado: { label: 'Cancelado', className: 'status-cancelado' }
+};
+
+function getEventLinkLabel(url) {
+  if (!url) return '';
+  if (url.includes('lichess.org')) return 'Ver en Lichess';
+  if (url.includes('chess-results.com')) return 'Chess-Results';
+  return 'Ver evento';
+}
+
+const now = new Date();
+
+const tournaments = torneos.map((torneo, index) => {
+  const explicit = typeof torneo.estado === 'string' ? torneo.estado : '';
+  const dateEnd = new Date(`${torneo.fecha}T23:59:59-04:00`);
+  let key = 'abierto';
+
+  if (explicit === 'cancelado') {
+    key = 'cancelado';
+  } else if (explicit === 'finalizado' || dateEnd < now) {
+    key = 'finalizado';
+  } else if (explicit === 'lleno') {
+    key = 'lleno';
+  }
+
+  const status = TOURNAMENT_STATUS[key];
+  return {
+    ...torneo,
+    index,
+    esPasado: dateEnd < now,
+    estado: key,
+    estadoLabel: status.label,
+    estadoClass: status.className,
+    enlaceLabel: getEventLinkLabel(torneo.enlace)
+  };
+});
+
+const torneosFuturos = tournaments
+  .filter((torneo) => !torneo.esPasado)
+  .sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+const torneosPasados = tournaments
+  .filter((torneo) => torneo.esPasado)
+  .sort((a, b) => b.fecha.localeCompare(a.fecha));
+
+const EVENT_LOCATION = {
+  '@type': 'Place',
+  name: 'Estadio Hernando Siles',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '5to piso, puerta #1',
+    addressLocality: 'La Paz',
+    addressRegion: 'La Paz',
+    addressCountry: 'BO'
+  }
+};
+
+const eventSchemas = tournaments.map((torneo) => ({
+  '@context': 'https://schema.org',
+  '@type': 'SportsEvent',
+  name: torneo.titulo,
+  description: 'Torneo de ajedrez organizado por la Asociación Departamental de Ajedrez de La Paz.',
+  startDate: torneo.fecha,
+  eventStatus:
+    torneo.estado === 'cancelado'
+      ? 'https://schema.org/EventCancelled'
+      : 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  inLanguage: 'es-BO',
+  location: EVENT_LOCATION,
+  organizer: {
+    '@type': 'SportsOrganization',
+    name: 'Asociación Departamental de Ajedrez de La Paz',
+    alternateName: 'ADALP',
+    url: 'https://ajedrezlapaz.com'
+  },
+  ...(torneo.enlace ? { url: torneo.enlace } : {})
+}));
 ---
 
 <Layout
-    title="Asociación Departamental de Ajedrez de La Paz (ADALP)"
-    description="Sitio oficial de la Asociación Departamental de Ajedrez de La Paz (ADALP), fundada en 1929. Consulta jugadores, categorías y certificados oficiales."
+  title="Asociación Departamental de Ajedrez de La Paz (ADALP)"
+  description="Sitio oficial de la Asociación Departamental de Ajedrez de La Paz (ADALP), fundada en 1929. Consulta jugadores, categorías y certificados oficiales."
+  schema={eventSchemas}
 >
-    <style is:global>
-        header .header-logo img { height: 35px; }
+  <style is:global>
+    header .header-logo img {
+      height: 35px;
+    }
 
-        /* HERO */
-        #hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 120px 20px 80px;
-            text-align: center;
-        }
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 20px 80px;
+      text-align: center;
+    }
 
-        .hero-logo-container { width: 180px; margin-bottom: 25px; }
-        .hero-logo-container img { width: 100%; height: auto; display: block; }
+    .hero-logo-container {
+      width: 180px;
+      margin-bottom: 25px;
+    }
+    .hero-logo-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
 
-        #hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            letter-spacing: 0.35em;
-            margin-left: 0.35em;
-            margin-bottom: 10px;
-        }
+    #hero h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      margin-left: 0.35em;
+      margin-bottom: 10px;
+    }
 
-        #hero h2 {
-            font-size: 0.85rem;
-            font-weight: 400;
-            letter-spacing: 0.25em;
-            margin-left: 0.25em;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            max-width: 600px;
-        }
+    #hero h2 {
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.25em;
+      margin-left: 0.25em;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      max-width: 600px;
+    }
 
-        .divider {
-            width: 60px;
-            height: 2px;
-            background-color: var(--color-accent);
-            margin: 0 auto 25px auto;
-        }
+    .divider {
+      width: 60px;
+      height: 2px;
+      background-color: var(--color-accent);
+      margin: 0 auto 25px auto;
+    }
 
-        .founding-date {
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.2em;
-            margin-left: 0.2em;
-            color: var(--color-text-light);
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
+    .founding-date {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      margin-left: 0.2em;
+      color: var(--color-text-light);
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
 
-        .institutional-text {
-            font-size: 0.9rem;
-            font-weight: 300;
-            color: var(--color-text-light);
-            max-width: 600px;
-            line-height: 1.8;
-            margin-bottom: 45px;
-        }
+    .institutional-text {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: var(--color-text-light);
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 45px;
+    }
 
-        .buttons-container {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+    .buttons-container {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px 32px;
-            font-family: var(--font-main);
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid var(--color-text);
-        }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 32px;
+      font-family: var(--font-main);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 2px solid var(--color-text);
+    }
 
-        .btn-primary { background-color: var(--color-text); color: white; }
-        .btn-primary:hover { background-color: transparent; color: var(--color-text); }
-        .btn-secondary { background-color: transparent; color: var(--color-text); }
-        .btn-secondary:hover { background-color: var(--color-text); color: white; }
-        .arrow { font-size: 1.1rem; line-height: 1; }
+    .btn-primary {
+      background-color: var(--color-text);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: transparent;
+      color: var(--color-text);
+    }
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--color-text);
+    }
+    .btn-secondary:hover {
+      background-color: var(--color-text);
+      color: white;
+    }
+    .arrow {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
 
-        /* INSTITUCIONAL */
-        #institucional {
-            background-color: var(--color-white);
-            padding: 100px 20px;
-            border-top: 1px solid #eaeaea;
-        }
+    /* INSTITUCIONAL */
+    #institucional {
+      background-color: var(--color-white);
+      padding: 100px 20px;
+      border-top: 1px solid #eaeaea;
+    }
 
-        .container { max-width: 1200px; margin: 0 auto; }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-        .section-title {
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 15px;
-        }
+    .section-title {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
 
-        .section-subtitle {
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--color-accent-text);
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            margin-bottom: 60px;
-            font-weight: 600;
-        }
+    .section-subtitle {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--color-accent-text);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 60px;
+      font-weight: 600;
+    }
 
-        .about-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
 
-        .about-image {
-            background-image: url('https://images.unsplash.com/photo-1529699211952-734e80c4d42b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
-            background-size: cover;
-            background-position: center;
-            height: 450px;
-            position: relative;
-        }
+    .about-image {
+      background-image: url('https://images.unsplash.com/photo-1529699211952-734e80c4d42b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');
+      background-size: cover;
+      background-position: center;
+      height: 450px;
+      position: relative;
+    }
 
-        .about-image::after {
-            content: '';
-            position: absolute;
-            top: 20px; left: 20px;
-            right: -20px; bottom: -20px;
-            border: 2px solid var(--color-accent);
-            z-index: -1;
-        }
+    .about-image::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: -20px;
+      bottom: -20px;
+      border: 2px solid var(--color-accent);
+      z-index: -1;
+    }
 
-        .about-text h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            letter-spacing: 0.05em;
-        }
+    .about-text h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+    }
 
-        .about-text p {
-            font-size: 0.95rem;
-            color: var(--color-text-light);
-            margin-bottom: 20px;
-            line-height: 1.8;
-        }
+    .about-text p {
+      font-size: 0.95rem;
+      color: var(--color-text-light);
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
 
-        .highlight-box {
-            background-color: var(--color-bg);
-            border-left: 4px solid var(--color-accent);
-            padding: 20px;
-            margin-top: 30px;
-        }
+    .highlight-box {
+      background-color: var(--color-bg);
+      border-left: 4px solid var(--color-accent);
+      padding: 20px;
+      margin-top: 30px;
+    }
 
-        .highlight-box p { margin-bottom: 0; font-weight: 600; color: var(--color-text); }
+    .highlight-box p {
+      margin-bottom: 0;
+      font-weight: 600;
+      color: var(--color-text);
+    }
 
-        /* DIRECTIVA */
-        #directiva {
-            background-color: var(--color-bg);
-            padding: 100px 20px;
-        }
+    /* DIRECTIVA */
+    #directiva {
+      background-color: var(--color-bg);
+      padding: 100px 20px;
+    }
 
-        .board-list {
-            max-width: 720px;
-            margin: 0 auto;
-            border-top: 1px solid var(--color-text);
-        }
+    .board-list {
+      max-width: 720px;
+      margin: 0 auto;
+      border-top: 1px solid var(--color-text);
+    }
 
-        .board-member {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 30px;
-            padding: 28px 0;
-            border-bottom: 1px solid #e5e5e5;
-        }
+    .board-member {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 30px;
+      padding: 28px 0;
+      border-bottom: 1px solid #e5e5e5;
+    }
 
-        .board-name {
-            font-size: 1.05rem;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-            color: var(--color-text);
-            line-height: 1.4;
-        }
+    .board-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--color-text);
+      line-height: 1.4;
+    }
 
-        .board-role {
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--color-accent-text);
-            text-align: right;
-            flex-shrink: 0;
-        }
+    .board-role {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--color-accent-text);
+      text-align: right;
+      flex-shrink: 0;
+    }
 
-        /* NOTICIAS */
-        #noticias {
-            background-color: var(--color-white);
-            padding: 100px 20px;
-            border-top: 1px solid #eaeaea;
-        }
+    /* TORNEOS */
+    #torneos {
+      background-color: var(--color-white);
+      padding: 100px 20px;
+      border-top: 1px solid #eaeaea;
+    }
 
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
 
-        .news-card {
-            background-color: var(--color-bg);
-            border: 1px solid #eaeaea;
-            padding: 30px;
-            transition: transform 0.3s ease;
-        }
+    .news-group + .news-group {
+      margin-top: 60px;
+    }
 
-        .news-card:hover { transform: translateY(-5px); }
+    .news-group-title {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eaeaea;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
 
-        .news-date {
-            font-size: 0.75rem;
-            color: var(--color-accent-text);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 10px;
-            display: block;
-        }
+    .news-empty {
+      font-size: 0.85rem;
+      color: var(--color-text-light);
+    }
 
-        .news-card h3 { font-size: 1.1rem; margin-bottom: 15px; line-height: 1.4; }
-        .news-card p { font-size: 0.85rem; color: var(--color-text-light); margin-bottom: 20px; }
+    .news-card {
+      background-color: var(--color-bg);
+      border: 1px solid #eaeaea;
+      padding: 30px;
+      transition: transform 0.3s ease;
+    }
 
-        .read-more {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--color-text);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
+    .news-card:hover {
+      transform: translateY(-5px);
+    }
 
-        .read-more:hover { color: var(--color-accent-text); }
+    .news-date {
+      font-size: 0.75rem;
+      color: var(--color-accent-text);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+      display: block;
+    }
 
-        /* RESPONSIVIDAD */
-        @media (max-width: 900px) {
-            .about-grid { grid-template-columns: 1fr; }
-            .about-image { height: 300px; order: -1; }
-            .about-image::after { display: none; }
-        }
+    .news-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
 
-        @media (max-width: 480px) {
-            #hero h1 { font-size: 2.5rem; }
-            #hero h2 { font-size: 0.75rem; }
-            .buttons-container { flex-direction: column; width: 100%; }
-            .btn { width: 100%; }
-            .hero-logo-container { width: 140px; }
-            .board-member { flex-direction: column; align-items: flex-start; gap: 6px; padding: 22px 0; }
-            .board-role { text-align: left; }
-        }
-    </style>
+    .news-meta .news-date {
+      margin-bottom: 0;
+    }
 
-    <main>
+    .news-status-row,
+    .tournament-modal-status-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .news-event-link,
+    .tournament-modal-event-link {
+      color: var(--color-text);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .news-event-link:hover,
+    .tournament-modal-event-link:hover {
+      color: var(--color-accent-text);
+    }
+
+    .tournament-modal-event-link[hidden] {
+      display: none;
+    }
+
+    .news-status {
+      display: inline-block;
+      padding: 3px 8px;
+      border: 1px solid currentColor;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .news-status.status-abierto {
+      color: #1b5e20;
+      background-color: #e8f5e9;
+    }
+
+    .news-status.status-lleno,
+    .news-status.status-cancelado {
+      color: #8a1c1c;
+      background-color: #fdecea;
+    }
+
+    .news-status.status-finalizado {
+      color: #3d3d3d;
+      background-color: #eeeeee;
+    }
+
+    .news-card.status-abierto {
+      border-left: 4px solid #2d7a2d;
+    }
+    .news-card.status-lleno {
+      border-left: 4px solid #b42318;
+    }
+    .news-card.status-cancelado {
+      border-left: 4px solid #b42318;
+    }
+    .news-card.status-finalizado {
+      border-left: 4px solid #767676;
+    }
+
+    .news-card h4 {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+
+    .news-details {
+      display: grid;
+      gap: 7px;
+      margin: 0 0 20px;
+      padding: 0;
+      list-style: none;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      color: var(--color-text-light);
+    }
+
+    .read-more {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-text);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .read-more:hover {
+      color: var(--color-accent-text);
+    }
+
+    /* MODAL DE TORNEO */
+    .tournament-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 3000;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 20px;
+      background-color: rgba(250, 250, 250, 0.98);
+      overflow-y: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.3s ease,
+        visibility 0.3s ease;
+    }
+
+    .tournament-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .tournament-modal {
+      position: relative;
+      width: 100%;
+      max-width: 620px;
+      margin: auto;
+      padding: 50px 40px 40px;
+      background-color: var(--color-white);
+      border: 1px solid var(--color-border);
+    }
+
+    .tournament-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--color-text);
+      font-family: inherit;
+      font-size: 2rem;
+      font-weight: 300;
+      line-height: 1;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    .tournament-modal-close:hover {
+      opacity: 0.5;
+    }
+
+    .tournament-modal-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+      margin-bottom: 15px;
+    }
+
+    .tournament-modal-date {
+      display: block;
+      margin-bottom: 0;
+      color: var(--color-accent-text);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .tournament-modal-title {
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+      line-height: 1.3;
+    }
+
+    .tournament-modal-details {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 30px;
+      padding: 0;
+      color: var(--color-text);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      list-style: none;
+    }
+
+    .tournament-modal-details[hidden] {
+      display: none;
+    }
+
+    .tournament-modal-whatsapp {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px 15px;
+      padding-top: 20px;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .tournament-modal-whatsapp-label {
+      color: var(--color-text-light);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .tournament-modal-whatsapp a {
+      color: var(--color-text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .tournament-modal-whatsapp a:hover {
+      color: var(--color-accent-text);
+    }
+
+    @media (max-width: 600px) {
+      .tournament-modal-overlay {
+        padding: 40px 15px;
+      }
+      .tournament-modal {
+        padding: 45px 22px 30px;
+      }
+      .tournament-modal-title {
+        font-size: 1.3rem;
+      }
+    }
+
+    /* RESPONSIVIDAD */
+    @media (max-width: 900px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .about-image {
+        height: 300px;
+        order: -1;
+      }
+      .about-image::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #hero h1 {
+        font-size: 2.5rem;
+      }
+      #hero h2 {
+        font-size: 0.75rem;
+      }
+      .buttons-container {
+        flex-direction: column;
+        width: 100%;
+      }
+      .btn {
+        width: 100%;
+      }
+      .hero-logo-container {
+        width: 140px;
+      }
+      .board-member {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 22px 0;
+      }
+      .board-role {
+        text-align: left;
+      }
+    }
+  </style>
+
+  <main>
     <!-- HERO -->
     <section id="hero">
-        <div class="hero-logo-container">
-            <img src="/assets/logo-adalp.svg" alt="ADALP Logo" width="114" height="114">
-        </div>
-        <h1>ADALP</h1>
-        <h2>Asociación Departamental<br>de Ajedrez de La Paz</h2>
-        <div class="divider"></div>
-        <p class="founding-date">Fundada el 7 de diciembre de 1929</p>
-        <p class="institutional-text">
-            Únicos representantes oficiales avalados por la Federación Boliviana de Ajedrez (FBA), con jurisdicción exclusiva en todo el Departamento de La Paz.
-        </p>
-        <div class="buttons-container">
-            <a href="/jugadores/" class="btn btn-primary">Lista de Jugadores <span class="arrow">&rarr;</span></a>
-            <a href="/galeria/" class="btn btn-secondary">Galería de Fotos <span class="arrow">&rarr;</span></a>
-        </div>
+      <div class="hero-logo-container">
+        <img src="/assets/logo-adalp.svg" alt="ADALP Logo" width="114" height="114" />
+      </div>
+      <h1>ADALP</h1>
+      <h2>Asociación Departamental<br />de Ajedrez de La Paz</h2>
+      <div class="divider"></div>
+      <p class="founding-date">Fundada el 7 de diciembre de 1929</p>
+      <p class="institutional-text">
+        Únicos representantes oficiales avalados por la Federación Boliviana de Ajedrez (FBA), con jurisdicción
+        exclusiva en todo el Departamento de La Paz.
+      </p>
+      <div class="buttons-container">
+        <a href="/jugadores/" class="btn btn-primary">Lista de Jugadores <span class="arrow">&rarr;</span></a>
+        <a href="/galeria/" class="btn btn-secondary">Galería de Fotos <span class="arrow">&rarr;</span></a>
+      </div>
     </section>
 
     <!-- INSTITUCIONAL -->
     <section id="institucional">
-        <div class="container">
-            <h2 class="section-title">Nuestra Institución</h2>
-            <p class="section-subtitle">Casi un siglo de pasión por el ajedrez</p>
+      <div class="container">
+        <h2 class="section-title">Nuestra Institución</h2>
+        <p class="section-subtitle">Casi un siglo de pasión por el ajedrez</p>
 
-            <div class="about-grid">
-                <div class="about-image"></div>
-                <div class="about-text">
-                    <h3>Pioneros del Ajedrez Paceño</h3>
-                    <p>Desde nuestra fundación el <strong>7 de diciembre de 1929</strong>, la Asociación Departamental de Ajedrez de La Paz (ADALP) ha sido el pilar fundamental para el desarrollo y la difusión del deporte ciencia en nuestra región.</p>
-                    <p>A lo largo de casi 100 años, hemos organizado innumerables torneos, formado a generaciones de maestros y fomentado los valores de disciplina, estrategia y comunidad entre todos nuestros afiliados.</p>
+        <div class="about-grid">
+          <div class="about-image"></div>
+          <div class="about-text">
+            <h3>Pioneros del Ajedrez Paceño</h3>
+            <p>
+              Desde nuestra fundación el <strong>7 de diciembre de 1929</strong>, la Asociación Departamental de Ajedrez
+              de La Paz (ADALP) ha sido el pilar fundamental para el desarrollo y la difusión del deporte ciencia en
+              nuestra región.
+            </p>
+            <p>
+              A lo largo de casi 100 años, hemos organizado innumerables torneos, formado a generaciones de maestros y
+              fomentado los valores de disciplina, estrategia y comunidad entre todos nuestros afiliados.
+            </p>
 
-                    <div class="highlight-box">
-                        <p>Somos los únicos representantes oficiales avalados por la Federación Boliviana de Ajedrez (FBA), con jurisdicción exclusiva en todo el Departamento de La Paz.</p>
-                    </div>
-                </div>
+            <div class="highlight-box">
+              <p>
+                Somos los únicos representantes oficiales avalados por la Federación Boliviana de Ajedrez (FBA), con
+                jurisdicción exclusiva en todo el Departamento de La Paz.
+              </p>
             </div>
+          </div>
         </div>
+      </div>
     </section>
 
     <!-- DIRECTIVA -->
     <section id="directiva">
-        <div class="container">
-            <h2 class="section-title">Directiva</h2>
-            <p class="section-subtitle">Autoridades en ejercicio</p>
+      <div class="container">
+        <h2 class="section-title">Directiva</h2>
+        <p class="section-subtitle">Autoridades en ejercicio</p>
 
-            <div class="board-list">
-                {directiva.map((member) => (
-                    <div class="board-member">
-                        <span class="board-name">{member.nombre}</span>
-                        <span class="board-role">{member.cargo}</span>
-                    </div>
-                ))}
-            </div>
+        <div class="board-list">
+          {
+            directiva.map((member) => (
+              <div class="board-member">
+                <span class="board-name">{member.nombre}</span>
+                <span class="board-role">{member.cargo}</span>
+              </div>
+            ))
+          }
         </div>
+      </div>
     </section>
 
-    <!-- NOTICIAS -->
-    <section id="noticias">
-        <div class="container">
-            <h2 class="section-title">Actualidad</h2>
-            <p class="section-subtitle">Próximos torneos y noticias</p>
+    <!-- TORNEOS -->
+    <section id="torneos">
+      <div class="container">
+        <h2 class="section-title">Torneos</h2>
+        <p class="section-subtitle">Calendario de competencias</p>
 
+        <div class="news-group">
+          <h3 class="news-group-title">Próximos</h3>
+          {torneosFuturos.length > 0 ? (
             <div class="news-grid">
-                <article class="news-card">
-                    <span class="news-date">15 de Octubre, 2026</span>
-                    <h3>Torneo Departamental de Ajedrez Clásico</h3>
-                    <p>Inscripciones abiertas para el torneo oficial válido por el ranking departamental. ¡Cupos limitados!</p>
-                    <a href="#" class="read-more">Leer más &rarr;</a>
-                </article>
-                <article class="news-card">
-                    <span class="news-date">02 de Octubre, 2026</span>
-                    <h3>Clínicas de Ajedrez para Jóvenes Promesas</h3>
-                    <p>La ADALP invita a todos los menores de 18 años a participar de las clases magistrales gratuitas en nuestra sede.</p>
-                    <a href="#" class="read-more">Leer más &rarr;</a>
-                </article>
-                <article class="news-card">
-                    <span class="news-date">20 de Septiembre, 2026</span>
-                    <h3>Resultados del Campeonato Nacional</h3>
-                    <p>Nuestros representantes paceños tuvieron una destacada participación en el último certamen nacional.</p>
-                    <a href="#" class="read-more">Leer más &rarr;</a>
-                </article>
+              {torneosFuturos.map((torneo) => <TorneoCard torneo={torneo} index={torneo.index} />)}
             </div>
+          ) : (
+            <p class="news-empty">No hay torneos programados por el momento.</p>
+          )}
         </div>
+
+        <div class="news-group">
+          <h3 class="news-group-title">Pasados</h3>
+          {torneosPasados.length > 0 ? (
+            <div class="news-grid">
+              {torneosPasados.map((torneo) => <TorneoCard torneo={torneo} index={torneo.index} />)}
+            </div>
+          ) : (
+            <p class="news-empty">Todavía no hay torneos pasados.</p>
+          )}
+        </div>
+      </div>
     </section>
-    </main>
+  </main>
+
+  <div class="tournament-modal-overlay" id="tournamentModalOverlay">
+    <div
+      class="tournament-modal"
+      id="tournamentModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tournamentModalTitle"
+      aria-describedby="tournamentModalDetails"
+    >
+      <button
+        class="tournament-modal-close"
+        id="tournamentModalClose"
+        type="button"
+        aria-label="Cerrar detalle del torneo">&times;</button
+      >
+      <div class="tournament-modal-meta">
+        <span class="tournament-modal-date" id="tournamentModalDate"></span>
+        <div class="tournament-modal-status-row">
+          <span class="news-status" id="tournamentModalStatus"></span>
+          <a class="tournament-modal-event-link" id="tournamentModalLink" href="#" target="_blank" rel="noopener" hidden
+          ></a>
+        </div>
+      </div>
+      <h2 class="tournament-modal-title" id="tournamentModalTitle"></h2>
+      <ul class="tournament-modal-details" id="tournamentModalDetails"></ul>
+      <div class="tournament-modal-whatsapp">
+        <span class="tournament-modal-whatsapp-label">WhatsApp</span>
+        <a id="tournamentModalWhatsapp" href="#" target="_blank" rel="noopener"></a>
+      </div>
+    </div>
+  </div>
+
+  <script define:vars={{ tournaments }}>
+    document.addEventListener('DOMContentLoaded', () => {
+      const overlay = document.getElementById('tournamentModalOverlay');
+      const modal = document.getElementById('tournamentModal');
+      const closeBtn = document.getElementById('tournamentModalClose');
+      const dateEl = document.getElementById('tournamentModalDate');
+      const statusEl = document.getElementById('tournamentModalStatus');
+      const titleEl = document.getElementById('tournamentModalTitle');
+      const detailsEl = document.getElementById('tournamentModalDetails');
+      const whatsappEl = document.getElementById('tournamentModalWhatsapp');
+      const linkEl = document.getElementById('tournamentModalLink');
+      const triggers = document.querySelectorAll('.read-more[data-index]');
+      let lastTrigger = null;
+
+      const STATUS = {
+        abierto: { label: 'Inscripciones abiertas', className: 'status-abierto' },
+        lleno: { label: 'Cupo lleno', className: 'status-lleno' },
+        finalizado: { label: 'Finalizado', className: 'status-finalizado' },
+        cancelado: { label: 'Cancelado', className: 'status-cancelado' }
+      };
+
+      function getStatus(torneo) {
+        if (torneo.estado === 'cancelado') {
+          return { key: 'cancelado', ...STATUS.cancelado };
+        }
+
+        const end = new Date(`${torneo.fecha}T23:59:59-04:00`);
+        if (torneo.estado === 'finalizado' || end < new Date()) {
+          return { key: 'finalizado', ...STATUS.finalizado };
+        }
+
+        if (torneo.estado === 'lleno') {
+          return { key: 'lleno', ...STATUS.lleno };
+        }
+
+        return { key: 'abierto', ...STATUS.abierto };
+      }
+
+      function applyStatus(element, status) {
+        element.textContent = status.label;
+        element.className = `news-status ${status.className}`;
+      }
+
+      function refreshCardStatuses() {
+        document.querySelectorAll('.news-card[data-tournament-index]').forEach((card) => {
+          const torneo = tournaments[Number(card.dataset.tournamentIndex)];
+          if (!torneo) return;
+
+          const status = getStatus(torneo);
+          card.classList.remove('status-abierto', 'status-lleno', 'status-finalizado', 'status-cancelado');
+          card.classList.add(status.className);
+
+          const badge = card.querySelector('.news-status');
+          if (badge) applyStatus(badge, status);
+        });
+      }
+
+      refreshCardStatuses();
+
+      function openModal(torneo, trigger) {
+        lastTrigger = trigger;
+        const status = getStatus(torneo);
+        dateEl.textContent = torneo.fecha_texto;
+        applyStatus(statusEl, status);
+        titleEl.textContent = torneo.titulo;
+
+        detailsEl.replaceChildren();
+        const details = Array.isArray(torneo.detalles) ? torneo.detalles : [];
+        details.forEach((detail) => {
+          if (!detail) return;
+
+          const item = document.createElement('li');
+          item.textContent = detail;
+          detailsEl.appendChild(item);
+        });
+        detailsEl.hidden = detailsEl.children.length === 0;
+
+        whatsappEl.textContent = torneo.whatsapp;
+        whatsappEl.href = `https://wa.me/${String(torneo.whatsapp).replace(/\D/g, '')}`;
+
+        const eventLink = typeof torneo.enlace === 'string' ? torneo.enlace.trim() : '';
+        if (eventLink) {
+          linkEl.href = eventLink;
+          linkEl.textContent = torneo.enlaceLabel || 'Ver evento';
+          linkEl.hidden = false;
+        } else {
+          linkEl.href = '#';
+          linkEl.textContent = '';
+          linkEl.hidden = true;
+        }
+
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      }
+
+      function closeModal() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+
+        if (lastTrigger) {
+          lastTrigger.focus();
+          lastTrigger = null;
+        }
+      }
+
+      triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+          const torneo = tournaments[Number(trigger.dataset.index)];
+          if (torneo) openModal(torneo, trigger);
+        });
+      });
+
+      closeBtn.addEventListener('click', closeModal);
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) closeModal();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (!overlay.classList.contains('active')) return;
+
+        if (event.key === 'Escape') {
+          closeModal();
+          return;
+        }
+
+        if (event.key === 'Tab') {
+          const focusable = [...modal.querySelectorAll('button, a[href]')].filter(
+            (element) => !element.disabled && element.offsetParent !== null
+          );
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        }
+      });
+    });
+  </script>
 </Layout>

@@ -1,0 +1,31 @@
+---
+const { torneo, index } = Astro.props;
+---
+
+<article class={`news-card ${torneo.estadoClass}`} data-tournament-index={index}>
+  <div class="news-meta">
+    <span class="news-date">{torneo.fecha_texto}</span>
+    <div class="news-status-row">
+      <span class={`news-status ${torneo.estadoClass}`}>{torneo.estadoLabel}</span>
+      {torneo.enlace && (
+        <a class="news-event-link" href={torneo.enlace} target="_blank" rel="noopener">
+          {torneo.enlaceLabel}
+        </a>
+      )}
+    </div>
+  </div>
+  <h4>{torneo.titulo}</h4>
+  <ul class="news-details">
+    {(torneo.detalles ?? []).map((detalle) => <li>{detalle}</li>)}
+  </ul>
+  <button
+    type="button"
+    class="read-more"
+    data-index={index}
+    aria-haspopup="dialog"
+    aria-controls="tournamentModal"
+    aria-label={`Leer más sobre ${torneo.titulo}`}
+  >
+    Leer más &rarr;
+  </button>
+</article>
