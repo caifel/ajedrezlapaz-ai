@@ -1,0 +1,263 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getTorneos, getEventSchema, getWhatsappUrl } from '../../lib/torneos';
+
+export function getStaticPaths() {
+  return getTorneos().map((torneo) => ({
+    params: { id: torneo.id },
+    props: { torneo }
+  }));
+}
+
+const { torneo } = Astro.props;
+
+const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
+const pageDescription = `${torneo.titulo} — ${torneo.fecha_texto}. Consulta horarios, ritmo de juego y cómo inscribirte.`;
+const pageSchema = getEventSchema(torneo, siteUrl);
+
+const inscripcionUrl = getWhatsappUrl(
+  torneo.whatsapp,
+  `Hola, quiero inscribirme en: ${torneo.titulo}.`
+);
+const consultaUrl = getWhatsappUrl(
+  torneo.whatsapp,
+  `Hola, quisiera consultar sobre: ${torneo.titulo}.`
+);
+---
+
+<Layout
+  title={`${torneo.titulo} | ADALP La Paz`}
+  description={pageDescription}
+  breadcrumbs={[
+    { name: 'Inicio', path: '/' },
+    { name: 'Torneos', path: '/torneos/' },
+    { name: torneo.titulo, path: `/torneos/${torneo.id}/` }
+  ]}
+  schema={[pageSchema]}
+>
+  <style>
+    :global(body) {
+      --color-bg: #ffffff;
+      --color-text: #000000;
+      --color-text-light: #666666;
+      --color-border: #eeeeee;
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 150px 24px 90px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 32px;
+      color: var(--color-text-light);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: var(--color-text);
+    }
+
+    .tournament-header {
+      margin-bottom: 48px;
+    }
+
+    .tournament-title {
+      margin-bottom: 16px;
+      font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      line-height: 1.25;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+
+    .tournament-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 14px;
+    }
+
+    .tournament-date {
+      color: var(--color-text-light);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 9px;
+      border: 1px solid currentColor;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .status-abierto {
+      color: #1b5e20;
+      background-color: #e8f5e9;
+    }
+
+    .status-lleno,
+    .status-cancelado {
+      color: #8a1c1c;
+      background-color: #fdecea;
+    }
+
+    .status-finalizado {
+      color: #3d3d3d;
+      background-color: #eeeeee;
+    }
+
+    .section-label {
+      margin-bottom: 18px;
+      color: var(--color-text-light);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .detail-list {
+      margin: 0;
+      padding: 0;
+      border-top: 1px solid var(--color-border);
+      list-style: none;
+    }
+
+    .detail-list li {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .tournament-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 40px;
+    }
+
+    .action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 22px;
+      border: 2px solid var(--color-text);
+      font-family: var(--font-main);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition:
+        background-color 0.25s ease,
+        color 0.25s ease;
+    }
+
+    .action-primary {
+      background-color: var(--color-text);
+      color: #ffffff;
+    }
+
+    .action-primary:hover {
+      background-color: transparent;
+      color: var(--color-text);
+    }
+
+    .action-secondary {
+      background-color: transparent;
+      color: var(--color-text);
+    }
+
+    .action-secondary:hover {
+      background-color: var(--color-text);
+      color: #ffffff;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 120px 20px 70px;
+      }
+
+      .back-link {
+        margin-bottom: 26px;
+      }
+
+      .tournament-header {
+        margin-bottom: 38px;
+      }
+
+      .tournament-title {
+        font-size: 1.35rem;
+        letter-spacing: 0.1em;
+      }
+
+      .tournament-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .tournament-actions {
+        flex-direction: column;
+      }
+
+      .action {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <main>
+    <a class="back-link" href="/torneos/">&larr; Torneos</a>
+
+    <div class="tournament-header">
+      <h1 class="tournament-title">{torneo.titulo}</h1>
+      <div class="tournament-meta">
+        <span class="tournament-date">{torneo.fecha_texto}</span>
+        <span class={`status-badge ${torneo.estadoClass}`}>{torneo.estadoLabel}</span>
+      </div>
+    </div>
+
+    <section aria-labelledby="detalles-title">
+      <h2 class="section-label" id="detalles-title">Detalles</h2>
+      <ul class="detail-list">
+        {(torneo.detalles ?? []).map((detalle) => <li>{detalle}</li>)}
+      </ul>
+    </section>
+
+    <div class="tournament-actions">
+      {torneo.estado === 'abierto' && inscripcionUrl && (
+        <a class="action action-primary" href={inscripcionUrl} target="_blank" rel="noopener">
+          Inscribirme por WhatsApp <span aria-hidden="true">&rarr;</span>
+        </a>
+      )}
+      {torneo.enlace && (
+        <a class="action action-secondary" href={torneo.enlace} target="_blank" rel="noopener">
+          {torneo.estado === 'finalizado' ? 'Ver resultados' : 'Ver evento'}
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      )}
+      {torneo.estado !== 'abierto' && !torneo.enlace && consultaUrl && (
+        <a class="action action-secondary" href={consultaUrl} target="_blank" rel="noopener">
+          Consultar por WhatsApp <span aria-hidden="true">&rarr;</span>
+        </a>
+      )}
+    </div>
+  </main>
+</Layout>

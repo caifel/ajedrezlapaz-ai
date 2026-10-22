@@ -1,0 +1,49 @@
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const STATUS = {
+      abierto: { label: 'Inscripciones abiertas', className: 'status-abierto' },
+      lleno: { label: 'Cupo lleno', className: 'status-lleno' },
+      finalizado: { label: 'Finalizado', className: 'status-finalizado' },
+      cancelado: { label: 'Cancelado', className: 'status-cancelado' }
+    };
+
+    function getStatus(torneo) {
+      if (torneo.estado === 'cancelado') {
+        return { key: 'cancelado', ...STATUS.cancelado };
+      }
+
+      const end = new Date(`${torneo.fecha}T23:59:59-04:00`);
+      if (torneo.estado === 'finalizado' || end < new Date()) {
+        return { key: 'finalizado', ...STATUS.finalizado };
+      }
+
+      if (torneo.estado === 'lleno') {
+        return { key: 'lleno', ...STATUS.lleno };
+      }
+
+      return { key: 'abierto', ...STATUS.abierto };
+    }
+
+    function applyStatus(element, status) {
+      element.textContent = status.label;
+      element.className = `news-status ${status.className}`;
+    }
+
+    document.querySelectorAll('.news-card[data-fecha]').forEach((card) => {
+      const torneo = {
+        fecha: card.dataset.fecha,
+        estado: card.dataset.estado
+      };
+      const status = getStatus(torneo);
+
+      card.classList.remove('status-abierto', 'status-lleno', 'status-finalizado', 'status-cancelado');
+      card.classList.add(status.className);
+
+      const badge = card.querySelector('.news-status');
+      if (badge) applyStatus(badge, status);
+
+      const ctaInscribirme = card.querySelector('[data-cta="inscribirme"]');
+      if (ctaInscribirme) ctaInscribirme.hidden = status.key !== 'abierto';
+    });
+  });
+</script>

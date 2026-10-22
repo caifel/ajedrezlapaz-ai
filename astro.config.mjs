@@ -13,6 +13,12 @@ export default defineConfig({
         if (item.url === 'https://ajedrezlapaz.com/') {
           return { ...item, changefreq: 'weekly', priority: 1 };
         }
+        if (item.url === 'https://ajedrezlapaz.com/torneos/') {
+          return { ...item, changefreq: 'weekly', priority: 0.9 };
+        }
+        if (item.url.includes('/torneos/')) {
+          return { ...item, changefreq: 'monthly', priority: 0.8 };
+        }
         return item;
       },
     }),

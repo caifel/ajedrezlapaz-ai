@@ -1,0 +1,125 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import TorneoCard from '../../components/TorneoCard.astro';
+import TorneoStatusRefresh from '../../components/TorneoStatusRefresh.astro';
+import { getTorneos } from '../../lib/torneos';
+
+const torneos = getTorneos();
+
+const proximos = torneos.filter((torneo) => !torneo.esPasado).sort((a, b) => a.fecha.localeCompare(b.fecha));
+
+const anteriores = torneos.filter((torneo) => torneo.esPasado).sort((a, b) => b.fecha.localeCompare(a.fecha));
+
+const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
+const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
+const pageDescription =
+  'Calendario oficial de torneos de ajedrez de la Asociación Departamental de Ajedrez de La Paz. Consulta fechas, horarios e inscripciones.';
+
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Torneos de Ajedrez en La Paz',
+  description: pageDescription,
+  url: pageUrl,
+  inLanguage: 'es-BO',
+  isPartOf: { '@id': new URL('/#website', siteUrl).href },
+  about: { '@id': new URL('/#organization', siteUrl).href },
+  mainEntity: {
+    '@type': 'ItemList',
+    itemListElement: [...proximos, ...anteriores].map((torneo, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: torneo.titulo,
+      url: new URL(`/torneos/${torneo.id}/`, siteUrl).href
+    }))
+  }
+};
+---
+
+<Layout
+  title="Torneos de Ajedrez en La Paz | Calendario ADALP"
+  description={pageDescription}
+  breadcrumbs={[
+    { name: 'Inicio', path: '/' },
+    { name: 'Torneos', path: '/torneos/' }
+  ]}
+  schema={[pageSchema]}
+>
+  <style>
+    :global(body) {
+      --color-bg: #ffffff;
+      --color-text: #000000;
+      --color-text-light: #666666;
+      --color-border: #eeeeee;
+    }
+
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 160px 20px 100px;
+    }
+
+    .page-title {
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .page-subtitle {
+      margin-bottom: 60px;
+      color: var(--color-text-light);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        padding: 120px 20px 70px;
+      }
+    }
+  </style>
+
+  <main>
+    <h1 class="page-title">Torneos</h1>
+    <p class="page-subtitle">Calendario oficial de competencias</p>
+
+    <div class="news-group">
+      <h2 class="news-group-title">Próximos</h2>
+      {
+        proximos.length > 0 ? (
+          <div class="news-grid">
+            {proximos.map((torneo) => (
+              <TorneoCard torneo={torneo} />
+            ))}
+          </div>
+        ) : (
+          <p class="news-empty">No hay torneos programados por el momento.</p>
+        )
+      }
+    </div>
+
+    <div class="news-group">
+      <h2 class="news-group-title">Torneos anteriores</h2>
+      {
+        anteriores.length > 0 ? (
+          <div class="news-grid">
+            {anteriores.map((torneo) => (
+              <TorneoCard torneo={torneo} />
+            ))}
+          </div>
+        ) : (
+          <p class="news-empty">Todavía no hay torneos anteriores.</p>
+        )
+      }
+    </div>
+  </main>
+
+  <TorneoStatusRefresh />
+</Layout>

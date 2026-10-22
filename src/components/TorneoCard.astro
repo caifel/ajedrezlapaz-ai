@@ -1,8 +1,21 @@
 ---
-const { torneo, index } = Astro.props;
+import { getWhatsappUrl } from '../lib/torneos';
+
+const { torneo } = Astro.props;
+
+const inscripcionUrl = getWhatsappUrl(
+  torneo.whatsapp,
+  `Hola, quiero inscribirme en: ${torneo.titulo}.`
+);
+const mostrarInscribirme = torneo.estado === 'abierto' && Boolean(inscripcionUrl);
+const torneoUrl = `/torneos/${torneo.id}/`;
 ---
 
-<article class={`news-card ${torneo.estadoClass}`} data-tournament-index={index}>
+<article
+  class={`news-card ${torneo.estadoClass}`}
+  data-fecha={torneo.fecha}
+  data-estado={torneo.estado}
+>
   <div class="news-meta">
     <span class="news-date">{torneo.fecha_texto}</span>
     <div class="news-status-row">
@@ -14,18 +27,177 @@ const { torneo, index } = Astro.props;
       )}
     </div>
   </div>
-  <h4>{torneo.titulo}</h4>
+  <h3><a href={torneoUrl}>{torneo.titulo}</a></h3>
   <ul class="news-details">
     {(torneo.detalles ?? []).map((detalle) => <li>{detalle}</li>)}
   </ul>
-  <button
-    type="button"
-    class="read-more"
-    data-index={index}
-    aria-haspopup="dialog"
-    aria-controls="tournamentModal"
-    aria-label={`Leer más sobre ${torneo.titulo}`}
-  >
-    Leer más &rarr;
-  </button>
+  {inscripcionUrl && (
+    <a
+      class="card-cta card-cta-inscribirme"
+      href={inscripcionUrl}
+      target="_blank"
+      rel="noopener"
+      data-cta="inscribirme"
+      aria-label={`Inscribirme en ${torneo.titulo} por WhatsApp`}
+      hidden={!mostrarInscribirme}
+    >
+      Inscribirme <span class="arrow">&rarr;</span>
+    </a>
+  )}
 </article>
+
+<style>
+  .news-card {
+    background-color: var(--color-bg);
+    border: 1px solid #eaeaea;
+    padding: 30px;
+    transition: transform 0.3s ease;
+  }
+
+  .news-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .news-date {
+    display: block;
+    margin-bottom: 0;
+    color: var(--color-accent-text);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .news-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .news-status-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .news-event-link {
+    color: var(--color-text);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .news-event-link:hover {
+    color: var(--color-accent-text);
+  }
+
+  .news-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border: 1px solid currentColor;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .news-status.status-abierto {
+    color: #1b5e20;
+    background-color: #e8f5e9;
+  }
+
+  .news-status.status-lleno,
+  .news-status.status-cancelado {
+    color: #8a1c1c;
+    background-color: #fdecea;
+  }
+
+  .news-status.status-finalizado {
+    color: #3d3d3d;
+    background-color: #eeeeee;
+  }
+
+  .news-card.status-abierto {
+    border-left: 4px solid #2d7a2d;
+  }
+
+  .news-card.status-lleno,
+  .news-card.status-cancelado {
+    border-left: 4px solid #b42318;
+  }
+
+  .news-card.status-finalizado {
+    border-left: 4px solid #767676;
+  }
+
+  .news-card h3 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    line-height: 1.4;
+  }
+
+  .news-card h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .news-card h3 a:hover {
+    color: var(--color-accent-text);
+  }
+
+  .news-details {
+    display: grid;
+    gap: 7px;
+    margin: 0 0 20px;
+    padding: 0;
+    color: var(--color-text-light);
+    font-size: 0.8rem;
+    line-height: 1.45;
+    list-style: none;
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: 2px solid var(--color-text);
+    background-color: transparent;
+    color: var(--color-text);
+    font-family: var(--font-main);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition:
+      background-color 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .news-card:hover .card-cta-inscribirme,
+  .news-card:focus-within .card-cta-inscribirme,
+  .card-cta-inscribirme:hover,
+  .card-cta-inscribirme:focus-visible {
+    background-color: #2d7a2d;
+    border-color: #2d7a2d;
+    color: #ffffff;
+  }
+
+  .card-cta[hidden] {
+    display: none;
+  }
+
+  .arrow {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+</style>

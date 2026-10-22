@@ -10,6 +10,7 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <nav class="desktop-nav">
         <ul>
             <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
+            <li><a href="/torneos/" class={isActive('/torneos') ? 'active' : undefined}>Torneos</a></li>
             <li><a href="/jugadores/" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
         </ul>
     </nav>
@@ -29,6 +30,7 @@ const isActive = (href) => (href === '/' ? path === '/' : path.startsWith(href))
     <button class="close-btn" id="closeBtn" type="button" aria-label="Cerrar menú">&times;</button>
     <ul>
         <li><a href="/" class={isActive('/') ? 'active' : undefined}>Inicio</a></li>
+        <li><a href="/torneos/" class={isActive('/torneos') ? 'active' : undefined}>Torneos</a></li>
         <li><a href="/jugadores/" class={isActive('/jugadores') ? 'active' : undefined}>Jugadores</a></li>
     </ul>
 </nav>
