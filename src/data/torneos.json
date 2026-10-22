@@ -67,7 +67,7 @@
     "fecha_texto": "Del 10 al 13 de Diciembre, 2026",
     "titulo": "Memorial Cidar Húmerez IRT",
     "detalles": [
-      "🗓️ Del jueves 10 al domingo 13",
+      "🗓️ Jueves 10 al domingo 13",
       "🕘 2:00 pm",
       "🕰️ 60+30 (standard)",
       "♟️ Sistema suizo a 7 rondas",
@@ -120,5 +120,50 @@
     ],
     "whatsapp": "+591 73505230",
     "enlace": "https://s2.chess-results.com/tnr1500932.aspx?lan=1&art=1&turdet=YES&SNode=S0"
+  },
+  {
+    "id": "3ra-olimpiada-nacional-escolar-primaria",
+    "fecha": "2026-08-29",
+    "fecha_texto": "29 y 30 de Agosto, 2026",
+    "titulo": "3ra Olimpiada Nacional Escolar Primaria",
+    "detalles": [
+      "🗓️ Sábado 29 y domingo 30",
+      "🕘 2:00 pm",
+      "🕰️ 15+5 (rapid)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s2.chess-results.com/tnr1486615.aspx?lan=1&art=1&rd=7&SNode=S0"
+  },
+  {
+    "id": "2da-olimpiada-nacional-escolar-primaria",
+    "fecha": "2026-07-25",
+    "fecha_texto": "25 y 26 de Julio, 2026",
+    "titulo": "2da Olimpiada Nacional Escolar Primaria",
+    "detalles": [
+      "🗓️ Sábado 25 y domingo 26",
+      "🕘 2:00 pm",
+      "🕰️ 15+5 (rapid)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s2.chess-results.com/tnr1464061.aspx?lan=1&turdet=YES&SNode=S0"
+  },
+  {
+    "id": "navidad-2025",
+    "fecha": "2025-12-28",
+    "fecha_texto": "28 de Diciembre, 2025",
+    "titulo": "🎁 Navideño 2025",
+    "detalles": [
+      "🗓️ Domingo 28",
+      "🕘 09:00 am",
+      "🕰️ 5+3 (blitz)",
+      "♟️ Sistema suizo a 9 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s1.chess-results.com/tnr1323513.aspx?lan=1&art=1&rd=9&turdet=YES&flag=30&SNode=S0"
   }
 ]
