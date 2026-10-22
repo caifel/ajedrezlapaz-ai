@@ -1,8 +1,8 @@
 [
   { "id": "ADALP-0001", "nombre": "Saavedra, Nilo", "categoria": "1ra", "certificado": true, "descripcion": "Maestro de larga trayectoria en el ajedrez paceño. Ha representado a La Paz en múltiples torneos nacionales e internacionales." },
-  { "id": "ADALP-0002", "nombre": "Saavedra, Carlos", "categoria": "1ra" },
+  { "id": "ADALP-0002", "nombre": "Saavedra, Carlos", "categoria": "1ra", "certificado": true },
   { "id": "ADALP-0003", "nombre": "Sustach, Marco", "categoria": "1ra" },
-  { "id": "ADALP-0004", "nombre": "Vila, Johnny", "categoria": "1ra" },
+  { "id": "ADALP-0004", "nombre": "Vila, Johnny", "categoria": "1ra", "certificado": true },
   { "id": "ADALP-0005", "nombre": "Parraga, Alejandro", "categoria": "1ra", "certificado": true },
   { "id": "ADALP-0006", "nombre": "Aramayo, Gabriel", "categoria": "1ra", "certificado": true },
   { "id": "ADALP-0007", "nombre": "Delgadillo, Adonay", "categoria": "1ra" },
