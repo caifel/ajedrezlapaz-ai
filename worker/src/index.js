@@ -3,6 +3,14 @@ const JSON_HEADERS = {
 };
 
 const CONVOCATORIA_PREFIX = 'convocatorias/';
+const QR_PREFIX = 'qr/';
+
+const QR_CONTENT_TYPES = {
+    png: 'image/png',
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    webp: 'image/webp',
+};
 
 const CERTIFICATE_PREFIXES = ['cc-2026', 'adalp/cc-2026'];
 const CERTIFICATE_SUFFIXES = [
@@ -110,6 +118,61 @@ function getConvocatoriaKey(pathname) {
     return match ? `${CONVOCATORIA_PREFIX}${match[1].toLowerCase()}.pdf` : null;
 }
 
+function getQrKey(pathname) {
+    const match = pathname.match(/^\/qr\/([a-z0-9][a-z0-9_-]*)\.(png|jpe?g|webp)$/i);
+    if (!match) return null;
+
+    const extension = match[2].toLowerCase();
+    return {
+        key: `${QR_PREFIX}${match[1].toLowerCase()}.${extension}`,
+        contentType: QR_CONTENT_TYPES[extension],
+    };
+}
+
+async function serveQr(request, env, pathname, cors) {
+    if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return reply({ ok: false, error: 'method_not_allowed' }, 405, cors);
+    }
+
+    const qr = getQrKey(pathname);
+    if (!qr) {
+        return reply({ ok: false, error: 'not_found' }, 404, cors);
+    }
+
+    if (!env.CERTIFICADOS) {
+        return reply({ ok: false, error: 'storage_not_configured' }, 500, cors);
+    }
+
+    const object = await env.CERTIFICADOS.get(qr.key);
+    if (!object) {
+        return reply({ ok: false, error: 'qr_not_found' }, 404, cors);
+    }
+
+    const filename = qr.key.split('/').pop();
+    const { searchParams } = new URL(request.url);
+    const disposition = searchParams.get('inline') === '1' ? 'inline' : 'attachment';
+    const headers = new Headers(cors);
+    headers.set('content-type', qr.contentType);
+    headers.set('content-length', String(object.size));
+    headers.set('content-disposition', `${disposition}; filename="${filename}"`);
+    headers.set('cache-control', 'public, max-age=3600');
+    headers.set('x-content-type-options', 'nosniff');
+
+    if (object.httpEtag) {
+        headers.set('etag', object.httpEtag);
+
+        if (request.headers.get('if-none-match') === object.httpEtag) {
+            return new Response(null, { status: 304, headers });
+        }
+    }
+
+    if (request.method === 'HEAD') {
+        return new Response(null, { status: 200, headers });
+    }
+
+    return new Response(object.body, { status: 200, headers });
+}
+
 async function serveConvocatoria(request, env, pathname, cors) {
     if (request.method !== 'GET' && request.method !== 'HEAD') {
         return reply({ ok: false, error: 'method_not_allowed' }, 405, cors);
@@ -164,6 +227,10 @@ export default {
 
         if (pathname.startsWith('/convocatorias/')) {
             return serveConvocatoria(request, env, pathname, cors);
+        }
+
+        if (pathname.startsWith('/qr/')) {
+            return serveQr(request, env, pathname, cors);
         }
 
         if (request.method !== 'POST') {

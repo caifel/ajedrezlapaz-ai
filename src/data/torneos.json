@@ -9,13 +9,15 @@
       "peon-veloz"
     ],
     "online": true,
+    "precio": 10,
     "detalles": [
       "🕰️ 90 segundos a finish (bullet)",
       "⌛ Modalidad Arena a 35 mins",
       "📍 Lichess"
     ],
     "whatsapp": "+591 62696414 ",
-    "enlace": ""
+    "enlace": "",
+    "qr": "960-25-oct-2026.png"
   },
   {
     "id": "bullet-22-oct-2026",
@@ -43,6 +45,7 @@
     "organizadores": [
       "adalp"
     ],
+    "precio": 50,
     "detalles": [
       "🕰️ 15+10 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
@@ -50,7 +53,9 @@
     ],
     "whatsapp": "+591 73505230",
     "enlace": "",
-    "convocatoria": "inter-universitario-2026.pdf"
+    "convocatoria": "inter-universitario-2026.pdf",
+    "qr": "inter-universitario-2026.png",
+    "formulario": "https://forms.gle/gBRc8KotzYUF8z2g6"
   },
   {
     "id": "tercera-categoria-2026",

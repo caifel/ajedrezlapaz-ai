@@ -74,6 +74,30 @@ export function getWhatsappUrl(whatsapp, message = '') {
   return `https://wa.me/${digits}${message ? `?text=${encodeURIComponent(message)}` : ''}`;
 }
 
+export function getPrecioNumerico(precio) {
+  if (typeof precio === 'number') return Number.isFinite(precio) ? precio : null;
+
+  const texto = String(precio ?? '').trim();
+  if (!texto) return null;
+
+  const numero = Number(texto.replace(',', '.'));
+  return Number.isFinite(numero) ? numero : null;
+}
+
+export function getPrecioTexto(precio) {
+  const numero = getPrecioNumerico(precio);
+  if (numero !== null) {
+    const formateado = new Intl.NumberFormat('es-BO', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }).format(numero);
+
+    return `${formateado} Bs.`;
+  }
+
+  return String(precio ?? '').trim();
+}
+
 export function getTorneos(now = new Date()) {
   const todayKey = getBoliviaDateKey(now);
 
@@ -102,6 +126,8 @@ export function getTorneos(now = new Date()) {
       horario: formatHorario(torneo.inicio, torneo.fin),
       organizadores: getOrganizadores(torneo.organizadores),
       lugar: getLugarTorneo(torneo),
+      precioTexto: getPrecioTexto(torneo.precio),
+      precioNumero: getPrecioNumerico(torneo.precio),
       esPasado: dateEnd < now,
       esHoy: diasHasta === 0,
       diasHasta,
@@ -144,7 +170,7 @@ export function getEventSchema(torneo, siteUrl = 'https://ajedrezlapaz.com') {
     organizer: organizerSchema.length === 1 ? organizerSchema[0] : organizerSchema,
     offers: {
       '@type': 'Offer',
-      price: 0,
+      price: getPrecioNumerico(torneo.precio) ?? 0,
       priceCurrency: 'BOB',
       availability:
         torneo.estado === 'abierto'

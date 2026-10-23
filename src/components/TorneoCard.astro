@@ -1,15 +1,9 @@
 ---
 import StatusBadge from './StatusBadge.astro';
-import { getWhatsappUrl } from '../lib/torneos';
 import { formatDiasHasta } from '../lib/torneoStatus.js';
 
 const { torneo } = Astro.props;
 
-const inscripcionUrl = getWhatsappUrl(
-  torneo.whatsapp,
-  `Hola, quiero inscribirme en: ${torneo.titulo}.`
-);
-const mostrarInscribirme = torneo.estado === 'abierto' && Boolean(inscripcionUrl);
 const torneoUrl = `/torneos/${torneo.id}/`;
 ---
 
@@ -49,19 +43,14 @@ const torneoUrl = `/torneos/${torneo.id}/`;
     </li>
     {(torneo.detalles ?? []).map((detalle) => <li>{detalle}</li>)}
   </ul>
-  {inscripcionUrl && (
-    <a
-      class="card-cta card-cta-inscribirme"
-      href={inscripcionUrl}
-      target="_blank"
-      rel="noopener"
-      data-cta="inscribirme"
-      aria-label={`Inscribirme en ${torneo.titulo} por WhatsApp`}
-      hidden={!mostrarInscribirme}
-    >
-      Inscribirme <span class="arrow">&rarr;</span>
-    </a>
-  )}
+  <a
+    class="card-cta card-cta-detalles"
+    href={torneoUrl}
+    data-cta="ver-detalles"
+    aria-label={`Ver detalles de ${torneo.titulo}`}
+  >
+    Ver detalles <span class="arrow">&rarr;</span>
+  </a>
 </article>
 
 <style>
@@ -199,24 +188,20 @@ const torneoUrl = `/torneos/${torneo.id}/`;
       color 0.25s ease;
   }
 
-  .news-card:hover .card-cta-inscribirme,
-  .news-card:focus-within .card-cta-inscribirme,
-  .card-cta-inscribirme:hover,
-  .card-cta-inscribirme:focus-visible {
-    background-color: #2d7a2d;
-    border-color: #2d7a2d;
+  .news-card:hover .card-cta,
+  .news-card:focus-within .card-cta,
+  .card-cta:hover,
+  .card-cta:focus-visible {
+    background-color: var(--color-text);
+    border-color: var(--color-text);
     color: #ffffff;
   }
 
-  .news-card:hover .card-cta-inscribirme .arrow,
-  .news-card:focus-within .card-cta-inscribirme .arrow,
-  .card-cta-inscribirme:hover .arrow,
-  .card-cta-inscribirme:focus-visible .arrow {
+  .news-card:hover .card-cta .arrow,
+  .news-card:focus-within .card-cta .arrow,
+  .card-cta:hover .arrow,
+  .card-cta:focus-visible .arrow {
     color: #ffffff;
-  }
-
-  .card-cta[hidden] {
-    display: none;
   }
 
   .arrow {

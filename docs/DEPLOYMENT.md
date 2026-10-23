@@ -10,6 +10,7 @@ Este documento explica qué se despliega automáticamente y qué requiere una ac
 - Endpoint de verificación: `https://verifier.ajedrezlapaz.com/verify`
 - Endpoint de descarga: `https://verifier.ajedrezlapaz.com/certificado`
 - Endpoint de convocatorias: `https://verifier.ajedrezlapaz.com/convocatorias/`
+- Endpoint de QR: `https://verifier.ajedrezlapaz.com/qr/`
 - URL alterna: `https://adalp-verifier.mariomedranomaldonado.workers.dev`
 
 ## Arquitectura
@@ -21,7 +22,9 @@ Este documento explica qué se despliega automáticamente y qué requiere una ac
 - `src/data/jugadores.json` es público y no contiene fechas ni celulares.
 - Los certificados PNG viven en el bucket R2 privado `adalp`, dentro de `cc-2026/`.
 - Las convocatorias PDF viven en el mismo bucket privado `adalp`, dentro de `convocatorias/`.
+- Los QR de los torneos viven en el mismo bucket privado `adalp`, dentro de `qr/`.
 - El Worker sirve las convocatorias en `/convocatorias/<archivo>.pdf`; el bucket sigue siendo privado.
+- El Worker sirve los QR en `/qr/<archivo>` para verlos o descargarlos; el bucket sigue siendo privado.
 - El Worker valida la fecha y entrega el PNG mediante el binding `CERTIFICADOS`; el bucket no es público.
 - GitHub Actions tiene dos workflows:
   - `Deploy to GitHub Pages`: compila y publica el sitio.
@@ -140,6 +143,7 @@ npx wrangler secret list
 | Cambiar fechas o celulares | **No** | `jq -c . datos.json \| npx wrangler secret put DATOS` |
 | Subir o reemplazar certificados PNG | **No** | Dashboard de R2 o `npx wrangler r2 object put` |
 | Subir o reemplazar convocatorias PDF | **No** | Dashboard de R2 o `npx wrangler r2 object put` |
+| Subir o reemplazar QR de torneos | **No** | Dashboard de R2 o `npx wrangler r2 object put` |
 | Cambiar `PUBLIC_VERIFIER_URL` | **No** | GitHub Variables + re-ejecutar Pages |
 | Cambiar el token o Account ID | **No** | GitHub Environment secrets |
 | Dominio del Worker, DNS, rate limiting | **No** | Dashboard de Cloudflare |
@@ -225,6 +229,73 @@ También acepta una URL absoluta si el PDF se publica en otro dominio. El sitio 
 El nombre del archivo debe ser un slug en minúsculas, con letras, números, guiones o guiones bajos, y terminar en `.pdf`.
 
 El Worker responde con `Content-Type: application/pdf`, `Content-Disposition: inline` y caché de una hora. Si reemplazas un PDF y necesitas invalidar la caché inmediatamente, usa un nombre nuevo o agrega una versión al nombre del archivo.
+
+### Precio de inscripción
+
+El campo opcional `precio` se expresa en bolivianos y solo se muestra en la página de detalle del torneo. Si el torneo tiene QR, el botón principal muestra `Pagar 10 Bs. por QR`:
+
+```json
+"precio": 10
+```
+
+También se publica en el JSON-LD como `offers.price`, con `priceCurrency: "BOB"`.
+
+### Formulario de registro
+
+El campo opcional `formulario` acepta una URL absoluta. Cuando existe, debajo del botón de pago aparece el enlace **Llenar formulario de registro** en lugar de **Enviar comprobante por WhatsApp**:
+
+```json
+"formulario": "https://forms.gle/gBRc8KotzYUF8z2g6"
+```
+
+El torneo `inter-universitario-2026` usa `precio: 50`, su propio QR y este formulario.
+
+### QR de torneos
+
+Los QR se guardan en el mismo bucket privado `adalp`, dentro del prefijo `qr/`:
+
+```text
+qr/960-25-oct-2026.png
+```
+
+El Worker los publica en:
+
+```text
+https://verifier.ajedrezlapaz.com/qr/960-25-oct-2026.png
+```
+
+La URL sin parámetros descarga el archivo (`Content-Disposition: attachment`). Agrega `?inline=1` para verlo en el navegador:
+
+```text
+https://verifier.ajedrezlapaz.com/qr/960-25-oct-2026.png?inline=1
+```
+
+Para subir o reemplazar un QR:
+
+```bash
+npx wrangler r2 object put "adalp/qr/960-25-oct-2026.png" \
+  --file "ruta/al/qr.png" \
+  --content-type "image/png"
+```
+
+Para comprobar que quedó cargado:
+
+```bash
+npx wrangler r2 object get "adalp/qr/960-25-oct-2026.png" \
+  --file "/tmp/qr.png"
+```
+
+En `src/data/torneos.json`, el campo opcional es:
+
+```json
+"qr": "960-25-oct-2026.png"
+```
+
+También acepta una URL absoluta. Cuando el campo existe, el botón principal pasa a ser **Pagar `<precio>` por QR** y debajo aparece el enlace **Enviar comprobante por WhatsApp** o **Llenar formulario de registro** si el torneo define `formulario`. Sin `qr`, el botón sigue siendo **Inscribirme por WhatsApp**.
+
+El nombre del archivo debe ser un slug en minúsculas, con letras, números, guiones o guiones bajos, y terminar en `.png`, `.jpg`, `.jpeg` o `.webp`.
+
+El Worker responde con `Content-Disposition: attachment` por defecto o `inline` con `?inline=1`, y caché de una hora. Si reemplazas un QR y necesitas invalidar la caché inmediatamente, usa un nombre nuevo.
 
 ### Rate limiting
 
