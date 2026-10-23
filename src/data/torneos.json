@@ -7,7 +7,7 @@
     "online": true,
     "detalles": [
       "🗓️ Domingo 25",
-      "🕘 22:00 hrs",
+      "🕘 10:00 pm",
       "🕰️ 90 segundos a finish (bullet)",
       "⌛ Modalidad Arena a 35 mins",
       "📍 Lichess"
@@ -23,7 +23,7 @@
     "online": true,
     "detalles": [
       "🗓️ Jueves 22",
-      "🕘 22:00 hrs",
+      "🕘 10:00 pm",
       "🕰️ 1+1 (bullet)",
       "⌛ Modalidad Arena a 25 mins",
       "📍 Lichess"
@@ -35,7 +35,7 @@
     "id": "inter-universitario-2026",
     "fecha": "2026-10-24",
     "fecha_texto": "24 y 25 de Octubre, 2026",
-    "titulo": "Inter Universitario",
+    "titulo": "Inter Universitario 🟥🟩",
     "detalles": [
       "🗓️ Sábado 24 y domingo 25",
       "🕘 9:00 am",
@@ -50,7 +50,7 @@
     "id": "tercera-categoria-2026",
     "fecha": "2026-11-21",
     "fecha_texto": "21 y 22 de Noviembre, 2026",
-    "titulo": "Tercera Categoría IRT",
+    "titulo": "Tercera Categoría IRT 🟥🟩",
     "detalles": [
       "🗓️ Sábado 21 y domingo 22",
       "🕘 9:00 am",
@@ -80,7 +80,7 @@
     "id": "cuarta-categoria-2026",
     "fecha": "2026-10-10",
     "fecha_texto": "10 y 11 de Octubre, 2026",
-    "titulo": "Cuarta Categoría",
+    "titulo": "Cuarta Categoría 🟥🟩",
     "detalles": [
       "🗓️ Sábado 10 y domingo 11",
       "🕘 9:00 am",
@@ -107,13 +107,13 @@
     "enlace": "https://s3.chess-results.com/tnr1505420.aspx?lan=1"
   },
   {
-    "id": "4ta-olimpiada-nacional-escolar-secundaria",
+    "id": "4ta-olimpiada-nacional-escolar-secundaria-2026",
     "fecha": "2026-09-19",
     "fecha_texto": "19 y 20 de Septiembre, 2026",
-    "titulo": "4ta Olimpiada Nacional Escolar Secundaria",
+    "titulo": "4ta Olimpiada Nacional Escolar Secundaria 🇧🇴",
     "detalles": [
       "🗓️ Sábado 19 y domingo 20",
-      "🕘 2:00 pm",
+      "🕘 3:00 pm",
       "🕰️ 15+5 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -122,13 +122,13 @@
     "enlace": "https://s2.chess-results.com/tnr1500932.aspx?lan=1&art=1&turdet=YES&SNode=S0"
   },
   {
-    "id": "3ra-olimpiada-nacional-escolar-primaria",
+    "id": "3ra-olimpiada-nacional-escolar-primaria-2026",
     "fecha": "2026-08-29",
     "fecha_texto": "29 y 30 de Agosto, 2026",
-    "titulo": "3ra Olimpiada Nacional Escolar Primaria",
+    "titulo": "3ra Olimpiada Nacional Escolar Primaria 🇧🇴",
     "detalles": [
       "🗓️ Sábado 29 y domingo 30",
-      "🕘 2:00 pm",
+      "🕘 3:00 pm",
       "🕰️ 15+5 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -137,13 +137,13 @@
     "enlace": "https://s2.chess-results.com/tnr1486615.aspx?lan=1&art=1&rd=7&SNode=S0"
   },
   {
-    "id": "2da-olimpiada-nacional-escolar-primaria",
+    "id": "2da-olimpiada-nacional-escolar-primaria-2026",
     "fecha": "2026-07-25",
     "fecha_texto": "25 y 26 de Julio, 2026",
-    "titulo": "2da Olimpiada Nacional Escolar Primaria",
+    "titulo": "2da Olimpiada Nacional Escolar Primaria 🇧🇴",
     "detalles": [
       "🗓️ Sábado 25 y domingo 26",
-      "🕘 2:00 pm",
+      "🕘 3:00 pm",
       "🕰️ 15+5 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -158,12 +158,42 @@
     "titulo": "🎁 Navideño 2025",
     "detalles": [
       "🗓️ Domingo 28",
-      "🕘 09:00 am",
+      "🕘 9:00 am",
       "🕰️ 5+3 (blitz)",
       "♟️ Sistema suizo a 9 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
     ],
     "whatsapp": "+591 73505230",
     "enlace": "https://s1.chess-results.com/tnr1323513.aspx?lan=1&art=1&rd=9&turdet=YES&flag=30&SNode=S0"
+  },
+  {
+    "id": "3ra-olimpiada-nacional-escolar-primaria-2025",
+    "fecha": "2025-07-26",
+    "fecha_texto": "26 y 27 de Julio, 2025",
+    "titulo": "3ra Olimpiada Nacional Escolar Primaria 🇧🇴",
+    "detalles": [
+      "🗓️ Sábado 26 y domingo 27",
+      "🕘 3:00 pm",
+      "🕰️ 15+5 (rapid)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Unidad Educativa Naval, Av. Ismael Montes 421"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s3.chess-results.com/tnr1224203.aspx?lan=1&art=1&rd=7&turdet=YES&flag=30&SNode=S0"
+  },
+  {
+    "id": "Jallalla La Paz",
+    "fecha": "2025-07-16",
+    "fecha_texto": "16 de Julio, 2025",
+    "titulo": "Jallalla La Paz 🟥🟩",
+    "detalles": [
+      "🗓️ Miércoles 16",
+      "🕘 3:00 pm",
+      "🕰️ 5+3 (rapid)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Hotel Torino (calle Socabaya #457)"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s3.chess-results.com/tnr1218130.aspx?lan=1"
   }
 ]
