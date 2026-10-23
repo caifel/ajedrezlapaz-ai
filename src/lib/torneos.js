@@ -131,7 +131,7 @@ export function getEventSchema(torneo, siteUrl = 'https://ajedrezlapaz.com') {
     description: getDescripcionEvento(torneo),
     startDate: torneo.inicio,
     endDate: torneo.fin,
-    image: new URL('/assets/og-image.png', siteUrl).href,
+    image: new URL(`/og/${torneo.id}.png`, siteUrl).href,
     eventStatus:
       torneo.estado === 'cancelado'
         ? 'https://schema.org/EventCancelled'

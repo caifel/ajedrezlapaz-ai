@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
-import { getDescripcionTorneo } from '../../lib/seo.js';
+import { getDescripcionTorneo, quitarEmojis } from '../../lib/seo.js';
 import { getTorneos, getEventSchema, getWhatsappUrl } from '../../lib/torneos';
 import { formatDiasHasta } from '../../lib/torneoStatus.js';
 
@@ -31,6 +31,8 @@ const consultaUrl = getWhatsappUrl(
 <Layout
   title={`${torneo.titulo} | ADALP La Paz`}
   description={pageDescription}
+  image={`/og/${torneo.id}.png`}
+  imageAlt={`${quitarEmojis(torneo.titulo)} — ${torneo.fecha_texto}`}
   breadcrumbs={[
     { name: 'Inicio', path: '/' },
     { name: 'Torneos', path: '/torneos/' },

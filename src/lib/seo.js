@@ -11,7 +11,7 @@ export const PAGE_DESCRIPTIONS = {
     'La página que buscas no existe o fue movida. Visita el sitio oficial de la Asociación Departamental de Ajedrez de La Paz.'
 };
 
-const quitarEmojis = (texto) =>
+export const quitarEmojis = (texto) =>
   String(texto)
     .replace(/[\p{Extended_Pictographic}\p{Regional_Indicator}\uFE0F\u200D]/gu, '')
     .replace(/\s+/g, ' ')
@@ -22,7 +22,7 @@ const normalizarFecha = (fecha = '') => {
   return texto.startsWith('Del ') ? `del ${texto.slice(4)}` : texto;
 };
 
-const getNombreLugar = (torneo) =>
+export const getNombreLugarCorto = (torneo) =>
   String(torneo.lugar ?? '')
     .split(',')[0]
     .replace(/\s*\([^)]*\)/g, '')
@@ -42,7 +42,7 @@ export function getDescripcionTorneo(torneo) {
   const esOnline = Boolean(torneo.esOnline);
   const base = esOnline ? 'Torneo online de ajedrez' : 'Torneo de ajedrez en La Paz';
   const fecha = normalizarFecha(torneo.fecha_texto);
-  const lugar = getNombreLugar(torneo);
+  const lugar = getNombreLugarCorto(torneo);
   const organizadores = getOrganizadoresTexto(torneo);
   const contexto = [
     organizadores ? `Organizado por ${organizadores}` : '',
@@ -85,7 +85,7 @@ export function getDescripcionEvento(torneo) {
     .map(quitarEmojis)
     .filter(Boolean)
     .join('. ');
-  const lugar = torneo.esOnline ? 'Lichess' : getNombreLugar(torneo);
+  const lugar = torneo.esOnline ? 'Lichess' : getNombreLugarCorto(torneo);
 
   const partes = [`${base} (${fecha})`];
 
