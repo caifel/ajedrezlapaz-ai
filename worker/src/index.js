@@ -2,6 +2,8 @@ const JSON_HEADERS = {
     'content-type': 'application/json; charset=utf-8',
 };
 
+const CONVOCATORIA_PREFIX = 'convocatorias/';
+
 const CERTIFICATE_PREFIXES = ['cc-2026', 'adalp/cc-2026'];
 const CERTIFICATE_SUFFIXES = [
     '-CC-2026.png',
@@ -23,7 +25,7 @@ function corsHeaders(request, env) {
 
     return {
         'Access-Control-Allow-Origin': origin,
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
         'Access-Control-Expose-Headers': 'Content-Disposition, Content-Length',
         'Access-Control-Max-Age': '86400',
@@ -103,6 +105,53 @@ async function findCertificate(bucket, id) {
     return null;
 }
 
+function getConvocatoriaKey(pathname) {
+    const match = pathname.match(/^\/convocatorias\/([a-z0-9][a-z0-9_-]*)\.pdf$/i);
+    return match ? `${CONVOCATORIA_PREFIX}${match[1].toLowerCase()}.pdf` : null;
+}
+
+async function serveConvocatoria(request, env, pathname, cors) {
+    if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return reply({ ok: false, error: 'method_not_allowed' }, 405, cors);
+    }
+
+    const key = getConvocatoriaKey(pathname);
+    if (!key) {
+        return reply({ ok: false, error: 'not_found' }, 404, cors);
+    }
+
+    if (!env.CERTIFICADOS) {
+        return reply({ ok: false, error: 'storage_not_configured' }, 500, cors);
+    }
+
+    const object = await env.CERTIFICADOS.get(key);
+    if (!object) {
+        return reply({ ok: false, error: 'convocatoria_not_found' }, 404, cors);
+    }
+
+    const filename = key.split('/').pop();
+    const headers = new Headers(cors);
+    headers.set('content-type', 'application/pdf');
+    headers.set('content-length', String(object.size));
+    headers.set('content-disposition', `inline; filename="${filename}"`);
+    headers.set('cache-control', 'public, max-age=3600');
+    headers.set('x-content-type-options', 'nosniff');
+
+    if (object.httpEtag) {
+        headers.set('etag', object.httpEtag);
+
+        if (request.headers.get('if-none-match') === object.httpEtag) {
+            return new Response(null, { status: 304, headers });
+        }
+    }
+
+    if (request.method === 'HEAD') {
+        return new Response(null, { status: 200, headers });
+    }
+
+    return new Response(object.body, { status: 200, headers });
+}
+
 export default {
     async fetch(request, env) {
         const cors = corsHeaders(request, env);
@@ -111,11 +160,16 @@ export default {
             return new Response(null, { status: 204, headers: cors });
         }
 
+        const { pathname } = new URL(request.url);
+
+        if (pathname.startsWith('/convocatorias/')) {
+            return serveConvocatoria(request, env, pathname, cors);
+        }
+
         if (request.method !== 'POST') {
             return reply({ ok: false, error: 'method_not_allowed' }, 405, cors);
         }
 
-        const { pathname } = new URL(request.url);
         if (pathname !== '/verify' && pathname !== '/certificado') {
             return reply({ ok: false, error: 'not_found' }, 404, cors);
         }

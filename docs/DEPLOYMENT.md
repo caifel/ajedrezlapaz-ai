@@ -9,6 +9,7 @@ Este documento explica qué se despliega automáticamente y qué requiere una ac
 - Worker: `https://verifier.ajedrezlapaz.com`
 - Endpoint de verificación: `https://verifier.ajedrezlapaz.com/verify`
 - Endpoint de descarga: `https://verifier.ajedrezlapaz.com/certificado`
+- Endpoint de convocatorias: `https://verifier.ajedrezlapaz.com/convocatorias/`
 - URL alterna: `https://adalp-verifier.mariomedranomaldonado.workers.dev`
 
 ## Arquitectura
@@ -19,6 +20,8 @@ Este documento explica qué se despliega automáticamente y qué requiere una ac
 - Las fechas de nacimiento y los celulares viven únicamente en el secreto `DATOS` del Worker.
 - `src/data/jugadores.json` es público y no contiene fechas ni celulares.
 - Los certificados PNG viven en el bucket R2 privado `adalp`, dentro de `cc-2026/`.
+- Las convocatorias PDF viven en el mismo bucket privado `adalp`, dentro de `convocatorias/`.
+- El Worker sirve las convocatorias en `/convocatorias/<archivo>.pdf`; el bucket sigue siendo privado.
 - El Worker valida la fecha y entrega el PNG mediante el binding `CERTIFICADOS`; el bucket no es público.
 - GitHub Actions tiene dos workflows:
   - `Deploy to GitHub Pages`: compila y publica el sitio.
@@ -136,6 +139,7 @@ npx wrangler secret list
 | Cambiar `wrangler.toml` | Sí | Push a `main` |
 | Cambiar fechas o celulares | **No** | `jq -c . datos.json \| npx wrangler secret put DATOS` |
 | Subir o reemplazar certificados PNG | **No** | Dashboard de R2 o `npx wrangler r2 object put` |
+| Subir o reemplazar convocatorias PDF | **No** | Dashboard de R2 o `npx wrangler r2 object put` |
 | Cambiar `PUBLIC_VERIFIER_URL` | **No** | GitHub Variables + re-ejecutar Pages |
 | Cambiar el token o Account ID | **No** | GitHub Environment secrets |
 | Dominio del Worker, DNS, rate limiting | **No** | Dashboard de Cloudflare |
@@ -180,6 +184,47 @@ Wrangler no tiene un comando `r2 object list`. Para ver todas las claves, usa el
 También se puede listar con la API S3 de R2 usando `aws s3 ls` y credenciales S3, pero no es necesario para operar el sitio.
 
 El bucket no debe tener acceso público. La única forma de descargar un certificado es pasar por el Worker, que valida `id` + `fecha` antes de leer el objeto.
+
+### Convocatorias PDF
+
+Las convocatorias oficiales se guardan en el mismo bucket privado `adalp`, dentro del prefijo `convocatorias/`:
+
+```text
+convocatorias/inter-universitario-2026.pdf
+```
+
+El Worker las publica en:
+
+```text
+https://verifier.ajedrezlapaz.com/convocatorias/inter-universitario-2026.pdf
+```
+
+Para subir o reemplazar una convocatoria:
+
+```bash
+npx wrangler r2 object put "adalp/convocatorias/inter-universitario-2026.pdf" \
+  --file "ruta/a/la/convocatoria.pdf" \
+  --content-type "application/pdf"
+```
+
+Para comprobar que quedó cargada:
+
+```bash
+npx wrangler r2 object get "adalp/convocatorias/inter-universitario-2026.pdf" \
+  --file "/tmp/convocatoria.pdf"
+```
+
+En `src/data/torneos.json`, el campo opcional es:
+
+```json
+"convocatoria": "inter-universitario-2026.pdf"
+```
+
+También acepta una URL absoluta si el PDF se publica en otro dominio. El sitio solo muestra el botón **Ver convocatoria PDF** cuando el campo existe.
+
+El nombre del archivo debe ser un slug en minúsculas, con letras, números, guiones o guiones bajos, y terminar en `.pdf`.
+
+El Worker responde con `Content-Type: application/pdf`, `Content-Disposition: inline` y caché de una hora. Si reemplazas un PDF y necesitas invalidar la caché inmediatamente, usa un nombre nuevo o agrega una versión al nombre del archivo.
 
 ### Rate limiting
 

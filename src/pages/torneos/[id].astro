@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
+import { getConvocatoriaUrl } from '../../lib/convocatorias.js';
 import { getDescripcionTorneo, quitarEmojis } from '../../lib/seo.js';
 import { getTorneos, getEventSchema, getWhatsappUrl } from '../../lib/torneos';
 import { formatDiasHasta } from '../../lib/torneoStatus.js';
@@ -17,6 +18,9 @@ const { torneo } = Astro.props;
 const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
 const pageDescription = getDescripcionTorneo(torneo);
 const pageSchema = getEventSchema(torneo, siteUrl);
+const verifierUrl =
+  import.meta.env.PUBLIC_VERIFIER_URL || 'https://verifier.ajedrezlapaz.com/verify';
+const convocatoriaUrl = getConvocatoriaUrl(torneo, verifierUrl);
 
 const inscripcionUrl = getWhatsappUrl(
   torneo.whatsapp,
@@ -205,6 +209,22 @@ const consultaUrl = getWhatsappUrl(
       line-height: 1.6;
     }
 
+    .detail-convocatoria a {
+      color: var(--color-text-light);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .detail-convocatoria a:hover,
+    .detail-convocatoria a:focus-visible {
+      color: var(--color-text);
+    }
+
     .tournament-actions {
       display: flex;
       flex-wrap: wrap;
@@ -332,6 +352,19 @@ const consultaUrl = getWhatsappUrl(
           )}
         </li>
         {(torneo.detalles ?? []).map((detalle) => <li>{detalle}</li>)}
+        {convocatoriaUrl && (
+          <li class="detail-convocatoria">
+            <a
+              href={convocatoriaUrl}
+              target="_blank"
+              rel="noopener"
+              type="application/pdf"
+              aria-label={`Ver convocatoria en PDF de ${torneo.titulo}`}
+            >
+              Ver convocatoria oficial (PDF) <span aria-hidden="true">&nearr;</span>
+            </a>
+          </li>
+        )}
       </ul>
     </section>
 
