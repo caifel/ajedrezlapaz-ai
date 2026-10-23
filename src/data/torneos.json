@@ -137,6 +137,21 @@
     "enlace": "https://s2.chess-results.com/tnr1486615.aspx?lan=1&art=1&rd=7&SNode=S0"
   },
   {
+    "id": "2do-grand-prix-nacional-2026-2027",
+    "fecha": "2026-02-26",
+    "fecha_texto": "26 de Febrero al 1 de Marzo, 2026",
+    "titulo": "2do Grand Prix Nacional 2026-2027 🇧🇴",
+    "detalles": [
+      "🗓️ Jueves 26 al domingo 1",
+      "🕘 2:00 pm",
+      "🕰️ 60+30 (standard)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Estadio Hernando Siles, 5to piso, puerta #1"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s3.chess-results.com/tnr1360748.aspx?lan=1"
+  },
+  {
     "id": "2da-olimpiada-nacional-escolar-primaria-2026",
     "fecha": "2026-07-25",
     "fecha_texto": "25 y 26 de Julio, 2026",
@@ -167,6 +182,21 @@
     "enlace": "https://s1.chess-results.com/tnr1323513.aspx?lan=1&art=1&rd=9&turdet=YES&flag=30&SNode=S0"
   },
   {
+    "id": "9no-grand-prix-nacional-2025-2026",
+    "fecha": "2025-11-13",
+    "fecha_texto": "13 al 16 de Noviembre, 2025",
+    "titulo": "9no Grand Prix Nacional 2025-2026 🇧🇴",
+    "detalles": [
+      "🗓️ Jueves 13 al domingo 16",
+      "🕘 2:00 pm",
+      "🕰️ 90+30 (standard)",
+      "♟️ Sistema suizo a 7 rondas",
+      "📍 Hotel Torino (calle Socabaya #457)"
+    ],
+    "whatsapp": "+591 73505230",
+    "enlace": "https://s3.chess-results.com/tnr1293594.aspx?lan=1"
+  },
+  {
     "id": "3ra-olimpiada-nacional-escolar-primaria-2025",
     "fecha": "2025-07-26",
     "fecha_texto": "26 y 27 de Julio, 2025",
@@ -182,7 +212,7 @@
     "enlace": "https://s3.chess-results.com/tnr1224203.aspx?lan=1&art=1&rd=7&turdet=YES&flag=30&SNode=S0"
   },
   {
-    "id": "Jallalla La Paz",
+    "id": "jallalla-la-paz",
     "fecha": "2025-07-16",
     "fecha_texto": "16 de Julio, 2025",
     "titulo": "Jallalla La Paz 🟥🟩",
