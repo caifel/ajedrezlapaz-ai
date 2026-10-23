@@ -3,17 +3,18 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-const SITE_DESCRIPTION = 'Sitio oficial de la Asociación Departamental de Ajedrez de La Paz (ADALP), fundada en 1929. Consulta jugadores, categorías y certificados oficiales.';
+const SITE_DESCRIPTION =
+  'Entérate de los próximos torneos oficiales de ajedrez en La Paz. Revisa clasificaciones, categorías, emisión de certificados de la ADALP y más';
 
 const {
-    title = 'Asociación Departamental de Ajedrez de La Paz (ADALP)',
-    description = SITE_DESCRIPTION,
-    image = '/assets/og-image.png',
-    imageAlt = 'ADALP - Asociación Departamental de Ajedrez de La Paz',
-    type = 'website',
-    noindex = false,
-    breadcrumbs = [],
-    schema = [],
+  title = 'Asociación Departamental de Ajedrez de La Paz (ADALP)',
+  description = SITE_DESCRIPTION,
+  image = '/assets/og-image.png',
+  imageAlt = 'ADALP - Asociación Departamental de Ajedrez de La Paz',
+  type = 'website',
+  noindex = false,
+  breadcrumbs = [],
+  schema = []
 } = Astro.props;
 
 const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
@@ -24,126 +25,123 @@ const organizationId = new URL('/#organization', siteUrl).href;
 const websiteId = new URL('/#website', siteUrl).href;
 
 const organizationSchema = {
-    '@context': 'https://schema.org',
+  '@context': 'https://schema.org',
+  '@type': 'SportsOrganization',
+  '@id': organizationId,
+  name: 'Asociación Departamental de Ajedrez de La Paz',
+  alternateName: 'ADALP',
+  url: siteUrl.href,
+  logo: logoUrl,
+  image: imageUrl,
+  description:
+    'Asociación Departamental de Ajedrez de La Paz, fundada el 7 de diciembre de 1929. Representante oficial del ajedrez en el Departamento de La Paz, Bolivia.',
+  foundingDate: '1929-12-07',
+  email: 'adalp2025@gmail.com',
+  telephone: '+59173505230',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Estadio Hernando Siles, 5to piso, puerta #1',
+    addressLocality: 'La Paz',
+    addressRegion: 'La Paz',
+    addressCountry: 'BO'
+  },
+  areaServed: {
+    '@type': 'AdministrativeArea',
+    name: 'Departamento de La Paz, Bolivia'
+  },
+  memberOf: {
     '@type': 'SportsOrganization',
-    '@id': organizationId,
-    name: 'Asociación Departamental de Ajedrez de La Paz',
-    alternateName: 'ADALP',
-    url: siteUrl.href,
-    logo: logoUrl,
-    image: imageUrl,
-    description: 'Asociación Departamental de Ajedrez de La Paz, fundada el 7 de diciembre de 1929. Representante oficial del ajedrez en el Departamento de La Paz, Bolivia.',
-    foundingDate: '1929-12-07',
-    email: 'adalp2025@gmail.com',
-    telephone: '+59173505230',
-    address: {
-        '@type': 'PostalAddress',
-        streetAddress: 'Estadio Hernando Siles, 5to piso, puerta #1',
-        addressLocality: 'La Paz',
-        addressRegion: 'La Paz',
-        addressCountry: 'BO',
-    },
-    areaServed: {
-        '@type': 'AdministrativeArea',
-        name: 'Departamento de La Paz, Bolivia',
-    },
-    memberOf: {
-        '@type': 'SportsOrganization',
-        name: 'Federación Boliviana de Ajedrez',
-        alternateName: 'FBA',
-    },
-    sameAs: [
-        'https://www.facebook.com/profile.php?id=61578611930346',
-        'https://www.tiktok.com/@ajedrezlapaz',
-    ],
+    name: 'Federación Boliviana de Ajedrez',
+    alternateName: 'FBA'
+  },
+  sameAs: ['https://www.facebook.com/profile.php?id=61578611930346', 'https://www.tiktok.com/@ajedrezlapaz']
 };
 
 const websiteSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': websiteId,
-    url: siteUrl.href,
-    name: 'ADALP',
-    alternateName: [
-        'Ajedrez La Paz',
-        'Asociación Departamental de Ajedrez de La Paz',
-    ],
-    description: SITE_DESCRIPTION,
-    inLanguage: 'es-BO',
-    publisher: { '@id': organizationId },
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': websiteId,
+  url: siteUrl.href,
+  name: 'ADALP',
+  alternateName: ['Ajedrez La Paz', 'Asociación Departamental de Ajedrez de La Paz'],
+  description: SITE_DESCRIPTION,
+  inLanguage: 'es-BO',
+  publisher: { '@id': organizationId }
 };
 
 const breadcrumbSchema = breadcrumbs.length
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: breadcrumbs.map((crumb, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            name: crumb.name,
-            item: new URL(crumb.path, siteUrl).href,
-        })),
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbs.map((crumb, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: crumb.name,
+        item: new URL(crumb.path, siteUrl).href
+      }))
     }
-    : null;
+  : null;
 
 const schemas = [organizationSchema, websiteSchema, breadcrumbSchema, ...schema].filter(Boolean);
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
-    <meta name="description" content={description}>
-    <meta name="author" content="ADALP">
-    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}>
-    <link rel="canonical" href={canonical}>
+    <meta name="description" content={description} />
+    <meta name="author" content="ADALP" />
+    <meta
+      name="robots"
+      content={noindex
+        ? 'noindex, nofollow'
+        : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+    />
+    <link rel="canonical" href={canonical} />
 
     <!-- GEO / IDIOMA -->
-    <meta name="geo.region" content="BO-L">
-    <meta name="geo.placename" content="La Paz, Bolivia">
-    <meta property="og:locale" content="es_BO">
+    <meta name="geo.region" content="BO-L" />
+    <meta name="geo.placename" content="La Paz, Bolivia" />
+    <meta property="og:locale" content="es_BO" />
 
     <!-- OPEN GRAPH -->
-    <meta property="og:type" content={type}>
-    <meta property="og:site_name" content="ADALP">
-    <meta property="og:title" content={title}>
-    <meta property="og:description" content={description}>
-    <meta property="og:url" content={canonical}>
-    <meta property="og:image" content={imageUrl}>
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content={imageAlt}>
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content="ADALP" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
 
     <!-- TWITTER / X -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content={title}>
-    <meta name="twitter:description" content={description}>
-    <meta name="twitter:image" content={imageUrl}>
-    <meta name="twitter:image:alt" content={imageAlt}>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
 
     <!-- FAVICON -->
-    <link rel="icon" type="image/svg+xml" href="/assets/favicon-adalp.svg?v=4">
-    <link rel="icon" href="/favicon.ico?v=4" sizes="any">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png?v=4">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png?v=4">
-    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png?v=4">
-    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png?v=4">
-    <link rel="icon" type="image/png" sizes="144x144" href="/assets/favicon-144x144.png?v=4">
-    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png?v=4">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png?v=4">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml">
-    <meta name="theme-color" content="#fafafa">
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon-adalp.svg?v=4" />
+    <link rel="icon" href="/favicon.ico?v=4" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png?v=4" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png?v=4" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png?v=4" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-96x96.png?v=4" />
+    <link rel="icon" type="image/png" sizes="144x144" href="/assets/favicon-144x144.png?v=4" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png?v=4" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png?v=4" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#fafafa" />
 
-    {schemas.map((item) => (
-        <script type="application/ld+json" set:html={JSON.stringify(item)} />
-    ))}
-</head>
-<body>
-
+    {schemas.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)} />)}
+  </head>
+  <body>
     <Header />
 
     <slot />
@@ -151,39 +149,39 @@ const schemas = [organizationSchema, websiteSchema, breadcrumbSchema, ...schema]
     <Footer />
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // ===== Menú móvil =====
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const mobileNav = document.getElementById('mobileNav');
-            const closeBtn = document.getElementById('closeBtn');
+      document.addEventListener('DOMContentLoaded', () => {
+        // ===== Menú móvil =====
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileNav = document.getElementById('mobileNav');
+        const closeBtn = document.getElementById('closeBtn');
 
-            function openMenu() {
-                mobileNav.inert = false;
-                mobileNav.classList.add('active');
-                mobileNav.setAttribute('aria-hidden', 'false');
-                hamburgerBtn.setAttribute('aria-expanded', 'true');
-                closeBtn.focus();
-            }
+        function openMenu() {
+          mobileNav.inert = false;
+          mobileNav.classList.add('active');
+          mobileNav.setAttribute('aria-hidden', 'false');
+          hamburgerBtn.setAttribute('aria-expanded', 'true');
+          closeBtn.focus();
+        }
 
-            function closeMenu() {
-                mobileNav.classList.remove('active');
-                mobileNav.setAttribute('aria-hidden', 'true');
-                mobileNav.inert = true;
-                hamburgerBtn.setAttribute('aria-expanded', 'false');
-            }
+        function closeMenu() {
+          mobileNav.classList.remove('active');
+          mobileNav.setAttribute('aria-hidden', 'true');
+          mobileNav.inert = true;
+          hamburgerBtn.setAttribute('aria-expanded', 'false');
+        }
 
-            hamburgerBtn.addEventListener('click', openMenu);
-            closeBtn.addEventListener('click', closeMenu);
-            mobileNav.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', closeMenu);
-            });
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape' && mobileNav.classList.contains('active')) {
-                    closeMenu();
-                    hamburgerBtn.focus();
-                }
-            });
+        hamburgerBtn.addEventListener('click', openMenu);
+        closeBtn.addEventListener('click', closeMenu);
+        mobileNav.querySelectorAll('a').forEach((link) => {
+          link.addEventListener('click', closeMenu);
         });
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && mobileNav.classList.contains('active')) {
+            closeMenu();
+            hamburgerBtn.focus();
+          }
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
