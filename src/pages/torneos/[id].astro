@@ -19,30 +19,22 @@ const { torneo } = Astro.props;
 const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
 const pageDescription = getDescripcionTorneo(torneo);
 const pageSchema = getEventSchema(torneo, siteUrl);
-const verifierUrl =
-  import.meta.env.PUBLIC_VERIFIER_URL || 'https://verifier.ajedrezlapaz.com/verify';
+const verifierUrl = import.meta.env.PUBLIC_VERIFIER_URL || 'https://verifier.ajedrezlapaz.com/verify';
 const convocatoriaUrl = getConvocatoriaUrl(torneo, verifierUrl);
 const qrUrl = getQrUrl(torneo, verifierUrl);
-const qrViewUrl = qrUrl
-  ? `${qrUrl}${qrUrl.includes('?') ? '&' : '?'}inline=1`
-  : '';
+const qrViewUrl = qrUrl ? `${qrUrl}${qrUrl.includes('?') ? '&' : '?'}inline=1` : '';
 const tieneQr = Boolean(qrUrl);
 const formularioUrl =
   typeof torneo.formulario === 'string' && /^https?:\/\//i.test(torneo.formulario.trim())
     ? torneo.formulario.trim()
     : '';
-const etiquetaPagoQr = torneo.precioTexto
-  ? `Pagar ${torneo.precioTexto} por QR`
-  : 'Pagar por QR';
+const etiquetaPagoQr = torneo.precioTexto ? `Pagar ${torneo.precioTexto} por QR` : 'Pagar por QR';
 
 const mensajeInscripcion = tieneQr
   ? `Hola, ya realicé el pago${torneo.precioTexto ? ` de ${torneo.precioTexto}` : ''} para: ${torneo.titulo}. Envío mi comprobante.`
   : `Hola, quiero inscribirme en: ${torneo.titulo}.`;
 const inscripcionUrl = getWhatsappUrl(torneo.whatsapp, mensajeInscripcion);
-const consultaUrl = getWhatsappUrl(
-  torneo.whatsapp,
-  `Hola, quisiera consultar sobre: ${torneo.titulo}.`
-);
+const consultaUrl = getWhatsappUrl(torneo.whatsapp, `Hola, quisiera consultar sobre: ${torneo.titulo}.`);
 ---
 
 <Layout
@@ -116,7 +108,6 @@ const consultaUrl = getWhatsappUrl(
       letter-spacing: 0.12em;
       text-transform: uppercase;
     }
-
 
     .section-label {
       margin-bottom: 20px;
@@ -338,7 +329,7 @@ const consultaUrl = getWhatsappUrl(
     }
 
     .action-price {
-      color: #00ea09;
+      color: #00d108;
       font-size: 0.82rem;
       font-weight: 800;
       letter-spacing: 0.04em;
@@ -408,12 +399,7 @@ const consultaUrl = getWhatsappUrl(
     }
   </style>
 
-  <main
-    data-torneo-detalle
-    data-inicio={torneo.inicio}
-    data-fin={torneo.fin}
-    data-estado={torneo.estado}
-  >
+  <main data-torneo-detalle data-inicio={torneo.inicio} data-fin={torneo.fin} data-estado={torneo.estado}>
     <a class="back-link" href="/torneos/">&larr; Torneos</a>
 
     <div class="tournament-header">
@@ -429,12 +415,7 @@ const consultaUrl = getWhatsappUrl(
         />
         <StatusBadge tone="hoy" size="md" label="HOY" data-today hidden={!torneo.esHoy} />
         {torneo.esOnline && <StatusBadge tone="online" size="md" label="Online" />}
-        <StatusBadge
-          tone={torneo.estado}
-          size="md"
-          label={torneo.estadoLabel}
-          data-status-badge
-        />
+        <StatusBadge tone={torneo.estado} size="md" label={torneo.estadoLabel} data-status-badge />
       </div>
     </div>
 
@@ -442,106 +423,105 @@ const consultaUrl = getWhatsappUrl(
       <h2 class="section-label" id="detalles-title">Detalles</h2>
       <ul class="detail-list">
         <li>
-          {torneo.horario.map((parte) =>
-            parte.fuerte ? <strong>{parte.texto}</strong> : parte.texto
-          )}
+          {torneo.horario.map((parte) => (parte.fuerte ? <strong>{parte.texto}</strong> : parte.texto))}
         </li>
         {(torneo.detalles ?? []).map((detalle) => <li>{detalle}</li>)}
-        {convocatoriaUrl && (
-          <li class="detail-convocatoria">
-            <a
-              href={convocatoriaUrl}
-              target="_blank"
-              rel="noopener"
-              type="application/pdf"
-              aria-label={`Ver convocatoria en PDF de ${torneo.titulo}`}
-            >
-              Ver convocatoria oficial (PDF) <span aria-hidden="true">&nearr;</span>
-            </a>
-          </li>
-        )}
+        {
+          convocatoriaUrl && (
+            <li class="detail-convocatoria">
+              <a
+                href={convocatoriaUrl}
+                target="_blank"
+                rel="noopener"
+                type="application/pdf"
+                aria-label={`Ver convocatoria en PDF de ${torneo.titulo}`}
+              >
+                Ver convocatoria oficial (PDF) <span aria-hidden="true">&nearr;</span>
+              </a>
+            </li>
+          )
+        }
       </ul>
     </section>
 
     <div class="tournament-actions">
-      {torneo.precioTexto && !qrUrl && (
-        <span class="action-compact">{torneo.precioTexto}</span>
-      )}
-      {torneo.estado === 'abierto' && inscripcionUrl && (
-        <a
-          class="action action-primary"
-          href={tieneQr ? qrViewUrl : inscripcionUrl}
-          target="_blank"
-          rel="noopener"
-          data-cta={tieneQr ? 'pagar-qr' : 'inscribirme'}
-          aria-label={
-            tieneQr
-              ? `${etiquetaPagoQr}: ${torneo.titulo}`
-              : `Inscribirme en ${torneo.titulo} por WhatsApp`
-          }
-        >
-          {tieneQr && (
-            <svg
-              class="action-icon"
-              viewBox="0 0 24 24"
-              width="18"
-              height="18"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                fill="currentColor"
-                d="M3 3h7v7H3V3Zm2 2v3h3V5H5Zm9-2h7v7h-7V3Zm2 2v3h3V5h-3ZM3 14h7v7H3v-7Zm2 2v3h3v-3H5Zm9-2h2v2h-2v-2Zm2 2h2v2h-2v-2Zm2-2h2v2h-2v-2Zm0 4h2v2h-2v-2Zm-2 2h2v2h-2v-2Zm-2-2h2v2h-2v-2Zm-2 2h2v2h-2v-2Z"
-              />
-            </svg>
-          )}
-          {tieneQr && torneo.precioTexto ? (
-            <span class="action-label">
-              Pagar <strong class="action-price">{torneo.precioTexto}</strong> por QR
+      {torneo.precioTexto && !qrUrl && <span class="action-compact">{torneo.precioTexto}</span>}
+      {
+        torneo.estado === 'abierto' && inscripcionUrl && (
+          <a
+            class="action action-primary"
+            href={tieneQr ? qrViewUrl : inscripcionUrl}
+            target="_blank"
+            rel="noopener"
+            data-cta={tieneQr ? 'pagar-qr' : 'inscribirme'}
+            aria-label={
+              tieneQr ? `${etiquetaPagoQr}: ${torneo.titulo}` : `Inscribirme en ${torneo.titulo} por WhatsApp`
+            }
+          >
+            {tieneQr && (
+              <svg class="action-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+                <path
+                  fill="currentColor"
+                  d="M3 3h7v7H3V3Zm2 2v3h3V5H5Zm9-2h7v7h-7V3Zm2 2v3h3V5h-3ZM3 14h7v7H3v-7Zm2 2v3h3v-3H5Zm9-2h2v2h-2v-2Zm2 2h2v2h-2v-2Zm2-2h2v2h-2v-2Zm0 4h2v2h-2v-2Zm-2 2h2v2h-2v-2Zm-2-2h2v2h-2v-2Zm-2 2h2v2h-2v-2Z"
+                />
+              </svg>
+            )}
+            {tieneQr && torneo.precioTexto ? (
+              <span class="action-label">
+                Pagar <strong class="action-price">{torneo.precioTexto}</strong> por QR
+              </span>
+            ) : (
+              <span class="action-label">{tieneQr ? 'Pagar por QR' : 'Inscribirme por WhatsApp'}</span>
+            )}
+            <span class="action-arrow" aria-hidden="true">
+              &rarr;
             </span>
-          ) : (
-            <span class="action-label">
-              {tieneQr ? 'Pagar por QR' : 'Inscribirme por WhatsApp'}
-            </span>
-          )}
-          <span class="action-arrow" aria-hidden="true">&rarr;</span>
-        </a>
-      )}
-      {torneo.estado === 'abierto' && formularioUrl && (
-        <a
-          class="action-compact action-link"
-          href={formularioUrl}
-          target="_blank"
-          rel="noopener"
-          data-cta="formulario"
-          aria-label={`Llenar formulario de registro de ${torneo.titulo}`}
-        >
-          Llenar formulario de registro
-        </a>
-      )}
-      {torneo.estado === 'abierto' && tieneQr && !formularioUrl && inscripcionUrl && (
-        <a
-          class="action-compact action-link"
-          href={inscripcionUrl}
-          target="_blank"
-          rel="noopener"
-          data-cta="enviar-comprobante"
-          aria-label={`Enviar comprobante de pago por WhatsApp para ${torneo.titulo}`}
-        >
-          Enviar comprobante por WhatsApp
-        </a>
-      )}
-      {torneo.enlace && (
-        <a class="action action-secondary" href={torneo.enlace} target="_blank" rel="noopener">
-          {torneo.estado === 'finalizado' ? 'Ver resultados' : 'Ver evento'}
-          <span aria-hidden="true">&rarr;</span>
-        </a>
-      )}
-      {torneo.estado !== 'abierto' && !torneo.enlace && consultaUrl && (
-        <a class="action action-secondary" href={consultaUrl} target="_blank" rel="noopener">
-          Consultar por WhatsApp <span aria-hidden="true">&rarr;</span>
-        </a>
-      )}
+          </a>
+        )
+      }
+      {
+        torneo.estado === 'abierto' && formularioUrl && (
+          <a
+            class="action-compact action-link"
+            href={formularioUrl}
+            target="_blank"
+            rel="noopener"
+            data-cta="formulario"
+            aria-label={`Llenar formulario de registro de ${torneo.titulo}`}
+          >
+            Llenar formulario de registro
+          </a>
+        )
+      }
+      {
+        torneo.estado === 'abierto' && tieneQr && !formularioUrl && inscripcionUrl && (
+          <a
+            class="action-compact action-link"
+            href={inscripcionUrl}
+            target="_blank"
+            rel="noopener"
+            data-cta="enviar-comprobante"
+            aria-label={`Enviar comprobante de pago por WhatsApp para ${torneo.titulo}`}
+          >
+            Enviar comprobante por WhatsApp
+          </a>
+        )
+      }
+      {
+        torneo.enlace && (
+          <a class="action action-secondary" href={torneo.enlace} target="_blank" rel="noopener">
+            {torneo.estado === 'finalizado' ? 'Ver resultados' : 'Ver evento'}
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        )
+      }
+      {
+        torneo.estado !== 'abierto' && !torneo.enlace && consultaUrl && (
+          <a class="action action-secondary" href={consultaUrl} target="_blank" rel="noopener">
+            Consultar por WhatsApp <span aria-hidden="true">&rarr;</span>
+          </a>
+        )
+      }
     </div>
 
     <section class="organizers" aria-labelledby="organizadores-title">
@@ -549,38 +529,38 @@ const consultaUrl = getWhatsappUrl(
         {torneo.organizadores.length === 1 ? 'Organiza' : 'Organizan'}
       </h2>
       <ul class="organizer-list">
-        {torneo.organizadores.map((organizacion) => {
-          const nombreCorto = organizacion.corto ?? organizacion.nombre;
+        {
+          torneo.organizadores.map((organizacion) => {
+            const nombreCorto = organizacion.corto ?? organizacion.nombre;
 
-          return (
-            <li>
-              <a
-                class="organizer"
-                href={organizacion.url}
-                target="_blank"
-                rel="noopener"
-                aria-label={`Ver ${organizacion.nombre}`}
-              >
-                <span class="organizer-logo">
-                  <img
-                    src={organizacion.logo}
-                    alt=""
-                    width={organizacion.width}
-                    height={organizacion.height}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </span>
-                <span class="organizer-info">
-                  <span class="organizer-name">{nombreCorto}</span>
-                  {nombreCorto !== organizacion.nombre && (
-                    <span class="organizer-full">{organizacion.nombre}</span>
-                  )}
-                </span>
-              </a>
-            </li>
-          );
-        })}
+            return (
+              <li>
+                <a
+                  class="organizer"
+                  href={organizacion.url}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`Ver ${organizacion.nombre}`}
+                >
+                  <span class="organizer-logo">
+                    <img
+                      src={organizacion.logo}
+                      alt=""
+                      width={organizacion.width}
+                      height={organizacion.height}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </span>
+                  <span class="organizer-info">
+                    <span class="organizer-name">{nombreCorto}</span>
+                    {nombreCorto !== organizacion.nombre && <span class="organizer-full">{organizacion.nombre}</span>}
+                  </span>
+                </a>
+              </li>
+            );
+          })
+        }
       </ul>
     </section>
   </main>
