@@ -1,13 +1,15 @@
 [
   {
     "id": "960-25-oct-2026",
-    "fecha": "2026-10-25",
-    "fecha_texto": "25 de Octubre, 2026",
+    "inicio": "2026-10-25T22:00:00-04:00",
+    "fin": "2026-10-25T22:35:00-04:00",
     "titulo": "960 Online",
+    "organizadores": [
+      "adalp",
+      "peon-veloz"
+    ],
     "online": true,
     "detalles": [
-      "🗓️ Domingo 25",
-      "🕘 10:00 pm",
       "🕰️ 90 segundos a finish (bullet)",
       "⌛ Modalidad Arena a 35 mins",
       "📍 Lichess"
@@ -17,28 +19,31 @@
   },
   {
     "id": "bullet-22-oct-2026",
-    "fecha": "2026-10-22",
-    "fecha_texto": "22 de Octubre, 2026",
+    "inicio": "2026-10-22T22:00:00-04:00",
+    "fin": "2026-10-22T22:25:00-04:00",
     "titulo": "Bullet Online",
+    "organizadores": [
+      "adalp",
+      "peon-veloz"
+    ],
     "online": true,
     "detalles": [
-      "🗓️ Jueves 22",
-      "🕘 10:00 pm",
       "🕰️ 1+1 (bullet)",
       "⌛ Modalidad Arena a 25 mins",
       "📍 Lichess"
     ],
     "whatsapp": "+591 62696414 ",
-    "enlace": ""
+    "enlace": "https://lichess.org/tournament/SAU1qrjB"
   },
   {
     "id": "inter-universitario-2026",
-    "fecha": "2026-10-24",
-    "fecha_texto": "24 y 25 de Octubre, 2026",
+    "inicio": "2026-10-24T09:00:00-04:00",
+    "fin": "2026-10-25T13:00:00-04:00",
     "titulo": "Inter Universitario 🟥🟩",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Sábado 24 y domingo 25",
-      "🕘 9:00 am",
       "🕰️ 15+10 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -48,12 +53,13 @@
   },
   {
     "id": "tercera-categoria-2026",
-    "fecha": "2026-11-21",
-    "fecha_texto": "21 y 22 de Noviembre, 2026",
+    "inicio": "2026-11-21T09:00:00-04:00",
+    "fin": "2026-11-22T13:00:00-04:00",
     "titulo": "Tercera Categoría IRT 🟥🟩",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Sábado 21 y domingo 22",
-      "🕘 9:00 am",
       "🕰️ 15+10 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -63,12 +69,14 @@
   },
   {
     "id": "memorial-cidar-humerez-2026",
-    "fecha": "2026-12-10",
-    "fecha_texto": "Del 10 al 13 de Diciembre, 2026",
+    "inicio": "2026-12-10T14:00:00-04:00",
+    "fin": "2026-12-13T13:00:00-04:00",
     "titulo": "Memorial Cidar Húmerez IRT",
+    "organizadores": [
+      "adalp",
+      "jaque-mate"
+    ],
     "detalles": [
-      "🗓️ Jueves 10 al domingo 13",
-      "🕘 2:00 pm",
       "🕰️ 60+30 (standard)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -78,12 +86,13 @@
   },
   {
     "id": "cuarta-categoria-2026",
-    "fecha": "2026-10-10",
-    "fecha_texto": "10 y 11 de Octubre, 2026",
+    "inicio": "2026-10-10T09:00:00-04:00",
+    "fin": "2026-10-11T13:00:00-04:00",
     "titulo": "Cuarta Categoría 🟥🟩",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Sábado 10 y domingo 11",
-      "🕘 9:00 am",
       "🕰️ 15+10 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -93,12 +102,13 @@
   },
   {
     "id": "rapid-dia-amistad-2026",
-    "fecha": "2026-09-26",
-    "fecha_texto": "26 de Septiembre, 2026",
+    "inicio": "2026-09-26T09:00:00-04:00",
+    "fin": "2026-09-26T13:00:00-04:00",
     "titulo": "Día de la amistad",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Sábado 26",
-      "🕘 9:00 am",
       "🕰️ 10+5 (rapid)",
       "♟️ Sistema suizo a 6 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -108,12 +118,13 @@
   },
   {
     "id": "4ta-olimpiada-nacional-escolar-secundaria-2026",
-    "fecha": "2026-09-19",
-    "fecha_texto": "19 y 20 de Septiembre, 2026",
+    "inicio": "2026-09-19T15:00:00-04:00",
+    "fin": "2026-09-20T13:00:00-04:00",
     "titulo": "4ta Olimpiada Nacional Escolar Secundaria 🇧🇴",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Sábado 19 y domingo 20",
-      "🕘 3:00 pm",
       "🕰️ 15+5 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -123,12 +134,13 @@
   },
   {
     "id": "3ra-olimpiada-nacional-escolar-primaria-2026",
-    "fecha": "2026-08-29",
-    "fecha_texto": "29 y 30 de Agosto, 2026",
+    "inicio": "2026-08-29T15:00:00-04:00",
+    "fin": "2026-08-30T13:00:00-04:00",
     "titulo": "3ra Olimpiada Nacional Escolar Primaria 🇧🇴",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Sábado 29 y domingo 30",
-      "🕘 3:00 pm",
       "🕰️ 15+5 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -138,12 +150,13 @@
   },
   {
     "id": "2do-grand-prix-nacional-2026-2027",
-    "fecha": "2026-02-26",
-    "fecha_texto": "26 de Febrero al 1 de Marzo, 2026",
+    "inicio": "2026-02-26T14:00:00-04:00",
+    "fin": "2026-03-01T13:00:00-04:00",
     "titulo": "2do Grand Prix Nacional 2026-2027 🇧🇴",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Jueves 26 al domingo 1",
-      "🕘 2:00 pm",
       "🕰️ 90+30 (standard)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -153,12 +166,13 @@
   },
   {
     "id": "2da-olimpiada-nacional-escolar-primaria-2026",
-    "fecha": "2026-07-25",
-    "fecha_texto": "25 y 26 de Julio, 2026",
+    "inicio": "2026-07-25T15:00:00-04:00",
+    "fin": "2026-07-26T13:00:00-04:00",
     "titulo": "2da Olimpiada Nacional Escolar Primaria 🇧🇴",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Sábado 25 y domingo 26",
-      "🕘 3:00 pm",
       "🕰️ 15+5 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -168,12 +182,13 @@
   },
   {
     "id": "navidad-2025",
-    "fecha": "2025-12-28",
-    "fecha_texto": "28 de Diciembre, 2025",
+    "inicio": "2025-12-28T09:00:00-04:00",
+    "fin": "2025-12-28T13:00:00-04:00",
     "titulo": "🎁 Navideño 2025",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Domingo 28",
-      "🕘 9:00 am",
       "🕰️ 5+3 (blitz)",
       "♟️ Sistema suizo a 9 rondas",
       "📍 Estadio Hernando Siles, 5to piso, puerta #1"
@@ -183,12 +198,13 @@
   },
   {
     "id": "9no-grand-prix-nacional-2025-2026",
-    "fecha": "2025-11-13",
-    "fecha_texto": "13 al 16 de Noviembre, 2025",
+    "inicio": "2025-11-13T14:00:00-04:00",
+    "fin": "2025-11-16T13:00:00-04:00",
     "titulo": "9no Grand Prix Nacional 2025-2026 🇧🇴",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Jueves 13 al domingo 16",
-      "🕘 2:00 pm",
       "🕰️ 90+30 (standard)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Hotel Torino (calle Socabaya #457)"
@@ -198,12 +214,13 @@
   },
   {
     "id": "3ra-olimpiada-nacional-escolar-primaria-2025",
-    "fecha": "2025-07-26",
-    "fecha_texto": "26 y 27 de Julio, 2025",
+    "inicio": "2025-07-26T15:00:00-04:00",
+    "fin": "2025-07-27T13:00:00-04:00",
     "titulo": "3ra Olimpiada Nacional Escolar Primaria 🇧🇴",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Sábado 26 y domingo 27",
-      "🕘 3:00 pm",
       "🕰️ 15+5 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Unidad Educativa Naval, Av. Ismael Montes 421"
@@ -213,12 +230,13 @@
   },
   {
     "id": "jallalla-la-paz",
-    "fecha": "2025-07-16",
-    "fecha_texto": "16 de Julio, 2025",
+    "inicio": "2025-07-16T15:00:00-04:00",
+    "fin": "2025-07-16T19:00:00-04:00",
     "titulo": "Jallalla La Paz 🟥🟩",
+    "organizadores": [
+      "adalp"
+    ],
     "detalles": [
-      "🗓️ Miércoles 16",
-      "🕘 3:00 pm",
       "🕰️ 5+3 (rapid)",
       "♟️ Sistema suizo a 7 rondas",
       "📍 Hotel Torino (calle Socabaya #457)"

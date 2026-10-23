@@ -1,11 +1,10 @@
 ---
-const { label, tone, size = 'sm', dot = false, class: className, ...rest } = Astro.props;
+const { label, tone, size = 'sm', class: className, ...rest } = Astro.props;
 
 const classes = [
   'status-badge',
   `status-badge--${size}`,
   tone && `status-${tone}`,
-  dot && 'status-badge--dot',
   className
 ]
   .filter(Boolean)

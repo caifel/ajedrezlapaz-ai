@@ -188,6 +188,12 @@ footer {
     gap: 30px;
 }
 
+.news-grid[hidden],
+.news-card[hidden],
+.news-empty[hidden] {
+    display: none;
+}
+
 .news-group + .news-group {
     margin-top: 60px;
 }
@@ -208,32 +214,42 @@ footer {
     color: var(--color-text-light);
 }
 
-/* STATUS BADGES */
+/* STATUS BADGES (píldoras sin borde) */
 .status-badge {
-    display: inline-block;
-    border: 1px solid currentColor;
-    font-size: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border: 0;
+    border-radius: 999px;
+    color: var(--color-text-light);
+    font-size: 0.56rem;
+    font-style: italic;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     line-height: 1.2;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .status-badge[hidden] { display: none; }
 
-.status-badge--sm { padding: 3px 8px; }
-.status-badge--md { padding: 4px 9px; }
-
-.status-badge--dot {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+.status-badge--sm {
+    padding: 3px 9px;
+    font-size: 0.56rem;
 }
 
-.status-badge--dot::before {
+.status-badge--md {
+    padding: 5px 11px;
+    font-size: 0.58rem;
+}
+
+/* Solo "Online" lleva punto; el resto de estados y el contador de días van sin bullet. */
+.status-badge.status-online::before {
     content: '';
-    width: 6px;
-    height: 6px;
+    flex: 0 0 auto;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background-color: currentColor;
 }
@@ -241,6 +257,11 @@ footer {
 .status-badge.status-abierto {
     color: #1b5e20;
     background-color: #e8f5e9;
+}
+
+.status-badge.status-en-curso {
+    color: #8a4b00;
+    background-color: #fff1e0;
 }
 
 .status-badge.status-lleno,
@@ -255,19 +276,23 @@ footer {
 }
 
 .status-badge.status-hoy {
-    border-color: var(--color-accent);
-    background-color: var(--color-accent);
     color: #1a1a1a;
+    background-color: var(--color-accent);
 }
 
 .status-badge.status-days {
-    border-color: #d8c7a3;
-    background-color: #fbf8f2;
-    color: var(--color-accent-text);
+    color: #4f4f4f;
+    background-color: #efefef;
+    letter-spacing: 0.04em;
 }
 
 .status-badge.status-online {
-    border-color: #1a4d8f;
-    background-color: #eef4ff;
     color: #1a4d8f;
+    background-color: #eef4ff;
+}
+
+/* En un evento ya pasado, todos los badges se muestran en gris. */
+[data-estado='finalizado'] .status-badge.status-online {
+    color: #3d3d3d;
+    background-color: #eeeeee;
 }

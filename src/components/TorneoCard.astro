@@ -15,7 +15,8 @@ const torneoUrl = `/torneos/${torneo.id}/`;
 
 <article
   class={`news-card ${torneo.estadoClass}`}
-  data-fecha={torneo.fecha}
+  data-inicio={torneo.inicio}
+  data-fin={torneo.fin}
   data-estado={torneo.estado}
 >
   <div class="news-meta">
@@ -25,7 +26,7 @@ const torneoUrl = `/torneos/${torneo.id}/`;
     </div>
     <span class="news-days" data-days hidden={!(torneo.diasHasta > 0)}>{formatDiasHasta(torneo.diasHasta)}</span>
     <div class="news-status-row">
-      {torneo.esOnline && <StatusBadge tone="online" size="sm" dot label="Online" />}
+      {torneo.esOnline && <StatusBadge tone="online" size="sm" label="Online" />}
       <StatusBadge
         tone={torneo.estado}
         size="sm"
@@ -41,6 +42,11 @@ const torneoUrl = `/torneos/${torneo.id}/`;
   </div>
   <h3><a href={torneoUrl}>{torneo.titulo}</a></h3>
   <ul class="news-details">
+    <li>
+      {torneo.horario.map((parte) =>
+        parte.fuerte ? <strong>{parte.texto}</strong> : parte.texto
+      )}
+    </li>
     {(torneo.detalles ?? []).map((detalle) => <li>{detalle}</li>)}
   </ul>
   {inscripcionUrl && (
@@ -113,7 +119,7 @@ const torneoUrl = `/torneos/${torneo.id}/`;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: 6px 14px;
   }
 
   .news-event-link {
@@ -132,6 +138,10 @@ const torneoUrl = `/torneos/${torneo.id}/`;
 
   .news-card.status-abierto {
     border-left: 4px solid #2d7a2d;
+  }
+
+  .news-card.status-en-curso {
+    border-left: 4px solid #b26b00;
   }
 
   .news-card.status-lleno,

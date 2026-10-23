@@ -4,13 +4,14 @@ import TorneoCard from '../components/TorneoCard.astro';
 import TorneoStatusRefresh from '../components/TorneoStatusRefresh.astro';
 import Aliados from '../components/Aliados.astro';
 import directiva from '../data/directiva.json';
+import { PAGE_DESCRIPTIONS } from '../lib/seo.js';
 import { getTorneos, getEventSchema } from '../lib/torneos';
 
 const tournaments = getTorneos();
 
 const torneosDestacados = tournaments
   .filter((torneo) => !torneo.esPasado)
-  .sort((a, b) => a.fecha.localeCompare(b.fecha))
+  .sort((a, b) => a.inicio.localeCompare(b.inicio))
   .slice(0, 3);
 
 const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
@@ -19,7 +20,7 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
 
 <Layout
   title="Asociación Departamental de Ajedrez de La Paz (ADALP)"
-  description="Sitio oficial de la Asociación Departamental de Ajedrez de La Paz (ADALP), fundada en 1929. Consulta jugadores, categorías y certificados oficiales."
+  description={PAGE_DESCRIPTIONS.home}
   schema={eventSchemas}
 >
   <style is:global>
@@ -443,17 +444,14 @@ const eventSchemas = torneosDestacados.map((torneo) => getEventSchema(torneo, si
 
         <div class="news-group">
           <h3 class="news-group-title">Próximos</h3>
-          {
-            torneosDestacados.length > 0 ? (
-              <div class="news-grid">
-                {torneosDestacados.map((torneo) => (
-                  <TorneoCard torneo={torneo} />
-                ))}
-              </div>
-            ) : (
-              <p class="news-empty">No hay torneos programados por el momento.</p>
-            )
-          }
+          <div class="news-grid" data-torneos-grid="proximos" hidden={torneosDestacados.length === 0}>
+            {torneosDestacados.map((torneo) => (
+              <TorneoCard torneo={torneo} />
+            ))}
+          </div>
+          <p class="news-empty" data-empty hidden={torneosDestacados.length > 0}>
+            No hay torneos programados por el momento.
+          </p>
           <div class="news-more">
             <a class="news-more-link" href="/torneos/">Ver calendario completo &rarr;</a>
           </div>

@@ -2,18 +2,18 @@
 import Layout from '../../layouts/Layout.astro';
 import TorneoCard from '../../components/TorneoCard.astro';
 import TorneoStatusRefresh from '../../components/TorneoStatusRefresh.astro';
+import { PAGE_DESCRIPTIONS } from '../../lib/seo.js';
 import { getTorneos } from '../../lib/torneos';
 
 const torneos = getTorneos();
 
-const proximos = torneos.filter((torneo) => !torneo.esPasado).sort((a, b) => a.fecha.localeCompare(b.fecha));
+const proximos = torneos.filter((torneo) => !torneo.esPasado).sort((a, b) => a.inicio.localeCompare(b.inicio));
 
-const anteriores = torneos.filter((torneo) => torneo.esPasado).sort((a, b) => b.fecha.localeCompare(a.fecha));
+const anteriores = torneos.filter((torneo) => torneo.esPasado).sort((a, b) => b.inicio.localeCompare(a.inicio));
 
 const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
 const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
-const pageDescription =
-  'Calendario oficial de torneos de ajedrez de la Asociación Departamental de Ajedrez de La Paz. Consulta fechas, horarios e inscripciones.';
+const pageDescription = PAGE_DESCRIPTIONS.torneos;
 
 const pageSchema = {
   '@context': 'https://schema.org',
@@ -92,32 +92,26 @@ const pageSchema = {
 
     <div class="news-group">
       <h2 class="news-group-title">Próximos</h2>
-      {
-        proximos.length > 0 ? (
-          <div class="news-grid">
-            {proximos.map((torneo) => (
-              <TorneoCard torneo={torneo} />
-            ))}
-          </div>
-        ) : (
-          <p class="news-empty">No hay torneos programados por el momento.</p>
-        )
-      }
+      <div class="news-grid" data-torneos-grid="proximos" hidden={proximos.length === 0}>
+        {proximos.map((torneo) => (
+          <TorneoCard torneo={torneo} />
+        ))}
+      </div>
+      <p class="news-empty" data-empty hidden={proximos.length > 0}>
+        No hay torneos programados por el momento.
+      </p>
     </div>
 
     <div class="news-group">
-      <h2 class="news-group-title">Torneos anteriores</h2>
-      {
-        anteriores.length > 0 ? (
-          <div class="news-grid">
-            {anteriores.map((torneo) => (
-              <TorneoCard torneo={torneo} />
-            ))}
-          </div>
-        ) : (
-          <p class="news-empty">Todavía no hay torneos anteriores.</p>
-        )
-      }
+      <h2 class="news-group-title">Torneos pasados</h2>
+      <div class="news-grid" data-torneos-grid="anteriores" hidden={anteriores.length === 0}>
+        {anteriores.map((torneo) => (
+          <TorneoCard torneo={torneo} />
+        ))}
+      </div>
+      <p class="news-empty" data-empty hidden={anteriores.length > 0}>
+        Todavía no hay torneos pasados.
+      </p>
     </div>
   </main>
 

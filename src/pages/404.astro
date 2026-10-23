@@ -1,10 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { PAGE_DESCRIPTIONS } from '../lib/seo.js';
 ---
 
 <Layout
     title="Página no encontrada | ADALP"
-    description="La página que buscas no existe o fue movida. Visita el sitio oficial de la Asociación Departamental de Ajedrez de La Paz."
+    description={PAGE_DESCRIPTIONS.noEncontrada}
     noindex
 >
     <style is:global>

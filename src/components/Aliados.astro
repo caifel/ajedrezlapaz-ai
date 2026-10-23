@@ -1,55 +1,8 @@
 ---
-// Logos de instituciones y clubes aliados.
-const aliados = [
-  {
-    nombre: 'Servicio Departamental de Deportes',
-    tipo: 'SEDEDE',
-    logo: '/assets/aliados/sedede.webp',
-    url: 'https://www.sededelapaz.gob.bo/',
-    width: 280,
-    height: 150
-  },
-  {
-    nombre: 'Gobierno Autónomo Municipal de La Paz',
-    tipo: 'GAMLP',
-    logo: '/assets/aliados/gamlp.webp',
-    url: 'https://lapaz.bo/',
-    width: 248,
-    height: 176
-  },
-  {
-    nombre: 'Enda El Alto',
-    tipo: 'El Alto',
-    logo: '/assets/aliados/enda.webp',
-    url: 'https://www.endaelalto.org/',
-    width: 176,
-    height: 176
-  },
-  {
-    nombre: 'Peón Veloz',
-    tipo: 'Ajedrez Online',
-    logo: '/assets/aliados/peon-veloz.webp',
-    url: 'https://www.facebook.com/profile.php?id=61587626468936',
-    width: 181,
-    height: 176
-  },
-  {
-    nombre: 'Escuela Superior de Ajedrez Jaque Mate',
-    tipo: 'Escuela',
-    logo: '/assets/aliados/jaque-mate.webp',
-    url: 'https://www.facebook.com/p/Escuela-de-Ajedrez-Jaque-Mate-100077771761008/',
-    width: 168,
-    height: 176
-  },
-  {
-    nombre: 'Achi Chess Club (Ajedrez de Altura)',
-    tipo: 'Club',
-    logo: '/assets/aliados/achi-chess.webp',
-    url: 'https://www.facebook.com/p/ACHI-CHESS-CLUB-100064013438398/',
-    width: 176,
-    height: 176
-  }
-];
+import { getAliados } from '../lib/organizaciones';
+
+// Instituciones y clubes aliados (registro en src/data/organizaciones.json).
+const aliados = getAliados();
 ---
 
 <section id="aliados" class="aliados" aria-labelledby="aliados-title">

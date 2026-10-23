@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import players from '../data/jugadores.json';
+import { PAGE_DESCRIPTIONS } from '../lib/seo.js';
 
 const verifierUrl = import.meta.env.PUBLIC_VERIFIER_URL || '';
 
@@ -21,7 +22,7 @@ const categories = [
 
 const siteUrl = Astro.site ?? new URL('https://ajedrezlapaz.com');
 const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
-const pageDescription = 'Registro oficial de jugadores de la Asociación Departamental de Ajedrez de La Paz (ADALP). Consulta nombres, categorías y certificados.';
+const pageDescription = PAGE_DESCRIPTIONS.jugadores;
 
 const pageSchema = {
     '@context': 'https://schema.org',

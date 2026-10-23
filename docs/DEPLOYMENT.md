@@ -41,6 +41,8 @@ Ambos workflows también se pueden ejecutar manualmente desde **Actions > [workf
 
 El workflow del Worker se dispara únicamente con cambios en `worker/**` o en su propio archivo. Un cambio en `worker/datos.json` **no** lo dispara porque ese archivo está en `.gitignore`.
 
+El sitio se despliega **solo con push a `main`** (o ejecución manual). No hay cron: los estados visibles no dependen del build porque la portada, `/torneos/` y la página de detalle recalculan y reubican en el navegador; un torneo que termina entre dos despliegues se muestra como finalizado al instante. Los metadatos (JSON-LD, `sitemap.xml`) se actualizan en el siguiente push.
+
 ## Configuración de GitHub
 
 ### Environment `github-pages`
